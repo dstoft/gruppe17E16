@@ -5,38 +5,43 @@ import java.util.StringTokenizer;
 
 public class Parser 
 {
-    private CommandWords commands;
-    private Scanner reader;
+    private CommandWords commands; //Defines variable
+    private Scanner reader; //Defines variable
 
     public Parser() 
     {
-        commands = new CommandWords();
-        reader = new Scanner(System.in);
+        commands = new CommandWords(); //New object of type commandWords 
+        reader = new Scanner(System.in); //New scanner object, takes input from keyboard
     }
 
     public Command getCommand() 
     {
+        //***Defines variables***
         String inputLine;
-        String word1 = null;
+        String word1 = null; 
         String word2 = null;
+        //***********************
 
         System.out.print("> "); 
 
-        inputLine = reader.nextLine();
+        inputLine = reader.nextLine(); //Saves user typed line
 
-        Scanner tokenizer = new Scanner(inputLine);
-        if(tokenizer.hasNext()) {
-            word1 = tokenizer.next();
-            if(tokenizer.hasNext()) {
-                word2 = tokenizer.next(); 
+        Scanner tokenizer = new Scanner(inputLine);     //Creates new object of type Scanner using inputLine and
+                                                        //defines variable with return from Scanner object
+        if(tokenizer.hasNext()) { //Checks if inputLine have another word
+            word1 = tokenizer.next(); //If true, assigns variable with return, holds 1. word
+            if(tokenizer.hasNext()) { //Checks if inputLine have yet another word
+                word2 = tokenizer.next(); //If true, assigns variable with return, holds 2. word
             }
         }
-
-        return new Command(commands.getCommandWord(word1), word2);
+        
+        //Instanciates a new object of the type Command (check Javadoc for Command!)
+        //It saves the object (holding the cmd) returned from .getCommandWord and the second word, which is a string
+        return new Command(commands.getCommandWord(word1), word2); 
     }
 
     public void showCommands()
     {
-        commands.showAll();
+        commands.showAll(); //A method to print out all the command words
     }
 }

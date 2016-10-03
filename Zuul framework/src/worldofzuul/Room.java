@@ -44,7 +44,7 @@ public class Room
 
     public Room getExit(String direction) 
     {
-        return exits.get(direction);
+        return exits.get(direction); //Return the room which corresponds to the direction parsed in, in the parameter
     }
 }
 

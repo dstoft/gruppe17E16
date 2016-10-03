@@ -19,32 +19,61 @@
 
 package worldofzuul;
 
+/**
+ * Holds information regarding the command typed in by the user,
+ * the information is in two parts, the command word of the type CommandWord (an enum)
+ * and a second word of the type String.
+ * 
+ * 
+ */
 public class Command
 {
     private CommandWord commandWord;
     private String secondWord;
 
+    /**
+     * The constructor for the class, it simply stores the two parameters parsend in
+     * @param commandWord of the type CommandWord, which contains the first word of
+     * the command typed in by the user
+     * @param secondWord of the type String, contains the second word
+     */
     public Command(CommandWord commandWord, String secondWord)
     {
         this.commandWord = commandWord;
         this.secondWord = secondWord;
     }
 
+    /**
+     * A simple getter method, used to retrieve the command word (first word of the command)
+     * @return 
+     */
     public CommandWord getCommandWord()
     {
         return commandWord;
     }
 
+    /**
+     * A simple getter method, used to retrieve the second word
+     * @return a String, that contains the second word
+     */
     public String getSecondWord()
     {
-        return secondWord;
+        return secondWord; //Return the second word of the objec
     }
 
+    /**
+     * Checks whether the command word (first word) is known
+     * @return true if the command is not recognized
+     */
     public boolean isUnknown()
     {
         return (commandWord == CommandWord.UNKNOWN);
     }
 
+    /**
+     * Checks whether the command has a second word
+     * @return true if the second word is not null, and therefore exists
+     */
     public boolean hasSecondWord()
     {
         return (secondWord != null);
