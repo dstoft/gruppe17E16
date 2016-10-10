@@ -18,6 +18,7 @@ package worldofzuul;
  */
 public class Game 
 {
+    //Defines instance variables
     private Parser parser;
     private Room currentRoom;
         
@@ -27,8 +28,8 @@ public class Game
      */
     public Game() 
     {
-        createRooms();
-        parser = new Parser();
+        createRooms(); //Calls the method that creates all of the rooms
+        parser = new Parser(); //Creates a new object of the type Parser
     }
 
     /**
@@ -37,27 +38,35 @@ public class Game
      */
     private void createRooms()
     {
+        //Defines variables of the type Room
         Room outside, theatre, pub, lab, office;
       
+        //Creates the new objects and creates the description along with it
         outside = new Room("outside the main entrance of the university");
         theatre = new Room("in a lecture theatre");
         pub = new Room("in the campus pub");
         lab = new Room("in a computing lab");
         office = new Room("in the computing admin office");
         
+        //Sets the exits for the Room "outside"
         outside.setExit("east", theatre);
         outside.setExit("south", lab);
         outside.setExit("west", pub);
 
+        //Sets the exits for the Room "theatre"
         theatre.setExit("west", outside);
-
+        
+        //....
         pub.setExit("east", outside);
 
+        //....
         lab.setExit("north", outside);
         lab.setExit("east", office);
 
+        //....
         office.setExit("west", lab);
 
+        //Sets the current room to the Room Outside
         currentRoom = outside;
     }
 
@@ -67,11 +76,12 @@ public class Game
      */
     public void play() 
     {            
-        printWelcome();
+        printWelcome(); //Prints a welcome message
 
-                
+        //Note, the while-loop below, is basically a do..while loop, because the value to check is set to false right before the loop itself
+        //meaning, no matter what, the loop will run through at least once
         boolean finished = false;
-        while (! finished) {
+        while (! finished) { //While it is not finished
             Command command = parser.getCommand(); //Returns a new object, holding the information, regarding the line typed by the user
             finished = processCommand(command); //Saves the boolean, whether the player wants to quit, in finished,
         }
@@ -86,7 +96,7 @@ public class Game
         System.out.println();
         System.out.println("Welcome to the World of Zuul!");
         System.out.println("World of Zuul is a new, incredibly boring adventure game.");
-        System.out.println("Type '" + CommandWord.HELP + "' if you need help.");
+        System.out.println("Type '" + CommandWord.HELP + "' if you need help."); //Command.HELP is found in the enum CommandWord, this returns the string corresponding to it
         System.out.println();
         System.out.println(currentRoom.getLongDescription());
     }

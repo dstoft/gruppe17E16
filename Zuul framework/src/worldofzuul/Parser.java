@@ -3,17 +3,29 @@ package worldofzuul;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+/**
+ * Used to take input from the user, and create a command using the usertyped words
+ * 
+ */
 public class Parser 
 {
     private CommandWords commands; //Defines variable
     private Scanner reader; //Defines variable
 
+    /**
+     * Constructor, creates an object of the type CommandWords (which is basically a HashMap used to contain all of the valid enums)
+     * Creates an object of the type Scanner, which takes input from the keyboard
+     */
     public Parser() 
     {
         commands = new CommandWords(); //New object of type commandWords 
         reader = new Scanner(System.in); //New scanner object, takes input from keyboard
     }
 
+    /**
+     * Method that gets the command from the user input, it uses the scanner to take what the user types in
+     * @return a new object of the type Command, in the process, it gets an object handle from the class CommandWords 
+     */
     public Command getCommand() 
     {
         //***Defines variables***
@@ -40,6 +52,9 @@ public class Parser
         return new Command(commands.getCommandWord(word1), word2); 
     }
 
+    /**
+     * Prints all of the commands, using a method in CommandWords
+     */
     public void showCommands()
     {
         commands.showAll(); //A method to print out all the command words

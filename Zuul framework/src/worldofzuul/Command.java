@@ -28,6 +28,7 @@ package worldofzuul;
  */
 public class Command
 {
+    //Defiens variables
     private CommandWord commandWord;
     private String secondWord;
 
@@ -67,7 +68,7 @@ public class Command
      */
     public boolean isUnknown()
     {
-        return (commandWord == CommandWord.UNKNOWN);
+        return (commandWord == CommandWord.UNKNOWN); //This is a short "if" statement, see what is inside the (...) as if(...)
     }
 
     /**
