@@ -21,6 +21,7 @@ public class Game
     //Defines instance variables
     private Parser parser;
     private Room currentRoom;
+    private Player _player;
         
     /**
      * Constructor for the class Game, using the method createRooms() it creates the rooms, sets current room 
@@ -30,6 +31,7 @@ public class Game
     {
         createRooms(); //Calls the method that creates all of the rooms
         parser = new Parser(); //Creates a new object of the type Parser
+        this._player = new Player("wow", 100, 10);
     }
 
     /**
@@ -123,12 +125,18 @@ public class Game
         if (commandWord == CommandWord.HELP) { //If the command is help,
             printHelp(); //Call the method printHelp, to prrint help for the user
         }
+        /*
         else if (commandWord == CommandWord.GO) { //If the command is go,
             goRoom(command); //Calls the method goRoom, and pass the command object along
         }
+        */
         else if (commandWord == CommandWord.QUIT) { //If the command is quit,
             wantToQuit = quit(command); //Use the quit() method to figure out whether the player really wants to quit, save the returned value
+        } else {
+            this._player.processCommand(command);
         }
+        
+        
         return wantToQuit; //Return the boolean, whether the player wants to quit or not
     }
 
