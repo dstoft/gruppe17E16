@@ -9,6 +9,10 @@ package worldofzuul;
  *
  * @author DanielToft
  */
-public class Dashboard {
+public class Dashboard extends MovementCalculator {
+    
+    
+    
+    
     
 }
