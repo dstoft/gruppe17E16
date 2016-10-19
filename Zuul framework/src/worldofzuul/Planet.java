@@ -7,6 +7,7 @@ public class Planet {
     private final int xCoor;
     private final int yCoor;
     private final int numOfMoons;
+    private final NPC npc;
 			
 
     /** Creating list of planets.
@@ -17,7 +18,7 @@ public class Planet {
     
     //Constructor
     public Planet(String name, String description, int xCoor, int yCoor, 
-                  int numOfMoons, int NPCid) {	
+                  int numOfMoons) {	
             
 	this.name = name;
 	this.description = description;
@@ -25,8 +26,6 @@ public class Planet {
 	this.yCoor = yCoor;
 	this.numOfMoons = numOfMoons;
 	planets.add(this);	//Adding the created object to the list of planets
-
-	NPC npc = new NPC(NPCid);
     }
 
 
@@ -49,5 +48,10 @@ public class Planet {
 
     public int getYCoor() {
 	return yCoor;
+    }
+
+    //Setters
+    public void setNPC(NPC npc) {
+        this.npc = npc;
     }
 }
