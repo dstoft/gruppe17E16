@@ -1,19 +1,27 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <mail@emilharder.dk> wrote this file.  As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return.   Emil Harder
+ * ----------------------------------------------------------------------------
  */
+
 package worldofzuul;
 
 import java.util.Scanner;
 
 /**
- *
+ * This class is ment for testing of the Inventory and Items classes in the
+ * worldofzuul package.
+ * 
  * @author emil
  */
 public class InvTest {
 
     private static int getChoose;
+    
+    Inventory inventory = new Inventory();
 
     public void invTest() {
 
@@ -36,8 +44,6 @@ public class InvTest {
         String destript = sc.next(); // Var for description
         System.out.println("    Are there papers with the item (boolean)? ");
         boolean papers = sc.nextBoolean();// Var for wether there are papers or not
-
-        Inventory inventory = new Inventory();
 
         inventory.addItem(weight, name, destript, papers);
     }
@@ -65,7 +71,7 @@ public class InvTest {
                 itemAdder();
                 break;
             case 3:
-                System.out.println("3");
+                itemRemover();
                 break;
             default:
                 break;
@@ -75,9 +81,16 @@ public class InvTest {
     private void invShower() {
         
 
-        //String showInventory = inventory.showInventory();
+        System.out.println(inventory.showInventory());
+    }
 
-        System.out.println("to be added");
+    private void itemRemover() {
+        System.out.println("Give unique ID number for item to be removed. ");
+
+        Scanner sc = new Scanner(System.in); // Constructing new scanner object
+        int uniqueID = sc.nextInt(); // Var for choosed action
+        
+        inventory.remItem(uniqueID);
     }
 
 }

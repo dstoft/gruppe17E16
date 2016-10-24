@@ -98,27 +98,40 @@ public class Inventory { // Initializing the class Inventory
     }
 
     /**
-     * This method adds a item, of type Item, to the inventory.
+     * addItem adds a item, of type Item, to the inventory.
      *
-     * TODO: There needs a destination too.. and a return og the ID number
+     * TODO: There needs a destination too.. 
+     *       The uniqID could be implemented better in regards of how to remove
+     *       items again.
      *
      * @param weight Set the weight of the item (int).
      * @param name Set the name of the item (String).
      * @param desciption Set a description (String).
      * @param papers Set wether there are papers for the item (boolean).
+     * @return returns the unique ID number for the added item.
      */
-    public void addItem(int weight, String name, String desciption, boolean papers) {
+    public int addItem(int weight, String name, String desciption, boolean papers) {
 
-        uniqID++; // This increases the unique ID for the item
+        uniqID++; // This increases uniqID each time a item is added
 
         Items item = new Items(uniqID, weight, name, desciption, papers);
 
         inventoryList.add(item);
+        
+        return uniqID;
 
     }
     
+    /**
+     * remItem removes a given item from the inventory, based upon the unique ID
+     * returned from the addItem method.
+     * 
+     * TODO: better implementation in regards to uniqID and idendifying items.
+     * 
+     * @param x int for witch item to remomve
+     */
     public void remItem(int x){
-        inventoryList.remove(x);
+        inventoryList.remove(x-1);
     }
 
     /**
@@ -130,10 +143,13 @@ public class Inventory { // Initializing the class Inventory
      */
     public String showInventory() {
         
-        int invSize = inventoryList.size();
+        String kuk = "Start";
+        
         for (Items i: inventoryList){
-            
+            kuk = " og videre,";
         }
-        return "test";
+        return kuk;
+        
+        
     }
 }
