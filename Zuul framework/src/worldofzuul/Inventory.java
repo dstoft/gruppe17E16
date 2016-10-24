@@ -116,6 +116,8 @@ public class Inventory { // Initializing the class Inventory
         Items item = new Items(uniqID, name, weight, desciption, xCoor, yCoor, papers);
 
         inventoryList.add(item);
+        
+        sumItems ++;
 
         return uniqID;
 
@@ -131,6 +133,8 @@ public class Inventory { // Initializing the class Inventory
      */
     public void remItem(int x) {
         inventoryList.remove(x - 1);
+        
+        sumItems --;
     }
 
     /**
@@ -143,14 +147,12 @@ public class Inventory { // Initializing the class Inventory
     public String showInventory() {
 
         boolean isEmpty = inventoryList.isEmpty();
-        String invContent;
+        String invContent = null;
 
         if (isEmpty) {
             invContent = "The inventory is empty";
         } else {
-
-            invContent = "START ";
-
+            
             StringBuilder sb = new StringBuilder();
 
             sb.append(invContent);
@@ -159,6 +161,12 @@ public class Inventory { // Initializing the class Inventory
             for (Items i : inventoryList) {
                 sb.append(inventoryList.get(o).getName());
                 sb.append(", ");
+                sb.append(inventoryList.get(o).getDescription());
+                sb.append(", ");
+                sb.append(inventoryList.get(o).getWeight());
+                sb.append(", ");
+                sb.append(inventoryList.get(o).getPapers());
+                sb.append(". \n");
                 o++;
             }
 
@@ -171,4 +179,6 @@ public class Inventory { // Initializing the class Inventory
         return invContent;
 
     }
+    
+    //public String showInventory()
 }

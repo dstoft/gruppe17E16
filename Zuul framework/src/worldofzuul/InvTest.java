@@ -80,15 +80,15 @@ public class InvTest {
 
         System.out.println("Set parameters for new item: ");
         System.out.println("    The name (string): ");
-        String name = sc.next(); // Var for description
+        String name = sc.nextLine(); // Var for name
+        System.out.println("    The description (string): ");
+        String destript = sc.nextLine(); // Var for description
         System.out.println("    The weight of the item (int): ");
         int weight = sc.nextInt(); // Var for weight
         System.out.println("    The x coordinate for destination (int): ");
         int xCoor = sc.nextInt(); // Var for xCoor
         System.out.println("    The y coordinate for destination (int): ");
         int yCoor = sc.nextInt(); // Var for yCoor
-        System.out.println("    The description (string): ");
-        String destript = sc.next(); // Var for description
         System.out.println("    Are there papers with the item (boolean)? ");
         boolean papers = sc.nextBoolean();// Var for wether there are papers or not
 
