@@ -20,29 +20,23 @@ public class Items {
     private int weight; // The weight of the item.
     private String name; // The name of the item
     private String description; // The description of the item.
-<<<<<<< HEAD
     private String destination; // The destination of the item - paused for now..
     private boolean papers; // Does the user have papers on the item
 
 //Initializing Constructor (destination er lige gemt pt..)
     public Items(int id, int weight, String name, String desciption, boolean papers) {
-=======
     private int xCoor;  // The x coordinate for the destination 
     private int yCoor;  // The y coordinate for the destination 
     private boolean papers; // Does the user have papers on the item
 
 //Initializing Constructor
     public Items(int id, int weight, String desciption, int xCoor, int yCoor, boolean papers) {
->>>>>>> 9da079cac7eb89fcc9a18d9533b4fa40e455b736
         this.id = id;
         this.weight = weight;
         this.name = name;
         this.description = desciption;
-<<<<<<< HEAD
-=======
         this.xCoor = xCoor;
         this.yCoor = yCoor;
->>>>>>> 9da079cac7eb89fcc9a18d9533b4fa40e455b736
         this.papers = papers;
         
     }
