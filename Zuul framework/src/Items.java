@@ -8,16 +8,19 @@ public class Items {
     private int id; //Every item have an ID.
     private int weight; // The weight of the item.
     private String description; // The description of the item.
-    private String destination; // The destination of the item
+    private int xCoor;  // The x coordinate for the destination 
+    private int yCoor;  // The y coordinate for the destination 
     private boolean papers; // Does the user have papers on the item
 
 //Initializing Constructor
-    public Items(int id, int weight, String desciption, String destination, boolean papers) {
+    public Items(int id, int weight, String desciption, int xCoor, int yCoor, boolean papers) {
         this.id = id;
         this.weight = weight;
         this.description = desciption;
-        this.destination = destination;
+        this.xCoor = xCoor;
+        this.yCoor = yCoor;
         this.papers = papers;
+        
     }
 
 //Initializing Getters methods
@@ -27,16 +30,21 @@ public class Items {
          return description;
     }
 
-    public String getDestination() {        //Method for getting the destination of the item.
+    public int xCoor() {        //Method for returning  destination x coordinate
 
-         return destination;
+         return xCoor;
+    }
+    
+     public int yCoor() {        //Method for returning  destination y coordinate
+
+         return yCoor;
     }
 
     public int getWeight() {         //Method for getting the weight of the item.
 
          return weight;
     }
-
+    
     public int getId() {        // //Method for getting the ID of the item.
 
          return id;
