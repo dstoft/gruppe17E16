@@ -6,7 +6,6 @@
  * this stuff is worth it, you can buy me a beer in return.   Emil Harder
  * ----------------------------------------------------------------------------
  */
-
 package worldofzuul;
 
 import java.util.Scanner;
@@ -14,38 +13,26 @@ import java.util.Scanner;
 /**
  * This class is ment for testing of the Inventory and Items classes in the
  * worldofzuul package.
- * 
+ *
  * @author emil
  */
 public class InvTest {
 
     private static int getChoose;
-    
+    boolean running = true;
+
     Inventory inventory = new Inventory();
 
     public void invTest() {
 
-        int choosed = getChoose();
-        System.out.println("Du har valgt "+choosed);
-        invSwitch(choosed);
+        while (running) {
 
-    }
+            int choosed = getChoose();
+            System.out.println("Du har valgt " + choosed);
+            invSwitch(choosed);
 
-    public void itemAdder() {
+        }
 
-        Scanner sc = new Scanner(System.in); // Constructing new scanner object
-
-        System.out.println("Set parameters for new item: ");
-        System.out.println("    The weight of the item (int): ");
-        int weight = sc.nextInt(); // Var for weight
-        System.out.println("    The name (string): ");
-        String name = sc.next(); // Var for description
-        System.out.println("    The description (string): ");
-        String destript = sc.next(); // Var for description
-        System.out.println("    Are there papers with the item (boolean)? ");
-        boolean papers = sc.nextBoolean();// Var for wether there are papers or not
-
-        inventory.addItem(weight, name, destript, papers);
     }
 
     private int getChoose() {
@@ -54,6 +41,7 @@ public class InvTest {
         System.out.println("1 for Show inventory");
         System.out.println("2 for add item");
         System.out.println("3 for remove item");
+        System.out.println("0 to quit");
 
         Scanner sc = new Scanner(System.in); // Constructing new scanner object
         int choosed = sc.nextInt(); // Var for choosed action
@@ -73,15 +61,38 @@ public class InvTest {
             case 3:
                 itemRemover();
                 break;
+            case 0:
+                running = false;
+                break;
             default:
                 break;
         }
     }
 
     private void invShower() {
-        
 
         System.out.println(inventory.showInventory());
+    }
+    
+    public void itemAdder() {
+
+        Scanner sc = new Scanner(System.in); // Constructing new scanner object
+
+        System.out.println("Set parameters for new item: ");
+        System.out.println("    The name (string): ");
+        String name = sc.next(); // Var for description
+        System.out.println("    The weight of the item (int): ");
+        int weight = sc.nextInt(); // Var for weight
+        System.out.println("    The x coordinate for destination (int): ");
+        int xCoor = sc.nextInt(); // Var for xCoor
+        System.out.println("    The y coordinate for destination (int): ");
+        int yCoor = sc.nextInt(); // Var for yCoor
+        System.out.println("    The description (string): ");
+        String destript = sc.next(); // Var for description
+        System.out.println("    Are there papers with the item (boolean)? ");
+        boolean papers = sc.nextBoolean();// Var for wether there are papers or not
+
+        inventory.addItem(name, weight, destript, xCoor, yCoor, papers);
     }
 
     private void itemRemover() {
@@ -89,7 +100,7 @@ public class InvTest {
 
         Scanner sc = new Scanner(System.in); // Constructing new scanner object
         int uniqueID = sc.nextInt(); // Var for choosed action
-        
+
         inventory.remItem(uniqueID);
     }
 

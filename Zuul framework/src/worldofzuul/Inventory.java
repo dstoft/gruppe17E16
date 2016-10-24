@@ -20,8 +20,7 @@ public class Inventory { // Initializing the class Inventory
      * constructed. But if the class is constructed without them being set, it
      * will fall back to these predefined values:
      *
-     * maxAllowedItems with default 3
-     * maxAllowedWeight with default 12
+     * maxAllowedItems with default 3 maxAllowedWeight with default 12
      *
      */
     private int maxAllowedItems = 3;
@@ -71,10 +70,10 @@ public class Inventory { // Initializing the class Inventory
 
     /**
      * setMaxItems sets the max amount of items allowed to carry.
-     * 
+     *
      * @param x int for setting maxAllowedItems
      */
-    public void setMaxItems(int x){
+    public void setMaxItems(int x) {
         this.maxAllowedItems = x;
     }
 
@@ -90,48 +89,48 @@ public class Inventory { // Initializing the class Inventory
 
     /**
      * setMaxWeight set the max cumulated weight allowed to carry.
-     * 
+     *
      * @param x int for setting maxAllowedWeight
      */
-    public void setMaxWeight(int x){
+    public void setMaxWeight(int x) {
         this.maxAllowedWeight = x;
     }
 
     /**
      * addItem adds a item, of type Item, to the inventory.
      *
-     * TODO: There needs a destination too.. 
-     *       The uniqID could be implemented better in regards of how to remove
-     *       items again.
+     * TODO: There needs a destination too.. The uniqID could be implemented
+     * better in regards of how to remove items again.
      *
      * @param weight Set the weight of the item (int).
      * @param name Set the name of the item (String).
      * @param desciption Set a description (String).
+     * @param xCoor Sets the x coordinate for destination
+     * @param yCoor Sets the y coordinate for destination
      * @param papers Set wether there are papers for the item (boolean).
      * @return returns the unique ID number for the added item.
      */
-    public int addItem(int weight, String name, String desciption, boolean papers) {
+    public int addItem(String name, int weight, String desciption, int xCoor, int yCoor, boolean papers) {
 
         uniqID++; // This increases uniqID each time a item is added
-
-        Items item = new Items(uniqID, weight, name, desciption, papers);
+        Items item = new Items(uniqID, name, weight, desciption, xCoor, yCoor, papers);
 
         inventoryList.add(item);
-        
+
         return uniqID;
 
     }
-    
+
     /**
      * remItem removes a given item from the inventory, based upon the unique ID
      * returned from the addItem method.
-     * 
+     *
      * TODO: better implementation in regards to uniqID and idendifying items.
-     * 
+     *
      * @param x int for witch item to remomve
      */
-    public void remItem(int x){
-        inventoryList.remove(x-1);
+    public void remItem(int x) {
+        inventoryList.remove(x - 1);
     }
 
     /**
@@ -142,14 +141,34 @@ public class Inventory { // Initializing the class Inventory
      * the ArraList inventoryList.
      */
     public String showInventory() {
-        
-        String kuk = "Start";
-        
-        for (Items i: inventoryList){
-            kuk = " og videre,";
+
+        boolean isEmpty = inventoryList.isEmpty();
+        String invContent;
+
+        if (isEmpty) {
+            invContent = "The inventory is empty";
+        } else {
+
+            invContent = "START ";
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.append(invContent);
+            int o = 0;
+
+            for (Items i : inventoryList) {
+                sb.append(inventoryList.get(o).getName());
+                sb.append(", ");
+                o++;
+            }
+
+            sb.append("STOP");
+
+            invContent = sb.toString();
+
         }
-        return kuk;
-        
-        
+
+        return invContent;
+
     }
 }

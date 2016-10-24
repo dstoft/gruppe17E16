@@ -21,16 +21,23 @@ public class Items {
     private String name; // The name of the item
     private String description; // The description of the item.
     private String destination; // The destination of the item - paused for now..
-    private boolean papers; // Does the user have papers on the item
-
-//Initializing Constructor (destination er lige gemt pt..)
-    public Items(int id, int weight, String name, String desciption, boolean papers) {
     private int xCoor;  // The x coordinate for the destination 
     private int yCoor;  // The y coordinate for the destination 
     private boolean papers; // Does the user have papers on the item
 
 //Initializing Constructor
-    public Items(int id, int weight, String desciption, int xCoor, int yCoor, boolean papers) {
+
+    /**
+     *
+     * @param id
+     * @param name
+     * @param weight
+     * @param desciption
+     * @param xCoor
+     * @param yCoor
+     * @param papers
+     */
+    public Items(int id, String name, int weight, String desciption, int xCoor, int yCoor, boolean papers) {
         this.id = id;
         this.weight = weight;
         this.name = name;
@@ -50,7 +57,7 @@ public class Items {
     
     public String getName() {        //Method for getting the description of the item.
 
-         return description;
+         return name;
     }
 
     public int xCoor() {        //Method for returning  destination x coordinate
