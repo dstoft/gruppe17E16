@@ -10,7 +10,7 @@ public class CommandWords
     private HashMap<String, CommandWord> validCommands; //Contains the commands known to the system, gotten by the enum class
 
     /**
-     * Constructor, it creates a HashMap, as defined above, and then it loops through each valid CommandWord (the enum to contain all of the recognized cmds)
+         * Constructor, it creates a HashMap, as defined above, and then it loops through each valid CommandWord (the enum to contain all of the recognized cmds)
      * It puts the recognized commands into the HashMap
      * The for each loop is used to put each command's object into the HashMap, so that the handle to object can always be retrieved
      */
