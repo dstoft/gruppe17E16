@@ -2,8 +2,17 @@
  *
  * @author Thilos
  */
-public class Items {
 
+public class Items {
+    
+   /**
+    * The class Items is based on that there is several different items that the player can get. 
+    * These Items must be delivered from one planet to another through a x/y coordinate.
+    * Each item has a unique number and description & the item has a weight.
+    * There is a limit of how much weight and how many items the player can have.
+    * The paperwork on each item can have an effect of the difficulty to deliver the pakage. 
+*/
+    
 //Initializing variables
     private int id; //Every item have an ID.
     private int weight; // The weight of the item.
