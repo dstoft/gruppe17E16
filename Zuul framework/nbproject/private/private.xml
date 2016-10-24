@@ -3,9 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/Users/Thilos/gruppe17E16/Zuul%20framework/src/Inventory.java</file>
             <file>file:/Users/Thilos/gruppe17E16/Zuul%20framework/src/Items.java</file>
             <file>file:/Users/Thilos/gruppe17E16/Zuul%20framework/src/zuul/framework/ZuulFramework.java</file>
+=======
+            <file>file:/home/emil/Documents/Studie/Projekt/gruppe17E16/Zuul%20framework/src/zuul/framework/ZuulFramework.java</file>
+            <file>file:/home/emil/Documents/Studie/Projekt/gruppe17E16/Zuul%20framework/src/worldofzuul/InvTest.java</file>
+            <file>file:/home/emil/Documents/Studie/Projekt/gruppe17E16/Zuul%20framework/src/worldofzuul/Inventory.java</file>
+>>>>>>> 514676311de23d313f8405ad8fc2304334141599
         </group>
     </open-files>
 </project-private>
