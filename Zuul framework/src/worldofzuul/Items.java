@@ -1,3 +1,5 @@
+package worldofzuul; // HUSK
+
 /**
  *
  * @author Thilos
@@ -7,22 +9,28 @@ public class Items {
 //Initializing variables
     private int id; //Every item have an ID.
     private int weight; // The weight of the item.
+    private String name; // The name of the item
     private String description; // The description of the item.
-    private String destination; // The destination of the item
+    private String destination; // The destination of the item - paused for now..
     private boolean papers; // Does the user have papers on the item
 
-//Initializing Constructor
-    public Items(int id, int weight, String desciption, String destination, boolean papers) {
+//Initializing Constructor (destination er lige gemt pt..)
+    public Items(int id, int weight, String name, String desciption, boolean papers) {
         this.id = id;
         this.weight = weight;
+        this.name = name;
         this.description = desciption;
-        this.destination = destination;
         this.papers = papers;
     }
 
 //Initializing Getters methods
     
     public String getDescription() {        //Method for getting the description of the item.
+
+         return description;
+    }
+    
+    public String getName() {        //Method for getting the description of the item.
 
          return description;
     }
