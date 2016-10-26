@@ -1,5 +1,6 @@
 package worldofzuul; // HUSK
 
+import java.io.FileReader;
 import java.util.ArrayList; //Imports the utility for the Arraylist
 
 /**
@@ -33,7 +34,7 @@ public class Inventory { // Initializing the class Inventory
      */
     private int sumItems;
     private int sumWeight;
-    private int uniqID = 0; //The IDs start from zero
+    private int uniqID;
 
     /**
      * Inventory constructs a inventory with the possibility to set maximum
@@ -112,14 +113,15 @@ public class Inventory { // Initializing the class Inventory
      */
     public int addItem(String name, int weight, String desciption, int xCoor, int yCoor, boolean papers) {
 
-        uniqID++; // This increases uniqID each time a item is added
         Items item = new Items(uniqID, name, weight, desciption, xCoor, yCoor, papers);
 
         inventoryList.add(item);
-        
-        sumItems ++;
 
-        return uniqID;
+        sumItems++; //This keeps track of the amount of items. Used for limiting. Increasses with 1 for each addItem()
+
+        uniqID++; // This increases uniqID after the item is added
+
+        return uniqID - 1; //Isn't there a smarter way to return the same value as that given to Items()
 
     }
 
@@ -132,9 +134,9 @@ public class Inventory { // Initializing the class Inventory
      * @param x int for witch item to remomve
      */
     public void remItem(int x) {
-        inventoryList.remove(x - 1);
-        
-        sumItems --;
+        inventoryList.remove(x);
+
+        sumItems--; //Decreases by one, to keep keeping track of the amount of items.
     }
 
     /**
@@ -147,15 +149,14 @@ public class Inventory { // Initializing the class Inventory
     public String showInventory() {
 
         boolean isEmpty = inventoryList.isEmpty();
-        String invContent = null;
+        String invContent;
 
         if (isEmpty) {
             invContent = "The inventory is empty";
         } else {
-            
+
             StringBuilder sb = new StringBuilder();
 
-            sb.append(invContent);
             int o = 0;
 
             for (Items i : inventoryList) {
@@ -163,14 +164,10 @@ public class Inventory { // Initializing the class Inventory
                 sb.append(", ");
                 sb.append(inventoryList.get(o).getDescription());
                 sb.append(", ");
-                sb.append(inventoryList.get(o).getWeight());
-                sb.append(", ");
                 sb.append(inventoryList.get(o).getPapers());
                 sb.append(". \n");
                 o++;
             }
-
-            sb.append("STOP");
 
             invContent = sb.toString();
 
@@ -179,6 +176,89 @@ public class Inventory { // Initializing the class Inventory
         return invContent;
 
     }
-    
-    //public String showInventory()
+
+    /**
+     * showInventory runs a for-each loop appending all the items listed in
+     * inventoryList in a string and returns it.
+     *
+     * @param i Int for choosing witch item to show, based on the uniqID
+     * returned from addItem.
+     * @param c Char for witch informations to return
+     * @return A string containing the requested value(s)
+     */
+    public String showInventory(int i, char c) {
+
+        boolean isEmpty = inventoryList.isEmpty();
+        String invContent;
+
+        if (isEmpty) {
+            invContent = "The inventory is empty";
+        } else if (i <= inventoryList.size()-1) {
+
+            StringBuilder sb = new StringBuilder();
+
+            switch (c) {
+
+                case 'a':
+
+                    sb.append(inventoryList.get(i).getName());
+                    sb.append(", ");
+                    sb.append(inventoryList.get(i).getDescription());
+                    sb.append(", ");
+                    sb.append(inventoryList.get(i).getPapers());
+                    sb.append(", ");
+                    sb.append(inventoryList.get(i).getWeight());
+                    sb.append(", ");
+                    sb.append(inventoryList.get(i).getXCoor());
+                    sb.append(", ");
+                    sb.append(inventoryList.get(i).getYCoor());
+                    sb.append(". \n");
+                    break;
+
+                case 'd':
+                    sb.append(inventoryList.get(i).getName());
+                    sb.append(", ");
+                    sb.append(inventoryList.get(i).getDescription());
+                    sb.append(". \n");
+
+                    break;
+
+                case 'p':
+                    sb.append(inventoryList.get(i).getName());
+                    sb.append(", ");
+                    sb.append(inventoryList.get(i).getPapers());
+                    sb.append(". \n");
+
+                    break;
+
+                case 'w':
+                    sb.append(inventoryList.get(i).getName());
+                    sb.append(", ");
+                    sb.append(inventoryList.get(i).getWeight());
+                    sb.append(". \n");
+
+                    break;
+
+                case 'c':
+                    sb.append(inventoryList.get(i).getXCoor());
+                    sb.append(", ");
+                    sb.append(inventoryList.get(i).getYCoor());
+                    sb.append(". \n");
+
+                    break;
+
+                default:
+                    break;
+            }
+            
+            invContent = sb.toString();
+
+        } else {
+            invContent = "You have choosen a number thats not in the inventory.";
+        }
+
+        return invContent;
+
+    }
+
 }
