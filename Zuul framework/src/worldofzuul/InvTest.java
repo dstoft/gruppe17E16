@@ -8,6 +8,7 @@
  */
 package worldofzuul;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -23,7 +24,10 @@ public class InvTest {
 
     Inventory inventory = new Inventory();
 
-    public void invTest() {
+    public void invTest() throws IOException {
+        
+        inventory.addItem("Ting", 100000, "Tung ting", 2, 3, true);
+        inventory.addItem("Endnu en ting", 100, "Knap så tung", 4, 1, false);
 
         while (running) {
 
@@ -49,7 +53,7 @@ public class InvTest {
         return choosed;
     }
 
-    public void invSwitch(int x) {
+    public void invSwitch(int x) throws IOException {
 
         switch (x) {
             case 1:
@@ -69,9 +73,19 @@ public class InvTest {
         }
     }
 
-    private void invShower() {
-
-        System.out.println(inventory.showInventory());
+    private void invShower() throws IOException {
+        
+        Scanner sc = new Scanner(System.in); // Constructing new scanner object
+        
+        System.out.println("Default or choose item to show (int)");
+        
+        int i = sc.nextInt();
+        
+        System.out.println("What information(s) do you want?");
+        
+        char c = (char) System.in.read();
+        
+        System.out.println(inventory.showInventory(i, c));
     }
     
     public void itemAdder() {
