@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author DanielToft
  */
-public class Player extends MovementCalculator {
+public class Player {
     //Defines variables
     private String _currentPlanet; //Skal være Planet istedet for String
     private String _inventory; //Skal være Inventory istedet for String
