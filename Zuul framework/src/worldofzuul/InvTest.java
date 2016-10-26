@@ -26,8 +26,8 @@ public class InvTest {
 
     public void invTest() throws IOException {
         
-        inventory.addItem("Ting", 100000, "Tung ting", 2, 3, true);
-        inventory.addItem("Endnu en ting", 100, "Knap så tung", 4, 1, false);
+        inventory.addItem(100000, "Tung ting", 2, 3);
+        inventory.addItem(100, "Knap så tung", 4, 1);
 
         while (running) {
 
@@ -93,8 +93,6 @@ public class InvTest {
         Scanner sc = new Scanner(System.in); // Constructing new scanner object
 
         System.out.println("Set parameters for new item: ");
-        System.out.println("    The name (string): ");
-        String name = sc.nextLine(); // Var for name
         System.out.println("    The description (string): ");
         String destript = sc.nextLine(); // Var for description
         System.out.println("    The weight of the item (int): ");
@@ -103,10 +101,8 @@ public class InvTest {
         int xCoor = sc.nextInt(); // Var for xCoor
         System.out.println("    The y coordinate for destination (int): ");
         int yCoor = sc.nextInt(); // Var for yCoor
-        System.out.println("    Are there papers with the item (boolean)? ");
-        boolean papers = sc.nextBoolean();// Var for wether there are papers or not
 
-        inventory.addItem(name, weight, destript, xCoor, yCoor, papers);
+        inventory.addItem(weight, destript, xCoor, yCoor);
     }
 
     private void itemRemover() {
