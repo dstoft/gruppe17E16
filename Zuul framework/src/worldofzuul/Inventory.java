@@ -1,7 +1,7 @@
 package worldofzuul; // HUSK
 
-import java.io.FileReader;
 import java.util.ArrayList; //Imports the utility for the Arraylist
+import java.util.UUID;
 
 /**
  * Inventory - thats all (skriv mere)
@@ -34,7 +34,7 @@ public class Inventory { // Initializing the class Inventory
      */
     private int sumItems;
     private int sumWeight;
-    private int uniqID;
+    private UUID uuid;
 
     /**
      * Inventory constructs a inventory with the possibility to set maximum
@@ -50,12 +50,14 @@ public class Inventory { // Initializing the class Inventory
 
         this.maxAllowedItems = maxItems;
         this.maxAllowedWeight = maxWeight;
+        uuid = UUID.randomUUID();
         this.inventoryList = new ArrayList<Items>();
     }
 
     // The version of Inventory without parameters given.
     public Inventory() {
 
+        uuid = UUID.randomUUID();
         this.inventoryList = new ArrayList<Items>();
     }
 
@@ -67,6 +69,7 @@ public class Inventory { // Initializing the class Inventory
     public int getMaxItems() {
 
         return maxAllowedItems;
+
     }
 
     /**
@@ -104,25 +107,30 @@ public class Inventory { // Initializing the class Inventory
      * better in regards of how to remove items again.
      *
      * @param weight Set the weight of the item (int).
-     * @param name Set the name of the item (String).
      * @param desciption Set a description (String).
-     * @param xCoor Sets the x coordinate for destination
-     * @param yCoor Sets the y coordinate for destination
-     * @param papers Set wether there are papers for the item (boolean).
-     * @return returns the unique ID number for the added item.
+     * @param RID Sets the ID of the recipients
+     * @return returns the UUID number for the added item.
      */
-    public int addItem(String name, int weight, String desciption, int xCoor, int yCoor, boolean papers) {
+        
+    public UUID addItem(int weight, String desciption, int RID) {
 
-        Items item = new Items(uniqID, name, weight, desciption, xCoor, yCoor, papers);
+        UUID uid = null;
+        sumWeight = sumWeight + weight;
 
-        inventoryList.add(item);
+        if (sumWeight < maxAllowedWeight && sumItems < maxAllowedItems) {
 
-        sumItems++; //This keeps track of the amount of items. Used for limiting. Increasses with 1 for each addItem()
+            
+            Items item = new Items(weight, desciption, RID);
 
-        uniqID++; // This increases uniqID after the item is added
+            inventoryList.add(item);
 
-        return uniqID - 1; //Isn't there a smarter way to return the same value as that given to Items()
+            sumItems++; //This keeps track of the amount of items. Used for limiting. Increasses with 1 for each addItem()
 
+            uid = item.getId();
+
+        }
+
+        return uid;
     }
 
     /**
@@ -131,11 +139,12 @@ public class Inventory { // Initializing the class Inventory
      *
      * TODO: better implementation in regards to uniqID and idendifying items.
      *
-     * @param x int for witch item to remomve
+     * @param x
      */
     public void remItem(int x) {
-        inventoryList.remove(x);
 
+        inventoryList.remove(x-1);
+        
         sumItems--; //Decreases by one, to keep keeping track of the amount of items.
     }
 
@@ -149,22 +158,19 @@ public class Inventory { // Initializing the class Inventory
     public String showInventory() {
 
         boolean isEmpty = inventoryList.isEmpty();
-        String invContent;
+        String invContent = null;
+        
 
-        if (isEmpty) {
-            invContent = "The inventory is empty";
-        } else {
+        if (!isEmpty) {
 
             StringBuilder sb = new StringBuilder();
 
             int o = 0;
 
             for (Items i : inventoryList) {
-                sb.append(inventoryList.get(o).getName());
-                sb.append(", ");
+                sb.append(o+1);
+                sb.append(": ");
                 sb.append(inventoryList.get(o).getDescription());
-                sb.append(", ");
-                sb.append(inventoryList.get(o).getPapers());
                 sb.append(". \n");
                 o++;
             }
@@ -177,87 +183,63 @@ public class Inventory { // Initializing the class Inventory
 
     }
 
-    /**
-     * showInventory runs a for-each loop appending all the items listed in
-     * inventoryList in a string and returns it.
-     *
-     * @param i Int for choosing witch item to show, based on the uniqID
-     * returned from addItem.
-     * @param c Char for witch informations to return
-     * @return A string containing the requested value(s)
-     */
-    public String showInventory(int i, char c) {
+    public UUID getUUIDFromInvPos(int x) {
 
         boolean isEmpty = inventoryList.isEmpty();
-        String invContent;
+        UUID itemUUID = null;
 
-        if (isEmpty) {
-            invContent = "The inventory is empty";
-        } else if (i <= inventoryList.size()-1) {
+        if (!isEmpty){
+            itemUUID = inventoryList.get(x-1).getId();
+        }
+        
+        return itemUUID;
 
-            StringBuilder sb = new StringBuilder();
+        }
+    
+    public String getItemInfo(int id) {
 
-            switch (c) {
+        String invContent = null;
+        int o = 0;
 
-                case 'a':
+        for (Items i : inventoryList) {
 
-                    sb.append(inventoryList.get(i).getName());
-                    sb.append(", ");
-                    sb.append(inventoryList.get(i).getDescription());
-                    sb.append(", ");
-                    sb.append(inventoryList.get(i).getPapers());
-                    sb.append(", ");
-                    sb.append(inventoryList.get(i).getWeight());
-                    sb.append(", ");
-                    sb.append(inventoryList.get(i).getXCoor());
-                    sb.append(", ");
-                    sb.append(inventoryList.get(i).getYCoor());
-                    sb.append(". \n");
-                    break;
+            int itemID = inventoryList.get(o).getRID();
 
-                case 'd':
-                    sb.append(inventoryList.get(i).getName());
-                    sb.append(", ");
-                    sb.append(inventoryList.get(i).getDescription());
-                    sb.append(". \n");
+            if (id == itemID) {
 
-                    break;
+                StringBuilder sb = new StringBuilder();
 
-                case 'p':
-                    sb.append(inventoryList.get(i).getName());
-                    sb.append(", ");
-                    sb.append(inventoryList.get(i).getPapers());
-                    sb.append(". \n");
+                sb.append(inventoryList.get(0).getDescription());
+                sb.append(";");
+                sb.append(inventoryList.get(0).getWeight());
+                sb.append(";");
+                sb.append(inventoryList.get(0).getRID());
 
-                    break;
+                invContent = sb.toString();
 
-                case 'w':
-                    sb.append(inventoryList.get(i).getName());
-                    sb.append(", ");
-                    sb.append(inventoryList.get(i).getWeight());
-                    sb.append(". \n");
-
-                    break;
-
-                case 'c':
-                    sb.append(inventoryList.get(i).getXCoor());
-                    sb.append(", ");
-                    sb.append(inventoryList.get(i).getYCoor());
-                    sb.append(". \n");
-
-                    break;
-
-                default:
-                    break;
             }
-            
-            invContent = sb.toString();
 
-        } else {
-            invContent = "You have choosen a number thats not in the inventory.";
+            o++;
+
         }
 
         return invContent;
+
+    }
+
+    public UUID setItemInfo(String info) {
+        String desc;
+        int weight;
+        int rid;
+        String[] infoArray;
+
+        infoArray = info.split(";");
+
+        desc = infoArray[0];
+        weight = Integer.parseInt(infoArray[1]);
+        rid = Integer.parseInt(infoArray[2]);
+
+        return addItem(weight, desc, rid);
 
     }
 
