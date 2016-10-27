@@ -24,10 +24,10 @@ public class InvTest {
 
     Inventory inventory = new Inventory();
 
-    public void invTest() throws IOException {
+    public void invTest() throws IOException, Exception {
         
-        inventory.addItem(100000, "Tung ting", 2, 3);
-        inventory.addItem(100, "Knap så tung", 4, 1);
+        inventory.addItem(5, "Tung ting", 2, 3);
+        inventory.addItem(2, "Knap så tung", 4, 1);
 
         while (running) {
 
@@ -53,7 +53,7 @@ public class InvTest {
         return choosed;
     }
 
-    public void invSwitch(int x) throws IOException {
+    public void invSwitch(int x) throws IOException, Exception {
 
         switch (x) {
             case 1:
@@ -88,7 +88,7 @@ public class InvTest {
         System.out.println(inventory.showInventory(i, c));
     }
     
-    public void itemAdder() {
+    public void itemAdder() throws Exception {
 
         Scanner sc = new Scanner(System.in); // Constructing new scanner object
 
@@ -102,14 +102,15 @@ public class InvTest {
         System.out.println("    The y coordinate for destination (int): ");
         int yCoor = sc.nextInt(); // Var for yCoor
 
-        inventory.addItem(weight, destript, xCoor, yCoor);
+        System.out.println(inventory.addItem(weight, destript, xCoor, yCoor));
+        
     }
 
     private void itemRemover() {
         System.out.println("Give unique ID number for item to be removed. ");
 
         Scanner sc = new Scanner(System.in); // Constructing new scanner object
-        int uniqueID = sc.nextInt(); // Var for choosed action
+        String uniqueID = sc.nextLine(); // Var for choosed action
 
         inventory.remItem(uniqueID);
     }
