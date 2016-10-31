@@ -2,51 +2,49 @@
 public class Planet {
 
     //Initializing variables
-    private final String description;
-    private final String name;
-    private final int xCoor;
-    private final int yCoor;
-    private final int numOfMoons;
-			
+    private String _description; //a short description of the planet
+    private String _name;        //name of the planet
+    private int _xCoor;          //x-coordinate of the planet
+    private int _yCoor;          //y-coordinate of the planet
+    private int _referenceNum;   //unique referencenumber for the planet
+    public static int referenceNumCounter = 1;    //static counter for creating new referencenumbers			
 
-    /** Creating list of planets.
-     * This list will contain all created instanses of the class Planet
-     * as per the constructor.
-     */
-    public static ArrayList<Planet> planets = new ArrayList<>();
     
     //Constructor
-    public Planet(String name, String description, int xCoor, int yCoor, 
-                  int numOfMoons, NPC npc) {	
+    public Planet(String name, String description, int xCoor, int yCoor, NPC npc) {	
             
-	this.name = name;
-	this.description = description;
-	this.xCoor = xCoor;
-	this.yCoor = yCoor;
-	this.numOfMoons = numOfMoons;
-	planets.add(this);	//Adding the created object to the list of planets
-    this.npc = npc;
+	this._name = name;
+	this._description = description;
+	this._xCoor = xCoor;
+	this._yCoor = yCoor;
+    this._npc = npc;
+    this._referenceNum = Planet.referenceNumCounter;
+    Planet.referenceNumCounter++;
     }
 
 
     //Getters
     public int getNumOfMoons() {
-    	return numOfMoons;
+    	return this._numOfMoons;
     }
 
     public String getName() {
-	return name;
+	   return this._name;
     }
 
     public String getDescription() {
-	return description;
+	   return this._description;
     } 
 
     public int getXCoor() {
-	return xCoor;
+	   return this._xCoor;
     }
 
     public int getYCoor() {
-	return yCoor;
+	   return this._yCoor;
+    }
+
+    public int getReferenceNum() {
+        return this._referenceNum;
     }
 }
