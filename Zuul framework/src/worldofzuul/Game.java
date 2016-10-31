@@ -1,6 +1,8 @@
 package worldofzuul;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * This class controls the flow of the game, it contains the while loop that
@@ -22,7 +24,7 @@ public class Game {
     private Parser parser;
     private Dashboard _dashboard;
     private Player _player;
-    ArrayList<Planet> _planets;
+    HashMap<UUID, Planet> _planets;
     private MovementCalculator _movementCalculator;
 
     /**
@@ -30,9 +32,12 @@ public class Game {
      * the rooms, sets current room and creates a new parser object
      */
     public Game() {
-
+        this._planets = new HashMap<UUID, Planet>();
+        UUID currentPlanetId = this.createPlanets();
+        
+        
         parser = new Parser(); //Creates a new object of the type Parser
-        this._player = new Player("wow", 100, 10);
+        this._player = new Player(currentPlanetId, 100, 10);
         this._dashboard = new Dashboard(); // Creates a new object of the type Dashboard. 
         this._movementCalculator = new MovementCalculator();
 
@@ -46,6 +51,8 @@ public class Game {
      */
     public void play() {
         printWelcome(); //Prints a welcome message
+        
+        System.out.println("NOTE: MAKE THE PLAYER GO TO THE FIRST PLANET WHEN PRESSING PLAY, THAT WAY THE FIRST CONVERSATION WILL START!");
 
         //Note, the while-loop below, is basically a do..while loop, because the value to check is set to false right before the loop itself
         //meaning, no matter what, the loop will run through at least once
@@ -93,15 +100,31 @@ public class Game {
 
         if (commandWord == CommandWord.HELP) { //If the command is help,
             printHelp(); //Call the method printHelp, to prrint help for the user
-        } /*
-        else if (commandWord == CommandWord.GO) { //If the command is go,
-            goRoom(command); //Calls the method goRoom, and pass the command object along
-        }
-         */ else if (commandWord == CommandWord.QUIT) { //If the command is quit,
+        } else if (commandWord == CommandWord.QUIT) { //If the command is quit,
             wantToQuit = quit(command); //Use the quit() method to figure out whether the player really wants to quit, save the returned value
-        } else {
-            this._player.processCommand(command);
+        } else if (commandWord == CommandWord.GO) { //If the command is go,
+            //Here comes a movementment method from the class MovementCalculator, which is extended!
+            UUID planetId = this.getPlanetIdFromListPos(command.getSecondWord());
+            if(planetId == null) { return false; }
+            this.travelToPlanet(this._player, planetId);
+            this.startConversation(planetId);
+        } else if (commandWord == CommandWord.DROP) {
+            this.dropItem(command.getSecondWord());
+        } else if (commandWord == CommandWord.PRINT) {
+            this.whichPrint(command.getSecondWord());
+        } else if (commandWord == CommandWord.SCAN) {
+            this.whichScan(command.getSecondWord());
         }
+        
+        /*
+        else if (commandWord == CommandWord.PICKUP) {
+            this.pickupFromNPC(command.getSecondWord());
+        } else if (commandWord == CommandWord.DROP){
+            this.drop(command.getSecondWord());
+        } else if (commandWord == CommandWord.DELIVER){
+            this.deliverToNPC();
+        }
+        */
 
         return wantToQuit; //Return the boolean, whether the player wants to quit or not
     }
@@ -139,7 +162,7 @@ public class Game {
 
     public ArrayList<Planet> getPossiblePlanets(int startX, int startY, int currentFuel) {
         ArrayList<Planet> reachablePlanets = new ArrayList<>();
-        for (Planet planet : this._planets) {
+        for (Planet planet : this._planets.values()) {
             if (this._movementCalculator.isReachable(startX, startY, planet.getXCoor(), planet.getYCoor(), currentFuel)) {
                 reachablePlanets.add(planet);
             }
@@ -147,16 +170,55 @@ public class Game {
         return reachablePlanets;
     }
 
+    public void whichScan(String secondWord) {
+        if(secondWord.equals("all")) {
+            this.printAllPlanets();
+        } else if(secondWord.equals("possible")) {
+            this.printPossiblePlanets();
+        } else if(this.printSpecPlanet(secondWord)) {
+            
+        } else {
+            this._dashboard.print("\"" + secondWord + "\" was not recognized, please use: "
+                    + "\n\t\"scan all\" for showing all planets and their ids,"
+                    + "\n\t\"scan possible\" for showing all planets and their ids you can travel to,"
+                    + "\n\t\"scan [id]\" for showing a specific id, the id can be found like: [id:planet name] when scanning possible or all planets.");
+        }
+    }
+    
     public void printAllPlanets() {
         this._dashboard.print("This is a list of all planets  ");
         String toPrint = "";
-        for (Planet planet : this._planets) {
-            toPrint += planet.getName() + ", ";
+        int currentNumber = 0;
+        for (Planet planet : this._planets.values()) {
+            currentNumber++;
+            toPrint += currentNumber + ": " + planet.getName() + ", ";
         }
         this._dashboard.print(toPrint);
 
     }
+    
+    public void printPossiblePlanets() {
+        String toPrint = "";
+        UUID currentPlanetId = this._player.getCurrentPlanetId();
+        ArrayList<Planet> planetList = this.getPossiblePlanets(this._planets.get(currentPlanetId).getXCoor(), this._planets.get(currentPlanetId).getYCoor(), this._player.getFuel());
+        for (Planet planet : planetList) {
+            toPrint += planet.getName() + ", ";
+        }
+        this._dashboard.print(toPrint);
+    }
 
+    public void whichPrint(String secondWord) {
+        if(secondWord.equals("stats")) {
+            this.printPlayerStats();
+        } else if(secondWord.equals("position")) {
+            this.printPlayerPosition();
+        } else if(secondWord.equals("inventory")) {
+            this.printInventory();
+        } else {
+            this._dashboard.print("The second word you wrote is not recognized, please only use: stats, position or invetory!");
+        }
+    }
+    
     public void printPlayerStats() {
         this._dashboard.print("this your remaining fuel level" + this._player.getFuel());
 
@@ -165,55 +227,87 @@ public class Game {
     }
 
     public void printPlayerPosition() {
-        this._dashboard.print("Current planet name:  " + this._player.getName());
-        this._dashboard.print("This is your current position: " + "(" + this._player.getCurrentPlanet().getXCoor() + "," + this._player.getCurrentPlanet().getYCoor() + ")");
-
+        UUID currentPlanetId = this._player.getCurrentPlanetId();
+        this._dashboard.print("Current planet name:  " + this._planets.get(currentPlanetId).getName());
+        this._dashboard.print("This is your current position: " + "(" + this._planets.get(currentPlanetId).getXCoor() + ";" + this._planets.get(currentPlanetId).getYCoor() + ")");
     }
 
-    public void printPossiblePlanets() {
-        planetList = this._movementCalculator.getPossiblePlanets(this._player.getCurrentPlanet().getXCoor(), this._player.getCurrentPlanet().getYCoor(), this._player.getFuel(), this._planets);
-        for (Planet planet : this.getPossiblePlanets(int  {
-            startX
-        }
-        , int startY, int currentFuel 
-            ) ) {
-          toPrint += planet.getName() + ",";
-
-        }
-        this._dashboard.print(planet.getName());
-    }
-
+    
 // we need a method, in the player class,  // getInventory String i player klassen skal laves (), showInventory. 
     public void printInventory() {
-
-        ArrayList<Inventory> myInventory = Inventory.inventory;
-        for (Inventory inventory : myInventory) {
-            this._dashboard.print(inventory.getName()); // hvad er metoden til at finde navnet på de ting vi har i inventory 
-        }
-
+        this._dashboard.print(this._player.getInventoryString());
+        this._dashboard.print("To drop an item, write \"drop [id]\", using the id from [id:item name].");
     }
 
     // a method where i print details about a specific planet 
     // HUSK AT SLETTE, skal vi have et input for bruger, kan vi lave en case hvor at jeg matcher om det brugeren har indtastet svare til et planet navn, hvor efter jeg printer hvad der er information om planeten. Eller hvordan skal denne laves ? ? ? ?   Vi laver et for each loop, burger vi istedet da, vi ikke ved hvor langt vores case skal være, eller hvis vi i fremtiden har tænkt os at gøre det. 
     // hvis brugen taster et navn forkert, skal vi her printe " Sorry didn’t recognize that planet name, make sure to use only small characters,  do you want to see a list of all planets ?  Or a list of the planet that is reachanble for you"  // here we can refer to commands to see allPlanets or Reachable planets, tell the user what the command is perhaps ? ? ? 
     // Boolean, om vi foundWord, hvis ja display  print information til planenten ? Det skal jeg have fat i fra planet folkende. NEJ  så følg hvad jeg  har skrevet i notaten i det overstående, hvis 
-    public void printSpecPlanet(String secondWord) {
+    public boolean printSpecPlanet(String secondWord) {
+        //Change it to int, and then find that number in the planets list!
+        //Remember to add "try catch"!
+        UUID id = this.getPlanetIdFromListPos(secondWord);
+        if(id == null) {
+            return false;
+        } else {
+            this._planets.get(id).getDescription();
+            return true;
+        }
+    }
+    
+    
+    public void travelToPlanet(Player characterToTravel, UUID planetId) {
+        characterToTravel.setCurrentPlanet(planetId);
+    }
+    
+    public void startConversation(UUID planetId) {
+        // Starting conversation!
+    }
+    
+    
+    public UUID getPlanetIdFromListPos(String secondWord) {
+        int planetNumber = -1;
+        try {
+            planetNumber = Integer.parseInt(secondWord);
+        } catch (Exception e) {
+            this._dashboard.print(e.toString());
+        }
         
-        // her skal vi huske at taste kommando til at kunne se all planets og possible planets !!
-
-        for (Planet planet : this._planets) {
-           if(secondWord.equals(planet.getName())) {
-               this._dashboard.print(planet.getDescription()); 
-           } else {
-                this._dashboard.print("Sorry  "+ secondWord + " was not recognized, make sure you are typing it right.");  // we could write :" Sorry + was not reconized make sure
-                this._dashboard.print("If you wish to see a list of all planets press******* HALLLLÅÅÅ HER SKAL VI TASTE KOMMANDO TIL AT SE ALL PLANETS !?!?!??!!?!?!?!??!?! ") ; 
-                this._dashboard.print(" If you wish to see a list of possible planets press ********* HALLLLÅÅÅ HER SKAL VI TASTE KOMMANDO TIL AT SE POSSIBLE PLANETS !?!?!??!!?!?!?!??!?")
-           }
+        if(planetNumber < this._planets.size()) {
+            int i = 0;
+            for(Planet planet : this._planets.values()) {
+                i++;
+                if(i == planetNumber) {
+                    return planet.getId();
+                }
+            }
+                
+        }
+        
+        //Print the valid planet names!
+        return null;
+    }
     
-    
-    
-    
+    public void dropItem(String itemName) {
+        int itemNumber = -1;
+        try {
+            itemNumber = Integer.parseInt(itemName);
+        } catch(Exception e) {
+            this._dashboard.print(e.toString());
+        }
+        
+        if(!this._player.dropItem(itemNumber)) {
+            this._dashboard.print("Invalid item id, \"" + itemName + "\" was not recognized, use \"print inventory\" to show your items and their ids!");
         }
     }
 
+    
+    public UUID createPlanets() {
+        UUID curUUID = UUID.randomUUID();
+        this._planets.put(curUUID, new Planet("hej", "wow!", 1, 1, curUUID));
+        
+        UUID starterUUID = UUID.randomUUID();
+        this._planets.put(starterUUID, new Planet("Starter!", "starterdesc!", 20, 20, starterUUID));
+        return starterUUID;
+    }
 }

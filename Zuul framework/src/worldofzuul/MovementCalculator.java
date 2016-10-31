@@ -33,7 +33,7 @@ public class MovementCalculator {
     public ArrayList<Planet> getPossiblePlanets(int startX, int startY, int currentFuel, ArrayList<Planet> allPlanets) {
         ArrayList<Planet> reachablePlanets = new ArrayList<>();
         for(Planet planet : allPlanets) {
-            if(this.isReachable(startX, startY, planet.getX(), planet.getY(), currentFuel)) {
+            if(this.isReachable(startX, startY, planet.getXCoor(), planet.getYCoor(), currentFuel)) {
                 reachablePlanets.add(planet);
             }
         }

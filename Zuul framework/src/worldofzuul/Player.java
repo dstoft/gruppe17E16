@@ -7,6 +7,7 @@ package worldofzuul;
 
 import com.sun.org.apache.xerces.internal.xs.PSVIProvider;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  *
@@ -14,26 +15,25 @@ import java.util.ArrayList;
  */
 public class Player {
     //Defines variables
-    private String _currentPlanet; //Skal være Planet istedet for String
-    private String _inventory; //Skal være Inventory istedet for String
+    private UUID _currentPlanetId; //Skal være Planet istedet for String
+    private Inventory _inventory; //Skal være Inventory istedet for String
     private Dashboard _dashboard;
     private int _maxFuel;
     private int _fuel;
     private int _reputation; //Maximum is 10
     
-    public Player(String currentPlanet, int maxFuel, int startingReputation) {
-        this._currentPlanet = currentPlanet;
+    public Player(UUID currentPlanet, int maxFuel, int startingReputation) {
+        this._currentPlanetId = currentPlanet;
         this._maxFuel = maxFuel;
         this._fuel = maxFuel;
         this._reputation = startingReputation;
         
-        this._inventory = new String(); //Inventory istedet for String
-        this._dashboard = new Dashboard();
+        this._inventory = new Inventory(); //Inventory istedet for String
     }
     
     // ***** SETTERS *****
-    public void setCurrentPlanet(String planet) {
-        this._currentPlanet = planet;
+    public void setCurrentPlanet(UUID planetId) {
+        this._currentPlanetId = planetId;
         this.setFuel(this._maxFuel);
     }
     public void setFuel(int fuel) {
@@ -49,10 +49,10 @@ public class Player {
     // ***** SETTERS END *****
     
     // ***** GETTERS *****
-    public String getCurrentPlanet() {
-        return this._currentPlanet;
+    public UUID getCurrentPlanetId() {
+        return this._currentPlanetId;
     }
-    public String getInventory() {
+    public Inventory getInventory() {
         return this._inventory;
     }
     public Dashboard getDashboard() {
@@ -69,81 +69,20 @@ public class Player {
     }
     // ***** GETTERS END *****
     
-    public void pickup(String itemName) { //Skal dette være en string, som i det så er navnet?
-        ArrayList<Item> possibleItems = this._currentPlanet.getInventory().getAllItems();
-        if(possibleItems.size() > 0) {
-            for(Item item : possibleItems) {
-                if(itemName.equals(item.getName())) {
-                    this._currentPlanet.getInventory().drop(item);
-                    this._inventory.add(item);
-                    System.out.println("You succesfully picked up " + item.getName() + "!");
-                    return;
-                }
-            }
-            System.out.println("Your item name does not exist on this planet!");
-            //Possibly print possible items that exists on this planet
+    public boolean dropItem(int itemName) {
+        UUID tempUUID = this._inventory.getUUIDFromInventoryPos((itemName-1));
+        if(tempUUID == null) {
+            return false;
         } else {
-            System.out.println("There is no items to pick up!");
+            this._inventory.remItem(tempUUID);
+            return true;
         }
     }
     
-    public void drop(String itemName) {
-        ArrayList<Item> possibleItems = this._inventory.getAllItems();
-        if(possibleItems.size() > 0) {
-            for(Item item : possibleItems) {
-                if(itemName.equals(item.getName())) {
-                    this._currentPlanet.getInventory().add(item);
-                    this._reputation -= item.getReputation(); // Watch out! The item may have negative numbers, which would result in an addition instead!
-                    this._inventory.drop(item);
-                    System.out.println("You succesfully dropped " + item.getName() + "!");
-                    return;
-                }
-            }
-            System.out.println("The item name does not exist in your inventory!");
-            //Possibly print possible items that exists on this planet
-        } else {
-            System.out.println("You have no items to drop!");
-        }
-    }
-    
-    public void deliver() {
-        
-        int x = this._currentPlanet.getX();
-        int y = this._currentPlanet.getY();
-        
-        ArrayList<Item> possibleItems = this._inventory.getPossibleDeliverItems(x, y);
-        if(possibleItems.size() > 0) {
-            for(Item item : possibleItems) {
-                System.out.println("You delivered " + item.getName() + " here!");
-                this._inventory.drop(item);
-            }
-        } else {
-            System.out.println("You have no items that can be delivered here!");
-            return;
-        }
-        
+    public String getInventoryString() {
+        return this._inventory.showInventory();
     }
     
     
-    public void processCommand(Command command) {
-        
-        
-        CommandWord commandWord = command.getCommandWord(); //Returns an object held by the command object
-
-        if (commandWord == CommandWord.GO) { //If the command is go,
-            //Here comes a movementment method from the class MovementCalculator, which is extended!
-        }
-        else if (commandWord == CommandWord.PICKUP) {
-            this.pickup(command.getSecondWord());
-        }
-        else if (commandWord == CommandWord.DROP){
-            this.drop(command.getSecondWord());
-        }
-        else if (commandWord == CommandWord.DELIVER){
-            this.deliver();
-        }
-        
-        
-    }
     
 }
