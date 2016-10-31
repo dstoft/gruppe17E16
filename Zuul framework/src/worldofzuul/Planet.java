@@ -2,6 +2,8 @@
 public class Planet {
 
     //Initializing variables
+    private UUID _npcId;
+    private Moon _moon;
     private String _description; //a short description of the planet
     private String _name;        //name of the planet
     private int _xCoor;          //x-coordinate of the planet
@@ -11,21 +13,21 @@ public class Planet {
 
     
     //Constructor
-    public Planet(String name, String description, int xCoor, int yCoor, NPC npc) {	
-            
+    public Planet(String name, String description, int xCoor, int yCoor, UUID npcId, Moon moon) {	
+    this._moon = moon;       
 	this._name = name;
 	this._description = description;
 	this._xCoor = xCoor;
 	this._yCoor = yCoor;
-    this._npc = npc;
+    this._npcId = npcId;
     this._referenceNum = Planet.referenceNumCounter;
     Planet.referenceNumCounter++;
     }
 
 
     //Getters
-    public int getNumOfMoons() {
-    	return this._numOfMoons;
+    public boolean hasMoon() {
+        this._moon != null;
     }
 
     public String getName() {
