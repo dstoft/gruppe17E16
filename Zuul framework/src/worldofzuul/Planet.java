@@ -17,6 +17,9 @@ public class Planet {
     private int _x;
     private int _y;
     private UUID _UUID;
+    private int _referenceNumber;
+    
+    public static int referenceCounter = 1;
     
     public Planet(String name, String description, int x, int y, UUID UUID) {
         this._name = name;
@@ -24,6 +27,8 @@ public class Planet {
         this._x = x;
         this._y = y;
         this._UUID = UUID;
+        this._referenceNumber = Planet.referenceCounter;
+        Planet.referenceCounter++;
     }
     
     public String getName() {
@@ -44,5 +49,9 @@ public class Planet {
     
     public UUID getId() {
         return this._UUID;
+    }
+    
+    public int getReferenceNumber() {
+        return this._referenceNumber;
     }
 }

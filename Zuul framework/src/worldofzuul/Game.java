@@ -25,6 +25,7 @@ public class Game {
     private Dashboard _dashboard;
     private Player _player;
     HashMap<UUID, Planet> _planets;
+    //HashMap<UUID, NPC> _npcs;
     private MovementCalculator _movementCalculator;
 
     /**
@@ -42,6 +43,7 @@ public class Game {
         this._movementCalculator = new MovementCalculator();
 
         //createPlanets(); 
+        //createNpcs();
     }
 
     /**
@@ -104,7 +106,7 @@ public class Game {
             wantToQuit = quit(command); //Use the quit() method to figure out whether the player really wants to quit, save the returned value
         } else if (commandWord == CommandWord.GO) { //If the command is go,
             //Here comes a movementment method from the class MovementCalculator, which is extended!
-            UUID planetId = this.getPlanetIdFromListPos(command.getSecondWord());
+            UUID planetId = this.getPlanetIdFromReferenceNumber(command.getSecondWord());
             if(planetId == null) { return false; }
             this.travelToPlanet(this._player, planetId);
             this.startConversation(planetId);
@@ -114,18 +116,11 @@ public class Game {
             this.whichPrint(command.getSecondWord());
         } else if (commandWord == CommandWord.SCAN) {
             this.whichScan(command.getSecondWord());
+        } else if (commandWord == CommandWord.SAY) {
+            this.processAnswer(command.getSecondWord());
         }
-        
-        /*
-        else if (commandWord == CommandWord.PICKUP) {
-            this.pickupFromNPC(command.getSecondWord());
-        } else if (commandWord == CommandWord.DROP){
-            this.drop(command.getSecondWord());
-        } else if (commandWord == CommandWord.DELIVER){
-            this.deliverToNPC();
-        }
-        */
 
+        this._dashboard.print();
         return wantToQuit; //Return the boolean, whether the player wants to quit or not
     }
 
@@ -171,6 +166,12 @@ public class Game {
     }
 
     public void whichScan(String secondWord) {
+        if(secondWord == null) {
+            this._dashboard.print("The second word in the command was not recognized, please use one of the following second words (like \"scan all\"):");
+            this._dashboard.print("\"all\", for printing all planets\n\"possible\", for printing all planets you can reach\n[planet id], for getting the description of a specific planet");
+            return;
+        }
+        
         if(secondWord.equals("all")) {
             this.printAllPlanets();
         } else if(secondWord.equals("possible")) {
@@ -186,12 +187,10 @@ public class Game {
     }
     
     public void printAllPlanets() {
-        this._dashboard.print("This is a list of all planets  ");
+        this._dashboard.print("This is a list of all planets and their ids:");
         String toPrint = "";
-        int currentNumber = 0;
         for (Planet planet : this._planets.values()) {
-            currentNumber++;
-            toPrint += currentNumber + ": " + planet.getName() + ", ";
+            toPrint += planet.getReferenceNumber() + ": " + planet.getName() + ", ";
         }
         this._dashboard.print(toPrint);
 
@@ -202,12 +201,19 @@ public class Game {
         UUID currentPlanetId = this._player.getCurrentPlanetId();
         ArrayList<Planet> planetList = this.getPossiblePlanets(this._planets.get(currentPlanetId).getXCoor(), this._planets.get(currentPlanetId).getYCoor(), this._player.getFuel());
         for (Planet planet : planetList) {
-            toPrint += planet.getName() + ", ";
+            if(this._player.getCurrentPlanetId() == planet.getId()) { continue; }
+            toPrint += planet.getReferenceNumber() + ": " + planet.getName() + ", ";
         }
         this._dashboard.print(toPrint);
     }
 
     public void whichPrint(String secondWord) {
+        if(secondWord == null) {
+            this._dashboard.print("The second word in the command was not recognized, please use one of the following second words (like \"print stats\"):");
+            this._dashboard.print("\"stats\", for viewing your stats\n\"position\", for viewing your position\n\"inventory\", for getting information about your inventory");
+            return;
+        }
+        
         if(secondWord.equals("stats")) {
             this.printPlayerStats();
         } else if(secondWord.equals("position")) {
@@ -246,7 +252,7 @@ public class Game {
     public boolean printSpecPlanet(String secondWord) {
         //Change it to int, and then find that number in the planets list!
         //Remember to add "try catch"!
-        UUID id = this.getPlanetIdFromListPos(secondWord);
+        UUID id = this.getPlanetIdFromReferenceNumber(secondWord);
         if(id == null) {
             return false;
         } else {
@@ -264,8 +270,33 @@ public class Game {
         // Starting conversation!
     }
     
+    public void processAnswer(String answer) {
+        /*this._conversation.processAnswer(answer);
+        if(this._conversation.hasAnswer()) {
+            this._dashboard.print(this._conversation.getText());
+            this.processExecution(this._conversation.getExecutionLine());
+            this._conversation.setNextQuestion(this._getNextLineNumber());
+            this._dashboard.print(this._conversation.getQText());
+        } else {
+            this._dashboard.print("Sorry, I don't know how to respond to that answer.");
+            this._dashboard.print(this._conversation.getAnswers());
+        }*/
+    }
     
-    public UUID getPlanetIdFromListPos(String secondWord) {
+    public void processExecution(String executionLine) {
+        /*String[] allExecutions;
+        allExecutions = executionLine.split(",");
+        for(String eachExecution : allExecutions) {
+            String[] executionSplit = eachExecution.split(":");
+            if(executionSplit[0].equals("deliver")) {
+                UUID npcId = this._planets.get(this._player.getCurrentPlanetId()).getNpcId();
+                UUID deliverItemId = this._npcs.get(UUID).getDeliverItemId();
+                
+            }
+        }*/
+    }
+    
+    public UUID getPlanetIdFromReferenceNumber(String secondWord) {
         int planetNumber = -1;
         try {
             planetNumber = Integer.parseInt(secondWord);
@@ -273,15 +304,10 @@ public class Game {
             this._dashboard.print(e.toString());
         }
         
-        if(planetNumber < this._planets.size()) {
-            int i = 0;
-            for(Planet planet : this._planets.values()) {
-                i++;
-                if(i == planetNumber) {
-                    return planet.getId();
-                }
+        for(Planet planet : this._planets.values()) {
+            if(planetNumber == planet.getReferenceNumber()) {
+                return planet.getId();
             }
-                
         }
         
         //Print the valid planet names!
@@ -289,6 +315,11 @@ public class Game {
     }
     
     public void dropItem(String itemName) {
+        if(itemName == null) {
+            this._dashboard.print("The second word in the command was not recognized, please use a number as the second word (like \"drop 1\")");
+            return;
+        }
+        
         int itemNumber = -1;
         try {
             itemNumber = Integer.parseInt(itemName);
@@ -309,5 +340,9 @@ public class Game {
         UUID starterUUID = UUID.randomUUID();
         this._planets.put(starterUUID, new Planet("Starter!", "starterdesc!", 20, 20, starterUUID));
         return starterUUID;
+    }
+    
+    public void createNpcs() {
+        //A method for creating NPCs
     }
 }
