@@ -22,8 +22,7 @@ public class Items {
     private UUID id; //Every item have an ID
     private int weight; // The weight of the item
     private String description; // The description of the item
-    private int xCoor;  // The x coordinate for the destination 
-    private int yCoor;  // The y coordinate for the destination
+    private int rid;  // The RID for the destination
     //private boolean papers; // Does the user have papers on the item
 
 //Initializing Constructor
@@ -32,15 +31,13 @@ public class Items {
      *
      * @param weight
      * @param desciption
-     * @param xCoor
-     * @param yCoor
+     * @param RID
      */
-    public Items(int weight, String desciption, int xCoor, int yCoor) {
+    public Items(int weight, String desciption, int rid) {
         this.id = UUID.randomUUID();
         this.weight = weight;
         this.description = desciption;
-        this.xCoor = xCoor;
-        this.yCoor = yCoor;
+        this.rid = rid;
         //this.papers = papers;
         
     }
@@ -52,14 +49,9 @@ public class Items {
          return description;
     }
 
-    public int getXCoor() {        //Method for returning  destination x coordinate
+    public int getRID() {        //Method for returning  destination RID
 
-         return xCoor;
-    }
-    
-     public int getYCoor() {        //Method for returning  destination y coordinate
-
-         return yCoor;
+         return rid;
     }
 
     public int getWeight() {         //Method for getting the weight of the item.
