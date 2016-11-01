@@ -74,7 +74,7 @@ public class Player {
         if(tempUUID == null) {
             return false;
         } else {
-            //this._inventory.remItem(tempUUID);
+            this._inventory.remItem(tempUUID);
             return true;
         }
     }

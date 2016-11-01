@@ -27,6 +27,7 @@ public class Game {
     HashMap<UUID, Planet> _planets;
     //HashMap<UUID, NPC> _npcs;
     private MovementCalculator _movementCalculator;
+    private Conversation _currentConversation;
 
     /**
      * Constructor for the class Game, using the method createRooms() it creates
@@ -271,29 +272,33 @@ public class Game {
     }
     
     public void processAnswer(String answer) {
-        /*this._conversation.processAnswer(answer);
-        if(this._conversation.hasAnswer()) {
-            this._dashboard.print(this._conversation.getText());
-            this.processExecution(this._conversation.getExecutionLine());
-            this._conversation.setNextQuestion(this._getNextLineNumber());
-            this._dashboard.print(this._conversation.getQText());
+        if(this._currentConversation == null) {
+            this._dashboard.print("Sorry, you can't use say when you have no ongoing conversation!");
+        }
+        
+        this._currentConversation.processAnswer(answer);
+        if(this._currentConversation.hasCurrentAnswer()) {
+            this._dashboard.print(this._currentConversation.getReactText());
+            this.processExecution(this._currentConversation.getExecutionLine());
+            this._currentConversation.setNextQuestion(this._currentConversation.getNextLineNumber());
+            this._dashboard.print(this._currentConversation.getQText());
         } else {
             this._dashboard.print("Sorry, I don't know how to respond to that answer.");
-            this._dashboard.print(this._conversation.getAnswers());
-        }*/
+            this._dashboard.print(this._currentConversation.getPossibleAnswers());
+        }
     }
     
     public void processExecution(String executionLine) {
-        /*String[] allExecutions;
+        String[] allExecutions;
         allExecutions = executionLine.split(",");
         for(String eachExecution : allExecutions) {
             String[] executionSplit = eachExecution.split(":");
             if(executionSplit[0].equals("deliver")) {
                 UUID npcId = this._planets.get(this._player.getCurrentPlanetId()).getNpcId();
-                UUID deliverItemId = this._npcs.get(UUID).getDeliverItemId();
+                //UUID deliverItemId = this._npcs.get(UUID).getDeliverItemId();
                 
             }
-        }*/
+        }
     }
     
     public UUID getPlanetIdFromReferenceNumber(String secondWord) {

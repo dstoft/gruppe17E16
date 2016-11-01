@@ -53,8 +53,8 @@ public class Conversation{
         
     }
 
-    public void printPossibleAnswers() {
-        this._currentQuestion.getPossibleAnswers();
+    public String getPossibleAnswers() {
+       return this._currentQuestion.getPossibleAnswers();
     }
 
     public void setNextQuestion(int lineNumber) {
@@ -69,8 +69,8 @@ public class Conversation{
         return this._conversationId;
     }
     
-    public void printCurrentQuestion() {
-        System.out.println(this._currentQuestion.getQText());
+    public String getQText() {
+        return this._currentQuestion.getQText();
     }
 
 	
