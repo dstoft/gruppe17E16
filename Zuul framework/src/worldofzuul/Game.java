@@ -25,7 +25,7 @@ public class Game {
     private Dashboard _dashboard;
     private Player _player;
     HashMap<UUID, Planet> _planets;
-    //HashMap<UUID, NPC> _npcs;
+    HashMap<UUID, NPC> _npcs;
     private MovementCalculator _movementCalculator;
     private Conversation _currentConversation;
 
@@ -276,11 +276,18 @@ public class Game {
             this._dashboard.print("Sorry, you can't use say when you have no ongoing conversation!");
         }
         
+        UUID npcId = this._planets.get(this._player.getCurrentPlanetId()).getNpcId();
+        if(npcId != this._currentConversation.getNpcId()) {
+            this._dashboard.print("Sorry, you're no longer at the same position as the NPC and can therefore not talk with him!");
+            this._currentConversation = null;
+        }
+        
         this._currentConversation.processAnswer(answer);
         if(this._currentConversation.hasCurrentAnswer()) {
             this._dashboard.print(this._currentConversation.getReactText());
-            this.processExecution(this._currentConversation.getExecutionLine());
-            this._currentConversation.setNextQuestion(this._currentConversation.getNextLineNumber());
+            if(this.processExecution(this._currentConversation.getExecutionLine(), npcId)) {
+                this._currentConversation.setNextQuestion(this._currentConversation.getNextLineNumber());
+            }
             this._dashboard.print(this._currentConversation.getQText());
         } else {
             this._dashboard.print("Sorry, I don't know how to respond to that answer.");
@@ -288,17 +295,32 @@ public class Game {
         }
     }
     
-    public void processExecution(String executionLine) {
+    public boolean processExecution(String executionLine, UUID npcId) {
+        boolean changedQuestion = false;
         String[] allExecutions;
         allExecutions = executionLine.split(",");
         for(String eachExecution : allExecutions) {
             String[] executionSplit = eachExecution.split(":");
-            if(executionSplit[0].equals("deliver")) {
-                UUID npcId = this._planets.get(this._player.getCurrentPlanetId()).getNpcId();
-                //UUID deliverItemId = this._npcs.get(UUID).getDeliverItemId();
+            if(executionSplit[0].equals("deliverPackage")) {
+                int[] rids = this._player.getInventoryRids();
+                for(int i = 0; i < rids.length; i++) {
+                    if(rids[i] == this._npcs.get(npcId).getRid()) {
+                        //Is that all that should happen when delivering a package?
+                        this._player.dropItem(i);
+                    } else {
+                        //The player does not have the package, how did it get so far then?
+                    }
+                }
+            } else if(executionSplit[0].equals("pickupPackage")) {
+                
+            } else if(executionSplit[0].equals("nextConvoId")) {
+                
+            } else if(executionSplit[0].equals("checkPackage")) {
                 
             }
         }
+        
+        return changedQuestion;
     }
     
     public UUID getPlanetIdFromReferenceNumber(String secondWord) {

@@ -252,4 +252,15 @@ public class Inventory { // Initializing the class Inventory
 
     }
 
+    
+    //Added by Dstoft
+    public int[] getItemRids() {
+        int[] returnArray = new int[this.maxAllowedItems];
+        int count = 0;
+        for(Items item : this.inventoryList) {
+            returnArray[count] = item.getRID();
+            count++;
+        }
+        return returnArray;
+    }
 }

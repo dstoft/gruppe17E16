@@ -3,11 +3,13 @@ package worldofzuul;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Conversation{
 
     private int _currentLineNumber;
     private int _conversationId;
+    private UUID _npcId;
     private Question _currentQuestion;
     private ArrayList<Question> _questionList;
     
@@ -67,6 +69,10 @@ public class Conversation{
     
     public int getConversationId() {
         return this._conversationId;
+    }
+    
+    public UUID getNpcId() {
+        return this._npcId;
     }
     
     public String getQText() {

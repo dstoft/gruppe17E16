@@ -13,48 +13,55 @@ import java.util.UUID;
  */
 public class NPC {
 
-    String name;
-    UUID uuid = UUID.randomUUID();
-    int rid;
+    private String _name;
+    private String _description;
+    private UUID _id;
+    private int _rid;
+    Inventory _inventory;
+
+    public void npc(String name, String description, int rid, UUID id) {
+        this._name = name;
+        this._description = description;
+        this._rid = rid;
+        this._id = id;
+        this._inventory = new Inventory();
+    }
+
     
 
-    public void npc(String name, int rid) {
-        this.name = name;
-        this.rid = rid;
+    public String getInventoryString() {
+        return this._inventory.showInventory();
+    }
+
+    public UUID createItem(String name, int weight, int rid) {
+
+        return this._inventory.addItem(weight, name, rid);
+    }
+
+    public void removeItem(UUID itemId) {
+
+        this._inventory.remItem(itemId);
+
+    }
+
+    public UUID getId() {
+        return this._id;
+    }
+
+    public String getItemInfo() {
+        return this._inventory.getItemInfo(this._rid);
     }
     
-    Inventory inventory = new Inventory();
-    
-    public String getNPCInv(){
-        return inventory.showInventory();
+    public UUID setItemInfo(String info) {
+        return this._inventory.setItemInfo(info);
     }
     
-    public UUID CreateItem (String name, int weight, int rid) {
-    
-        return inventory.addItem(weight, name, rid);
-}
-    
-    public void RemoveItem (int x){
-    
-    inventory.remItem(x);
-          
-    }
-            
-    public  UUID GetUUID (int x) {
-    
-        return inventory.getUUIDFromInvPos(x);
-       
+    public void setReceiverRid(int rid) {
+        //this._
     }
     
-   public String getItemInfo(){
-   
-   return inventory.getItemInfo(rid); 
-   } 
-   
-   
-   public UUID setItemInfo(String info) {
-   
-   return inventory.setItemInfo(info);
-}
-    
+    public int getRid() {
+        return this._rid;
+    }
+
 }

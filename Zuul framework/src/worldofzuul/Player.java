@@ -83,6 +83,13 @@ public class Player {
         return this._inventory.showInventory();
     }
     
+    public int[] getInventoryRids() {
+        return this._inventory.getItemRids();
+    }
+    
+    public void setItemInfo(String info) {
+        this._inventory.setItemInfo(info);
+    }
     
     
 }
