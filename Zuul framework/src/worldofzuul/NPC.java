@@ -16,6 +16,7 @@ public class NPC {
     String name;
     UUID uuid = UUID.randomUUID();
     int rid;
+    
 
     public void npc(String name, int rid) {
         this.name = name;
@@ -28,6 +29,32 @@ public class NPC {
         return inventory.showInventory();
     }
     
+    public UUID CreateItem (String name, int weight, int rid) {
     
-
+        return inventory.addItem(weight, name, rid);
+}
+    
+    public void RemoveItem (int x){
+    
+    inventory.remItem(x);
+          
+    }
+            
+    public  UUID GetUUID (int x) {
+    
+        return inventory.getUUIDFromInvPos(x);
+       
+    }
+    
+   public String getItemInfo(){
+   
+   return inventory.getItemInfo(rid); 
+   } 
+   
+   
+   public UUID setItemInfo(String info) {
+   
+   return inventory.setItemInfo(info);
+}
+    
 }
