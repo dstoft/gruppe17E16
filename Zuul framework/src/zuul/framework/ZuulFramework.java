@@ -5,7 +5,7 @@
  */
 package zuul.framework;
 
-import worldofzuul.Game;
+import worldofzuul.InvTest;
 
 /**
  *
@@ -17,8 +17,12 @@ public class ZuulFramework {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Game game = new Game();
-        game.play();
+        
+        InvTest invTest = new InvTest();
+        invTest.invTest();
+        
+        //Game game = new Game();
+        //game.play();
     }
     
 }
