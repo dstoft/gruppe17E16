@@ -190,7 +190,7 @@ public class Game {
         this._dashboard.print("This is a list of all planets and their ids:");
         String toPrint = "";
         for (Planet planet : this._planets.values()) {
-            toPrint += planet.getReferenceNumber() + ": " + planet.getName() + ", ";
+            toPrint += planet.getReferenceNum() + ": " + planet.getName() + ", ";
         }
         this._dashboard.print(toPrint);
 
@@ -202,7 +202,7 @@ public class Game {
         ArrayList<Planet> planetList = this.getPossiblePlanets(this._planets.get(currentPlanetId).getXCoor(), this._planets.get(currentPlanetId).getYCoor(), this._player.getFuel());
         for (Planet planet : planetList) {
             if(this._player.getCurrentPlanetId() == planet.getId()) { continue; }
-            toPrint += planet.getReferenceNumber() + ": " + planet.getName() + ", ";
+            toPrint += planet.getReferenceNum() + ": " + planet.getName() + ", ";
         }
         this._dashboard.print(toPrint);
     }
@@ -305,7 +305,7 @@ public class Game {
         }
         
         for(Planet planet : this._planets.values()) {
-            if(planetNumber == planet.getReferenceNumber()) {
+            if(planetNumber == planet.getReferenceNum()) {
                 return planet.getId();
             }
         }
