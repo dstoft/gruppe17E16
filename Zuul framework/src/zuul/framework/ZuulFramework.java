@@ -5,7 +5,7 @@
  */
 package zuul.framework;
 
-import worldofzuul.InvTest;
+import worldofzuul.*;
 
 /**
  *
@@ -18,11 +18,8 @@ public class ZuulFramework {
      */
     public static void main(String[] args) {
         
-        InvTest invTest = new InvTest();
-        invTest.invTest();
-        
-        //Game game = new Game();
-        //game.play();
+        Game game = new Game();
+        game.play();
     }
     
 }

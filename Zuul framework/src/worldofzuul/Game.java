@@ -335,10 +335,10 @@ public class Game {
     
     public UUID createPlanets() {
         UUID curUUID = UUID.randomUUID();
-        this._planets.put(curUUID, new Planet("hej", "wow!", 1, 1, curUUID));
+        this._planets.put(curUUID, new Planet("hej", "wow!", 1, 1, new Moon("wow1 moon!"), curUUID));
         
         UUID starterUUID = UUID.randomUUID();
-        this._planets.put(starterUUID, new Planet("Starter!", "starterdesc!", 20, 20, starterUUID));
+        this._planets.put(starterUUID, new Planet("Starter!", "starterdesc!", 20, 20, new Moon("wowmoon2!"), starterUUID));
         return starterUUID;
     }
     

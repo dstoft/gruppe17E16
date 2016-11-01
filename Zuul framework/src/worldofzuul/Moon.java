@@ -1,21 +1,29 @@
+package worldofzuul;
+
+import java.util.UUID;
 
 public class Moon {
 
-	//Initializing variables
-	private String _desciption;
-	private UUID _npcId;
+    //Initializing variables
+    private String _description;
+    private UUID _npcId;
 
-	//Constructor
-	public Moon(String desciption, UUID npcId) {
-		this._desciption = desciption;
-		this._npcId = npcId;
-	}
+    //Constructor
+    public Moon(String description) {
+        this._description = description;
+    }
 
-	//Getters
-	public String getDescription() {
-		return desciption;
+    //Getters
+    public String getDescription() {
+        return this._description;
+    }
+	
 
-	public UUID getNpcId() {
-		return this._npcId;
-	}
+    public UUID getNpcId() {
+        return this._npcId;
+    }
+    
+    public void setNpcId(UUID npcId) {
+        this._npcId = npcId;
+    }
 }

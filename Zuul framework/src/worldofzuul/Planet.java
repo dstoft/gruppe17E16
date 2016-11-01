@@ -16,14 +16,13 @@ public class Planet {
     public static int referenceNumCounter = 1;    //static counter for creating new referencenumbers			
 
     //Constructor
-    public Planet(String name, String description, int xCoor, int yCoor, UUID npcId, Moon moon, UUID id) {
+    public Planet(String name, String description, int xCoor, int yCoor, Moon moon, UUID id) {
         this._id = id;
         this._moon = moon;
         this._name = name;
         this._description = description;
         this._xCoor = xCoor;
         this._yCoor = yCoor;
-        this._npcId = npcId;
         this._referenceNum = Planet.referenceNumCounter;
         Planet.referenceNumCounter++;
     }

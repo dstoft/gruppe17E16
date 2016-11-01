@@ -70,11 +70,11 @@ public class Player {
     // ***** GETTERS END *****
     
     public boolean dropItem(int itemName) {
-        UUID tempUUID = this._inventory.getUUIDFromInventoryPos((itemName-1));
+        UUID tempUUID = this._inventory.getUUIDFromInvPos((itemName-1));
         if(tempUUID == null) {
             return false;
         } else {
-            this._inventory.remItem(tempUUID);
+            //this._inventory.remItem(tempUUID);
             return true;
         }
     }
