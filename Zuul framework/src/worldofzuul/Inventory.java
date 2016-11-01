@@ -139,12 +139,21 @@ public class Inventory { // Initializing the class Inventory
      *
      * TODO: better implementation in regards to uniqID and idendifying items.
      *
-     * @param x
+     * @param uid UUID of item to be deleted.
+     * 
      */
-    public void remItem(int x) {
+    public void remItem(UUID uid) {
 
-        inventoryList.remove(x-1);
         
+        int o = 0;
+
+            for (Items i : inventoryList) {
+                if (uid.equals(inventoryList.get(o).getId())){
+                    inventoryList.remove(o);
+                }
+                o++;
+            }
+            
         sumItems--; //Decreases by one, to keep keeping track of the amount of items.
     }
 
