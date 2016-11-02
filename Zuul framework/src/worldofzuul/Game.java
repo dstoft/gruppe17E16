@@ -272,17 +272,24 @@ public class Game {
     }
     
     public void processAnswer(String answer) {
+        if(answer == null) {
+            this._dashboard.print("You have to say something!");
+            return;
+        }
+        
         if(this._currentConversation == null) {
             this._dashboard.print("Sorry, you can't use say when you have no ongoing conversation!");
+            return;
         }
         
         UUID npcId = this._planets.get(this._player.getCurrentPlanetId()).getNpcId();
         if(npcId != this._currentConversation.getNpcId()) {
             this._dashboard.print("Sorry, you're no longer at the same position as the NPC and can therefore not talk with him!");
             this._currentConversation = null;
+            return;
         }
         
-        this._currentConversation.processAnswer(answer);
+        this._currentConversation.processAnswer(answer.toLowerCase());
         if(this._currentConversation.hasCurrentAnswer()) {
             this._dashboard.print(this._currentConversation.getReactText());
             if(this.processExecution(this._currentConversation.getExecutionLine(), npcId)) {
@@ -312,11 +319,46 @@ public class Game {
                     }
                 }
             } else if(executionSplit[0].equals("pickupPackage")) {
+                //Where should the conversation go if you do not have space?
+                int[] rids = this._npcs.get(npcId).getRids();
+                for(int i = 0; i < rids.length; i++) {
+                    if(this._player.addItem(this._npcs.get(npcId).getItemInfo(rids[i]))) {
+                        //THERE WAS SPACE! YAY!
+                        this._npcs.get(npcId).removeItem(rids[i]);
+                    } else {
+                        //WHAT IF THERE WAS NOT SPACE?!
+                    }
+                }
                 
             } else if(executionSplit[0].equals("nextConvoId")) {
-                
+                try {
+                    int convoId = Integer.parseInt(executionSplit[1]);
+                    this._npcs.get(npcId).setNextConversationId(convoId);
+                } catch(NumberFormatException e) {
+                    
+                }
             } else if(executionSplit[0].equals("checkPackage")) {
+                String[] whichQuestion = executionSplit[1].split("|");
+                int[] questionNumbers = new int[2];
+                try {
+                    questionNumbers[0] = Integer.parseInt(whichQuestion[0]);
+                    questionNumbers[1] = Integer.parseInt(whichQuestion[1]);
+                } catch(NumberFormatException e) {
+                    
+                }
                 
+                int[] playerRids = this._player.getInventoryRids();
+                for(int i = 0; i < playerRids.length; i++) {
+                    if(this._npcs.get(npcId).getRid() == playerRids[i]) {
+                        this._currentConversation.setNextQuestion(questionNumbers[0]);
+                        changedQuestion = true;
+                        break;
+                    }
+                }
+                if(!changedQuestion) {
+                    this._currentConversation.setNextQuestion(questionNumbers[1]);
+                    changedQuestion = true;
+                }
             }
         }
         

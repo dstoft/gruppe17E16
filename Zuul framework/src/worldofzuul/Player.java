@@ -79,6 +79,13 @@ public class Player {
         }
     }
     
+    public boolean addItem(String itemString) {
+        if(this._inventory.setItemInfo(itemString) == null) {
+            return false;
+        }
+        return true;
+    }
+    
     public String getInventoryString() {
         return this._inventory.showInventory();
     }

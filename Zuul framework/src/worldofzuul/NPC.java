@@ -17,6 +17,8 @@ public class NPC {
     private String _description;
     private UUID _id;
     private int _rid;
+    private int _conversationId;
+    private int _nextConversationId;
     Inventory _inventory;
 
     public void npc(String name, String description, int rid, UUID id) {
@@ -43,13 +45,17 @@ public class NPC {
         this._inventory.remItem(itemId);
 
     }
+    
+    public void removeItem(int rid) {
+        this._inventory.remItem(rid);
+    }
 
     public UUID getId() {
         return this._id;
     }
 
-    public String getItemInfo() {
-        return this._inventory.getItemInfo(this._rid);
+    public String getItemInfo(int rid) {
+        return this._inventory.getItemInfo(rid);
     }
     
     public UUID setItemInfo(String info) {
@@ -57,11 +63,19 @@ public class NPC {
     }
     
     public void setReceiverRid(int rid) {
-        //this._
+        this._rid = rid;
+    }
+    
+    public void setNextConversationId(int id) {
+        this._nextConversationId = id;
     }
     
     public int getRid() {
         return this._rid;
+    }
+    
+    public int[] getRids() {
+        return this._inventory.getItemRids();
     }
 
 }

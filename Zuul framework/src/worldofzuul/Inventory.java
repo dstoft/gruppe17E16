@@ -156,6 +156,19 @@ public class Inventory { // Initializing the class Inventory
             
         sumItems--; //Decreases by one, to keep keeping track of the amount of items.
     }
+    
+    /**
+     * Overloading!
+     * @param rid 
+     * @author Dstoft
+     */
+    public void remItem(int rid) {
+        for(Items item : inventoryList) {
+            if(item.getRID() == rid) {
+                remItem(item.getId());
+            }
+        }
+    }
 
     /**
      * showInventory runs a for-each loop appending all the items listed in
