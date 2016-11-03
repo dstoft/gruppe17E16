@@ -61,6 +61,7 @@ public class Game {
         //meaning, no matter what, the loop will run through at least once
         boolean finished = false;
         while (!finished) { //While it is not finished
+            this._dashboard.print();
             Command command = parser.getCommand(); //Returns a new object, holding the information, regarding the line typed by the user
             finished = processCommand(command); //Saves the boolean, whether the player wants to quit, in finished,
         }
@@ -76,7 +77,6 @@ public class Game {
         this._dashboard.print("Welcome to the World of Zuul!");
         this._dashboard.print("World of Zuul is a new, incredibly boring adventure game.");
         this._dashboard.print("Type '" + CommandWord.HELP + "' if you need help."); //Command.HELP is found in the enum CommandWord, this returns the string corresponding to it
-        this._dashboard.print();
     }
 
     /**
@@ -110,7 +110,7 @@ public class Game {
             UUID planetId = this.getPlanetIdFromReferenceNumber(command.getSecondWord());
             if(planetId == null) { return false; }
             this.travelToPlanet(this._player, planetId);
-            this.startConversation(planetId);
+            this.startConversation();
         } else if (commandWord == CommandWord.DROP) {
             this.dropItem(command.getSecondWord());
         } else if (commandWord == CommandWord.PRINT) {
@@ -120,8 +120,7 @@ public class Game {
         } else if (commandWord == CommandWord.SAY) {
             this.processAnswer(command.getSecondWord());
         }
-
-        this._dashboard.print();
+        
         return wantToQuit; //Return the boolean, whether the player wants to quit or not
     }
 
@@ -156,6 +155,14 @@ public class Game {
         }
     }
 
+    /**
+     * Calculates the planets that a certain position can travel to, based on the amount of fuel.
+     * Uses Game's list of all planets, and movementcalculator
+     * @param startX starting position
+     * @param startY starting position
+     * @param currentFuel the amount of fuel that can be expended
+     * @return a list of planets that are possible to travel to
+     */
     public ArrayList<Planet> getPossiblePlanets(int startX, int startY, int currentFuel) {
         ArrayList<Planet> reachablePlanets = new ArrayList<>();
         for (Planet planet : this._planets.values()) {
@@ -166,6 +173,10 @@ public class Game {
         return reachablePlanets;
     }
 
+    /**
+     * A method to figuring out what is to happen based on the second word
+     * @param secondWord the second word that the user typed in
+     */
     public void whichScan(String secondWord) {
         if(secondWord == null) {
             this._dashboard.print("The second word in the command was not recognized, please use one of the following second words (like \"scan all\"):");
@@ -187,6 +198,9 @@ public class Game {
         }
     }
     
+    /**
+     * A method for printing all planets
+     */
     public void printAllPlanets() {
         this._dashboard.print("This is a list of all planets and their ids:");
         String toPrint = "";
@@ -197,6 +211,9 @@ public class Game {
 
     }
     
+    /**
+     * Print the possible planets that the player can travel to
+     */
     public void printPossiblePlanets() {
         String toPrint = "";
         UUID currentPlanetId = this._player.getCurrentPlanetId();
@@ -208,6 +225,10 @@ public class Game {
         this._dashboard.print(toPrint);
     }
 
+    /**
+     * A method to figuring out what is to happen based on the second word
+     * @param secondWord the second word that the user typed in
+     */
     public void whichPrint(String secondWord) {
         if(secondWord == null) {
             this._dashboard.print("The second word in the command was not recognized, please use one of the following second words (like \"print stats\"):");
@@ -226,30 +247,41 @@ public class Game {
         }
     }
     
+    /**
+     * A method for printing the player's stats
+     */
     public void printPlayerStats() {
-        this._dashboard.print("this your remaining fuel level" + this._player.getFuel());
-
-        this._dashboard.print(" This is your current Reputation " + this._player.getReputation());
+        this._dashboard.print("Current fuel: " + this._player.getFuel());
+        this._dashboard.print("Current reputation: " + this._player.getReputation());
 
     }
 
+    /**
+     * Prints the player's current planet's position and name
+     */
     public void printPlayerPosition() {
         UUID currentPlanetId = this._player.getCurrentPlanetId();
         this._dashboard.print("Current planet name:  " + this._planets.get(currentPlanetId).getName());
         this._dashboard.print("This is your current position: " + "(" + this._planets.get(currentPlanetId).getXCoor() + ";" + this._planets.get(currentPlanetId).getYCoor() + ")");
     }
 
-    
-// we need a method, in the player class,  // getInventory String i player klassen skal laves (), showInventory. 
+    /**
+     * Prints information about the inventory, if it is empty, it does not tell the player how to drop an item
+     */
     public void printInventory() {
-        this._dashboard.print(this._player.getInventoryString());
-        this._dashboard.print("To drop an item, write \"drop [id]\", using the id from [id:item name].");
+        if(this._player.getInventoryString() != null) {
+            this._dashboard.print(this._player.getInventoryString());
+            this._dashboard.print("To drop an item, write \"drop [id]\", using the id from [id:item name].");
+        } else {
+            this._dashboard.print("You have an empty inventory!");
+        }
     }
 
-    // a method where i print details about a specific planet 
-    // HUSK AT SLETTE, skal vi have et input for bruger, kan vi lave en case hvor at jeg matcher om det brugeren har indtastet svare til et planet navn, hvor efter jeg printer hvad der er information om planeten. Eller hvordan skal denne laves ? ? ? ?   Vi laver et for each loop, burger vi istedet da, vi ikke ved hvor langt vores case skal være, eller hvis vi i fremtiden har tænkt os at gøre det. 
-    // hvis brugen taster et navn forkert, skal vi her printe " Sorry didn’t recognize that planet name, make sure to use only small characters,  do you want to see a list of all planets ?  Or a list of the planet that is reachanble for you"  // here we can refer to commands to see allPlanets or Reachable planets, tell the user what the command is perhaps ? ? ? 
-    // Boolean, om vi foundWord, hvis ja display  print information til planenten ? Det skal jeg have fat i fra planet folkende. NEJ  så følg hvad jeg  har skrevet i notaten i det overstående, hvis 
+    /**
+     * A method for getting information regarding a specific planet
+     * @param secondWord the second word that the user typed in
+     * @return whether or not the secondWord refered to a planet
+     */
     public boolean printSpecPlanet(String secondWord) {
         //Change it to int, and then find that number in the planets list!
         //Remember to add "try catch"!
@@ -262,15 +294,31 @@ public class Game {
         }
     }
     
-    
+    /**
+     * Changes the position (planet) of the character refered in the parameter
+     * @param characterToTravel which character to move
+     * @param planetId which planet to move to
+     */
     public void travelToPlanet(Player characterToTravel, UUID planetId) {
+        this._dashboard.print("Now traveling to " + this._planets.get(planetId).getName());
         characterToTravel.setCurrentPlanet(planetId);
+        
+        this._dashboard.print("Refilled fuel tank!");
+        this._player.setFuel(this._player.getMaxFuel());
     }
     
-    public void startConversation(UUID planetId) {
+    /**
+     * A method for starting a conversation with the NPC on the planet, that the player is currently at
+     */
+    public void startConversation() {
         // Starting conversation!
     }
     
+    /**
+     * Takes in what the user has answered using the say command, and figures out whether it is recognized
+     * It also calls for the execution of the execution line
+     * @param answer is the second word that the user typed in along with say
+     */
     public void processAnswer(String answer) {
         if(answer == null) {
             this._dashboard.print("You have to say something!");
@@ -302,6 +350,12 @@ public class Game {
         }
     }
     
+    /**
+     * Figures out what should happen according to the parameter executionLine, and calls the relevant methods
+     * @param executionLine which commands that are to be executed
+     * @param npcId which npc that the conversation is with
+     * @return whether or not the conversation's question was changed during the execution commands
+     */
     public boolean processExecution(String executionLine, UUID npcId) {
         boolean changedQuestion = false;
         String[] allExecutions;
@@ -365,12 +419,19 @@ public class Game {
         return changedQuestion;
     }
     
+    /**
+     * Changes a planet reference number to the planet's UUID.
+     * Can catch an exception
+     * @param secondWord the second word that the user typed in
+     * @return the UUID of the corresponding planet
+     */
     public UUID getPlanetIdFromReferenceNumber(String secondWord) {
         int planetNumber = -1;
         try {
             planetNumber = Integer.parseInt(secondWord);
         } catch (Exception e) {
-            this._dashboard.print(e.toString());
+            this._dashboard.print("Please only use id numbers to refer to which planet you want to travel to!");
+            //this._dashboard.print(e.toString());
         }
         
         for(Planet planet : this._planets.values()) {
@@ -383,6 +444,10 @@ public class Game {
         return null;
     }
     
+    /**
+     * Drops an item according to it's id, this method also attempts to change the input to an integer
+     * @param itemName the second word that the user typed in
+     */
     public void dropItem(String itemName) {
         if(itemName == null) {
             this._dashboard.print("The second word in the command was not recognized, please use a number as the second word (like \"drop 1\")");
@@ -393,7 +458,8 @@ public class Game {
         try {
             itemNumber = Integer.parseInt(itemName);
         } catch(Exception e) {
-            this._dashboard.print(e.toString());
+            this._dashboard.print("Please only use the id numbers to refer to which item you want to drop!");
+            //this._dashboard.print(e.toString());
         }
         
         if(!this._player.dropItem(itemNumber)) {
@@ -401,7 +467,10 @@ public class Game {
         }
     }
 
-    
+    /**
+     * Creates the planets!
+     * @return what UUID the player should be starting on
+     */
     public UUID createPlanets() {
         UUID curUUID = UUID.randomUUID();
         this._planets.put(curUUID, new Planet("hej", "wow!", 1, 1, new Moon("wow1 moon!"), curUUID));
@@ -411,6 +480,9 @@ public class Game {
         return starterUUID;
     }
     
+    /**
+     * Creates the NPCs
+     */
     public void createNpcs() {
         //A method for creating NPCs
     }
