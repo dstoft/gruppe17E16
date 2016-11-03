@@ -10,17 +10,17 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- *
+ * Holds all of the information regarding the player
+ * Contains methods for accessing the players inventory
  * @author DanielToft
  */
 public class Player {
     //Defines variables
-    private UUID _currentPlanetId; //Skal være Planet istedet for String
-    private Inventory _inventory; //Skal være Inventory istedet for String
-    private Dashboard _dashboard;
-    private int _maxFuel;
-    private int _fuel;
-    private int _reputation; //Maximum is 10
+    private UUID _currentPlanetId; //The planet the player is currently at
+    private Inventory _inventory; //The players inventory
+    private int _maxFuel; //How much fuel the player can hold
+    private int _fuel; //How much fuel the player currently has
+    private int _reputation; //How much reputation the player has
     
     public Player(UUID currentPlanet, int maxFuel, int startingReputation) {
         this._currentPlanetId = currentPlanet;
@@ -28,7 +28,7 @@ public class Player {
         this._fuel = maxFuel;
         this._reputation = startingReputation;
         
-        this._inventory = new Inventory(); //Inventory istedet for String
+        this._inventory = new Inventory();
     }
     
     // ***** SETTERS *****
@@ -55,9 +55,6 @@ public class Player {
     public Inventory getInventory() {
         return this._inventory;
     }
-    public Dashboard getDashboard() {
-        return this._dashboard;
-    }
     public int getMaxFuel() {
         return this._maxFuel;
     }
@@ -69,6 +66,12 @@ public class Player {
     }
     // ***** GETTERS END *****
     
+    // ***** HANDLING INVENTORY *****
+    /**
+     * Drops an item
+     * @param itemName the inventory position as a number
+     * @return whether or not it was dropped
+     */
     public boolean dropItem(int itemName) {
         UUID tempUUID = this._inventory.getUUIDFromInvPos((itemName-1));
         if(tempUUID == null) {
@@ -79,6 +82,11 @@ public class Player {
         }
     }
     
+    /**
+     * Attemps to add an item from an itemString (contains all of its information in a string)
+     * @param itemString a string containing item's information
+     * @return whether or not it was succesfully added
+     */
     public boolean addItem(String itemString) {
         if(this._inventory.setItemInfo(itemString) == null) {
             return false;
@@ -86,17 +94,20 @@ public class Player {
         return true;
     }
     
+    /**
+     * Gets a description of the inventory
+     * @return a string
+     */
     public String getInventoryString() {
         return this._inventory.showInventory();
     }
     
+    /**
+     * Gets all the items' rids in inventory 
+     * @return an array of integers containing the rids
+     */
     public int[] getInventoryRids() {
         return this._inventory.getItemRids();
     }
-    
-    public void setItemInfo(String info) {
-        this._inventory.setItemInfo(info);
-    }
-    
-    
+    // ***** HANDLING INVENTORY END *****
 }

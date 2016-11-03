@@ -2,6 +2,10 @@ package worldofzuul;
 
 import java.util.UUID;
 
+/**
+ * Holds all of the information regarding planets
+ * @author DanielToft
+ */
 public class Planet {
 
     //Initializing variables
@@ -27,7 +31,7 @@ public class Planet {
         Planet.referenceNumCounter++;
     }
 
-    //Getters
+    // ***** GETTERS *****
     public boolean hasMoon() {
         return this._moon != null;
     }
@@ -58,8 +62,11 @@ public class Planet {
     public UUID getNpcId() {
         return this._npcId;
     }
+    // ***** GETTERS END *****
     
+    // ***** SETTERS *****
     public void setNpcId(UUID npcId) {
         this._npcId = npcId;
     }
+    // ***** SETTERS END *****
 }

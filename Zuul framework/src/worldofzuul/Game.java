@@ -368,6 +368,7 @@ public class Game {
                     if(rids[i] == this._npcs.get(npcId).getRid()) {
                         //Is that all that should happen when delivering a package?
                         this._player.dropItem(i);
+                        //Add reputation!
                     } else {
                         //The player does not have the package, how did it get so far then?
                     }
@@ -412,6 +413,35 @@ public class Game {
                 if(!changedQuestion) {
                     this._currentConversation.setNextQuestion(questionNumbers[1]);
                     changedQuestion = true;
+                }
+            } else if(executionSplit[0].equals("checkPickup")) {
+                String[] whichQuestion = executionSplit[1].split("|");
+                int[] questionNumbers = new int[2];
+                try {
+                    questionNumbers[0] = Integer.parseInt(whichQuestion[0]);
+                    questionNumbers[1] = Integer.parseInt(whichQuestion[1]);
+                } catch(NumberFormatException e) {
+                    
+                }
+                
+                int[] npcRids = this._npcs.get(npcId).getRids();
+                for(int i = 0; i < npcRids.length; i++) {
+                    if(this._npcs.get(npcId).getRid() == npcRids[i]) {
+                        this._currentConversation.setNextQuestion(questionNumbers[0]);
+                        changedQuestion = true;
+                        break;
+                    }
+                }
+                if(!changedQuestion) {
+                    this._currentConversation.setNextQuestion(questionNumbers[1]);
+                    changedQuestion = true;
+                }
+            } else if(executionSplit[0].equals("removeReputation")) {
+                try {
+                    int reputationAmount = Integer.parseInt(executionSplit[1]);
+                    this._player.setReputation((this._player.getReputation()-reputationAmount));
+                } catch(NumberFormatException e) {
+                    
                 }
             }
         }
