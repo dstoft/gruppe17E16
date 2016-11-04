@@ -19,7 +19,7 @@ public class Items {
 */
     
 //Initializing variables
-    private UUID id; //Every item have an ID
+    private UUID id; //Every item has an ID
     private int weight; // The weight of the item
     private String description; // The description of the item
     private int rid;  // The RID for the destination
