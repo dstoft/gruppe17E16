@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- * Holds all of the information regarding the player
+ * Holds all of the information regarding the player. 
  * Contains methods for accessing the players inventory
  * @author DanielToft
  */

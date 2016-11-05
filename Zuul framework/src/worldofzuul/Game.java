@@ -10,8 +10,8 @@ import java.util.UUID;
  * the function each command has, and processes both words.
  *
  * To use it, simply create an object of the type Game, and call the method
- * .play() Emil Bøgh Harder, Kasper H. Christensen, Malte Engelsted Rasmussen,
- * Matias Marek, Daniel Anton Jørgensen, Daniel Skjold Toft Note: Commented by
+ * .play(). Written by Emil Bøgh Harder, Kasper H. Christensen, Malte Engelsted Rasmussen,
+ * Matias Marek, Daniel Anton Jørgensen & Daniel Skjold Toft. Note: Commented by
  * Gruppe 17, E16, Software/IT 1. semester
  *
  *
@@ -311,6 +311,7 @@ public class Game {
      * A method for starting a conversation with the NPC on the planet, that the player is currently at
      */
     public void startConversation() {
+        //IF the NPC has a nextConversationId (if it is not null) use that!
         // Starting conversation!
     }
     
@@ -514,6 +515,41 @@ public class Game {
      * Creates the NPCs
      */
     public void createNpcs() {
+        ArrayList<Planet> hasNoNpc = new ArrayList<>();
+        ArrayList<NPC> hasNoPlanet = new ArrayList<>();
+        int index;
+        for(Planet planet : this._planets.values()) {
+            hasNoNpc.add(planet);
+        }
+        
         //A method for creating NPCs
+        UUID curId = UUID.randomUUID();
+        this._npcs.put(curId, new NPC("Planet1NPC", "He be wow!", 0, curId));
+        if(hasNoNpc.size() > 0) {
+            index = (int)Math.random()*hasNoNpc.size();
+            hasNoNpc.get(index).setNpcId(curId);
+            hasNoNpc.remove(index);
+        } else {
+            hasNoPlanet.add(this._npcs.get(curId));
+        }
+        
+        curId = UUID.randomUUID();
+        this._npcs.put(curId, new NPC("Planet2NPC", "He be not wow!!", 1, curId));
+        if(hasNoNpc.size() > 0) {
+            index = (int)Math.random()*hasNoNpc.size();
+            hasNoNpc.get(index).setNpcId(curId);
+            hasNoNpc.remove(index);
+        } else {
+            hasNoPlanet.add(this._npcs.get(curId));
+        }
+        
+        
+        //What about fucking moons?
+        //Change moons to be of the type planet? Then have a boolean called "isMoon"?
+        
+    }
+    
+    public void createItems() {
+        
     }
 }

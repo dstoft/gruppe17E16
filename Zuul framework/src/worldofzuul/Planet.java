@@ -29,6 +29,7 @@ public class Planet {
         this._yCoor = yCoor;
         this._referenceNum = Planet.referenceNumCounter;
         Planet.referenceNumCounter++;
+        this._npcId = null;
     }
 
     // ***** GETTERS *****

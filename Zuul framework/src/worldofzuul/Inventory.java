@@ -4,7 +4,8 @@ import java.util.ArrayList; //Imports the utility for the Arraylist
 import java.util.UUID;
 
 /**
- * Inventory - thats all (skriv mere)
+ * Handles inventory and handles items. Contains the limits on how big an
+ * inventory is.
  *
  * @author emil
  */
@@ -45,7 +46,6 @@ public class Inventory { // Initializing the class Inventory
      * @param maxWeight set max allowed weight in integers, default is 12.
      *
      */
-    // The version of Inventory with parameters given.
     public Inventory(int maxItems, int maxWeight) {
 
         this.maxAllowedItems = maxItems;
@@ -54,7 +54,10 @@ public class Inventory { // Initializing the class Inventory
         this.inventoryList = new ArrayList<Items>();
     }
 
-    // The version of Inventory without parameters given.
+    /**
+     * Constructor without setting limits on the inventory, which means it uses
+     * the default.
+     */
     public Inventory() {
 
         uuid = UUID.randomUUID();
@@ -111,7 +114,6 @@ public class Inventory { // Initializing the class Inventory
      * @param RID Sets the ID of the recipients
      * @return returns the UUID number for the added item.
      */
-        
     public UUID addItem(int weight, String desciption, int RID) {
 
         UUID uid = null;
@@ -119,7 +121,6 @@ public class Inventory { // Initializing the class Inventory
 
         if (sumWeight < maxAllowedWeight && sumItems < maxAllowedItems) {
 
-            
             Items item = new Items(weight, desciption, RID);
 
             inventoryList.add(item);
@@ -140,31 +141,31 @@ public class Inventory { // Initializing the class Inventory
      * TODO: better implementation in regards to uniqID and idendifying items.
      *
      * @param uid UUID of item to be deleted.
-     * 
+     *
      */
     public void remItem(UUID uid) {
 
-        
         int o = 0;
 
-            for (Items i : inventoryList) {
-                if (uid.equals(inventoryList.get(o).getId())){
-                    inventoryList.remove(o);
-                }
-                o++;
+        for (Items i : inventoryList) {
+            if (uid.equals(inventoryList.get(o).getId())) {
+                inventoryList.remove(o);
             }
-            
+            o++;
+        }
+
         sumItems--; //Decreases by one, to keep keeping track of the amount of items.
     }
-    
+
     /**
      * Overloading!
-     * @param rid 
+     *
+     * @param rid
      * @author Dstoft
      */
     public void remItem(int rid) {
-        for(Items item : inventoryList) {
-            if(item.getRID() == rid) {
+        for (Items item : inventoryList) {
+            if (item.getRID() == rid) {
                 remItem(item.getId());
             }
         }
@@ -181,7 +182,6 @@ public class Inventory { // Initializing the class Inventory
 
         boolean isEmpty = inventoryList.isEmpty();
         String invContent = null;
-        
 
         if (!isEmpty) {
 
@@ -190,7 +190,7 @@ public class Inventory { // Initializing the class Inventory
             int o = 0;
 
             for (Items i : inventoryList) {
-                sb.append(o+1);
+                sb.append(o + 1);
                 sb.append(": ");
                 sb.append(inventoryList.get(o).getDescription());
                 sb.append(". \n");
@@ -205,19 +205,31 @@ public class Inventory { // Initializing the class Inventory
 
     }
 
+    /**
+     * Takes in the inventory position index, and finds the UUID for that item
+     *
+     * @param x the index in the item list
+     * @return the UUID of that item
+     */
     public UUID getUUIDFromInvPos(int x) {
 
         boolean isEmpty = inventoryList.isEmpty();
         UUID itemUUID = null;
 
-        if (!isEmpty){
-            itemUUID = inventoryList.get(x-1).getId();
+        if (!isEmpty) {
+            itemUUID = inventoryList.get(x - 1).getId();
         }
-        
+
         return itemUUID;
 
-        }
-    
+    }
+
+    /**
+     * Returns an item as a string, which is used for sending it between
+     * inventories, because the Game class does not know of Inventory
+     * @param id the RID of the item you want
+     * @return the string that contains all of the information that is needed
+     */
     public String getItemInfo(int id) {
 
         String invContent = null;
@@ -249,6 +261,11 @@ public class Inventory { // Initializing the class Inventory
 
     }
 
+    /**
+     * Used for creating an item from a string, that is formatted with ";"
+     * @param info the string that contains the information
+     * @return the UUID of the added item
+     */
     public UUID setItemInfo(String info) {
         String desc;
         int weight;
@@ -265,12 +282,14 @@ public class Inventory { // Initializing the class Inventory
 
     }
 
-    
-    //Added by Dstoft
+    /**
+     * Gets all of the RIDs for this inventory
+     * @return an integer array of the RIDs
+     */
     public int[] getItemRids() {
         int[] returnArray = new int[this.maxAllowedItems];
         int count = 0;
-        for(Items item : this.inventoryList) {
+        for (Items item : this.inventoryList) {
             returnArray[count] = item.getRID();
             count++;
         }
