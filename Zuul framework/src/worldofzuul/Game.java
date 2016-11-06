@@ -26,6 +26,7 @@ public class Game {
     private Player _player;
     HashMap<UUID, Planet> _planets;
     HashMap<UUID, NPC> _npcs;
+    HashMap<UUID, Items> _items;
     private MovementCalculator _movementCalculator;
     private Conversation _currentConversation;
 
@@ -34,7 +35,9 @@ public class Game {
      * the rooms, sets current room and creates a new parser object
      */
     public Game() {
-        this._planets = new HashMap<UUID, Planet>();
+        this._planets = new HashMap<>();
+        this._npcs = new HashMap<>();
+        this._items = new HashMap<>();
         UUID currentPlanetId = this.createPlanets();
         
         
@@ -110,7 +113,6 @@ public class Game {
             UUID planetId = this.getPlanetIdFromReferenceNumber(command.getSecondWord());
             if(planetId == null) { return false; }
             this.travelToPlanet(this._player, planetId);
-            this.startConversation();
         } else if (commandWord == CommandWord.DROP) {
             this.dropItem(command.getSecondWord());
         } else if (commandWord == CommandWord.PRINT) {
@@ -216,10 +218,10 @@ public class Game {
      */
     public void printPossiblePlanets() {
         String toPrint = "";
-        UUID currentPlanetId = this._player.getCurrentPlanetId();
+        UUID currentPlanetId = this._player.getPlanetId();
         ArrayList<Planet> planetList = this.getPossiblePlanets(this._planets.get(currentPlanetId).getXCoor(), this._planets.get(currentPlanetId).getYCoor(), this._player.getFuel());
         for (Planet planet : planetList) {
-            if(this._player.getCurrentPlanetId() == planet.getId()) { continue; }
+            if(this._player.getPlanetId() == planet.getId()) { continue; }
             toPrint += planet.getReferenceNum() + ": " + planet.getName() + ", ";
         }
         this._dashboard.print(toPrint);
@@ -260,7 +262,7 @@ public class Game {
      * Prints the player's current planet's position and name
      */
     public void printPlayerPosition() {
-        UUID currentPlanetId = this._player.getCurrentPlanetId();
+        UUID currentPlanetId = this._player.getPlanetId();
         this._dashboard.print("Current planet name:  " + this._planets.get(currentPlanetId).getName());
         this._dashboard.print("This is your current position: " + "(" + this._planets.get(currentPlanetId).getXCoor() + ";" + this._planets.get(currentPlanetId).getYCoor() + ")");
     }
@@ -269,11 +271,11 @@ public class Game {
      * Prints information about the inventory, if it is empty, it does not tell the player how to drop an item
      */
     public void printInventory() {
-        if(this._player.getInventoryString() != null) {
-            this._dashboard.print(this._player.getInventoryString());
-            this._dashboard.print("To drop an item, write \"drop [id]\", using the id from [id:item name].");
-        } else {
-            this._dashboard.print("You have an empty inventory!");
+        for(UUID uuid : this._player.getInventoryUuids()) {
+            Items curItems = this._items.get(uuid);
+            this._dashboard.print(curItems.getReferenceNumber() + ": " + curItems.getDescription() + " weighting " + curItems.getWeight());
+            Planet deliveryPlanet = this._planets.get(this._npcs.get(curItems.getNpcId()).getPlanetId());
+            this._dashboard.print(" - and it has to be delivered at: [" + deliveryPlanet.getXCoor() + ";" + deliveryPlanet.getYCoor() + "] " + deliveryPlanet.getName());
         }
     }
 
@@ -300,11 +302,18 @@ public class Game {
      * @param planetId which planet to move to
      */
     public void travelToPlanet(Player characterToTravel, UUID planetId) {
-        this._dashboard.print("Now traveling to " + this._planets.get(planetId).getName());
-        characterToTravel.setCurrentPlanet(planetId);
-        
-        this._dashboard.print("Refilled fuel tank!");
-        this._player.setFuel(this._player.getMaxFuel());
+        Planet nextPlanet = this._planets.get(planetId), curPlanet = this._planets.get(characterToTravel.getPlanetId());
+        if(this._movementCalculator.isReachable(curPlanet.getXCoor(), curPlanet.getYCoor(), nextPlanet.getXCoor(), nextPlanet.getYCoor(), characterToTravel.getFuel())) {
+            this._dashboard.print("Now traveling to " + this._planets.get(planetId).getName());
+            characterToTravel.setCurrentPlanet(planetId);
+
+            this._dashboard.print("Refilled fuel tank!");
+            this._player.setFuel(this._player.getMaxFuel());
+            
+            this.startConversation();
+        } else {
+            this._dashboard.print("Sorry, you're unable to reach the planet you were trying to travel to, try moving to a closer planet and try again.");
+        }
     }
     
     /**
@@ -331,7 +340,7 @@ public class Game {
             return;
         }
         
-        UUID npcId = this._planets.get(this._player.getCurrentPlanetId()).getNpcId();
+        UUID npcId = this._planets.get(this._player.getPlanetId()).getNpcId();
         if(npcId != this._currentConversation.getNpcId()) {
             this._dashboard.print("Sorry, you're no longer at the same position as the NPC and can therefore not talk with him!");
             this._currentConversation = null;
@@ -364,28 +373,13 @@ public class Game {
         for(String eachExecution : allExecutions) {
             String[] executionSplit = eachExecution.split(":");
             if(executionSplit[0].equals("deliverPackage")) {
-                int[] rids = this._player.getInventoryRids();
-                for(int i = 0; i < rids.length; i++) {
-                    if(rids[i] == this._npcs.get(npcId).getRid()) {
-                        //Is that all that should happen when delivering a package?
-                        this._player.dropItem(i);
-                        //Add reputation!
-                    } else {
-                        //The player does not have the package, how did it get so far then?
-                    }
-                }
+                this.deliverPackage(npcId);
             } else if(executionSplit[0].equals("pickupPackage")) {
                 //Where should the conversation go if you do not have space?
-                int[] rids = this._npcs.get(npcId).getRids();
-                for(int i = 0; i < rids.length; i++) {
-                    if(this._player.addItem(this._npcs.get(npcId).getItemInfo(rids[i]))) {
-                        //THERE WAS SPACE! YAY!
-                        this._npcs.get(npcId).removeItem(rids[i]);
-                    } else {
-                        //WHAT IF THERE WAS NOT SPACE?!
-                    }
+                if(!this.pickupPackage(npcId)) {
+                    //You were unable to pick up all the items the NPC has, so what should happen now? Terminate conversation? Head to another question?
+                    //"checkPickup" will only check for one item, should this too?
                 }
-                
             } else if(executionSplit[0].equals("nextConvoId")) {
                 try {
                     int convoId = Integer.parseInt(executionSplit[1]);
@@ -394,49 +388,11 @@ public class Game {
                     
                 }
             } else if(executionSplit[0].equals("checkPackage")) {
-                String[] whichQuestion = executionSplit[1].split("|");
-                int[] questionNumbers = new int[2];
-                try {
-                    questionNumbers[0] = Integer.parseInt(whichQuestion[0]);
-                    questionNumbers[1] = Integer.parseInt(whichQuestion[1]);
-                } catch(NumberFormatException e) {
-                    
-                }
-                
-                int[] playerRids = this._player.getInventoryRids();
-                for(int i = 0; i < playerRids.length; i++) {
-                    if(this._npcs.get(npcId).getRid() == playerRids[i]) {
-                        this._currentConversation.setNextQuestion(questionNumbers[0]);
-                        changedQuestion = true;
-                        break;
-                    }
-                }
-                if(!changedQuestion) {
-                    this._currentConversation.setNextQuestion(questionNumbers[1]);
-                    changedQuestion = true;
-                }
+                this.checkPackage(npcId, executionSplit[1]);
+                changedQuestion = true;
             } else if(executionSplit[0].equals("checkPickup")) {
-                String[] whichQuestion = executionSplit[1].split("|");
-                int[] questionNumbers = new int[2];
-                try {
-                    questionNumbers[0] = Integer.parseInt(whichQuestion[0]);
-                    questionNumbers[1] = Integer.parseInt(whichQuestion[1]);
-                } catch(NumberFormatException e) {
-                    
-                }
-                
-                int[] npcRids = this._npcs.get(npcId).getRids();
-                for(int i = 0; i < npcRids.length; i++) {
-                    if(this._npcs.get(npcId).getRid() == npcRids[i]) {
-                        this._currentConversation.setNextQuestion(questionNumbers[0]);
-                        changedQuestion = true;
-                        break;
-                    }
-                }
-                if(!changedQuestion) {
-                    this._currentConversation.setNextQuestion(questionNumbers[1]);
-                    changedQuestion = true;
-                }
+                this.checkPickup(npcId, executionSplit[1]);
+                changedQuestion = true;
             } else if(executionSplit[0].equals("removeReputation")) {
                 try {
                     int reputationAmount = Integer.parseInt(executionSplit[1]);
@@ -448,6 +404,65 @@ public class Game {
         }
         
         return changedQuestion;
+    }
+    
+    public void deliverPackage(UUID npcId) {
+        Items item = this._items.get(this._npcs.get(npcId).getPackageId());
+        this._player.removeItem(item.getId(), item.getWeight());
+    }
+    
+    public boolean pickupPackage(UUID npcId) {
+        for(UUID itemUuid : this._npcs.get(npcId).getInventoryUuids()) {
+            if(this._player.addItem(itemUuid, this._items.get(itemUuid).getWeight())) {
+                this._dashboard.print("You picked up " + this._items.get(itemUuid).getDescription());
+                this._npcs.get(npcId).removeItem(itemUuid, this._items.get(itemUuid).getWeight());
+            } else {
+                this._dashboard.print("You were unable to pick up " + this._items.get(itemUuid).getDescription() + ", since you don't have space in your inventory!");
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public void checkPackage(UUID npcId, String executionSplit) {
+        String[] whichQuestion = executionSplit.split("|");
+        int[] questionNumbers = new int[2];
+        try {
+            questionNumbers[0] = Integer.parseInt(whichQuestion[0]);
+            questionNumbers[1] = Integer.parseInt(whichQuestion[1]);
+        } catch(NumberFormatException e) {
+
+        }
+        
+        for(UUID itemUuid : this._player.getInventoryUuids()) {
+            if(this._npcs.get(npcId).getPackageId() == itemUuid) {
+                this._currentConversation.setNextQuestion(questionNumbers[0]);
+                return;
+            }
+        }
+        
+        this._currentConversation.setNextQuestion(questionNumbers[1]);
+    }
+    
+    public void checkPickup(UUID npcId, String executionSplit) {
+        String[] whichQuestion = executionSplit.split("|");
+        int[] questionNumbers = new int[2];
+        try {
+            questionNumbers[0] = Integer.parseInt(whichQuestion[0]);
+            questionNumbers[1] = Integer.parseInt(whichQuestion[1]);
+        } catch(NumberFormatException e) {
+
+        }
+        
+        if(this._npcs.get(npcId).getInventoryUuids().length > 0) { //What? Can the NPC have no items? Then why check for it?
+            Items curItem = this._items.get(this._npcs.get(npcId).getInventoryUuids()[0]);
+            if(this._player.hasInventorySpaceFor(curItem.getWeight())) {
+                this._currentConversation.setNextQuestion(questionNumbers[0]);
+                return;
+            }
+        } 
+        
+        this._currentConversation.setNextQuestion(questionNumbers[1]);
     }
     
     /**
@@ -463,6 +478,7 @@ public class Game {
         } catch (Exception e) {
             this._dashboard.print("Please only use id numbers to refer to which planet you want to travel to!");
             //this._dashboard.print(e.toString());
+            return null;
         }
         
         for(Planet planet : this._planets.values()) {
@@ -472,30 +488,54 @@ public class Game {
         }
         
         //Print the valid planet names!
+        this.printAllPlanets();
+        
         return null;
     }
     
     /**
-     * Drops an item according to it's id, this method also attempts to change the input to an integer
+     * Changes a item reference number to the item's UUID.
+     * Can catch an exception
+     * @param secondWord the second word that the user typed in
+     * @return the UUID of the corresponding item
+     */
+    public UUID getItemIdFromReferenceNumber(String secondWord) {
+        int itemNumber = -1;
+        try {
+            itemNumber = Integer.parseInt(secondWord);
+        } catch (Exception e) {
+            this._dashboard.print("Invalid item id, \"" + secondWord + "\" was not recognized, use \"print inventory\" to show your items and their ids!");
+            //this._dashboard.print(e.toString());
+            return null;
+        }
+        
+        for(Items item : this._items.values()) {
+            if(itemNumber == item.getReferenceNumber()) {
+                return item.getId();
+            }
+        }
+        
+        
+        //Print the valid item names!
+        //this.printInventory();
+        
+        return null;
+    }
+    
+    /**
+     * Drops an item according to it's id, if the item id is not recognized, it will print so
      * @param itemName the second word that the user typed in
      */
     public void dropItem(String itemName) {
-        if(itemName == null) {
-            this._dashboard.print("The second word in the command was not recognized, please use a number as the second word (like \"drop 1\")");
-            return;
-        }
+        UUID itemUuid = this.getItemIdFromReferenceNumber(itemName);
         
-        int itemNumber = -1;
-        try {
-            itemNumber = Integer.parseInt(itemName);
-        } catch(Exception e) {
-            this._dashboard.print("Please only use the id numbers to refer to which item you want to drop!");
-            //this._dashboard.print(e.toString());
+        for(UUID itemId : this._player.getInventoryUuids()) {
+            if(itemId == itemUuid) {
+                this._player.removeItem(itemId, this._items.get(itemId).getWeight());
+                return;
+            }
         }
-        
-        if(!this._player.dropItem(itemNumber)) {
-            this._dashboard.print("Invalid item id, \"" + itemName + "\" was not recognized, use \"print inventory\" to show your items and their ids!");
-        }
+        this._dashboard.print("Sorry, you do not hold such item id, please use \"print inventory\" to show your items and their ids.");
     }
 
     /**
@@ -528,6 +568,7 @@ public class Game {
         if(hasNoNpc.size() > 0) {
             index = (int)Math.random()*hasNoNpc.size();
             hasNoNpc.get(index).setNpcId(curId);
+            this._npcs.get(curId).setPlanetId(hasNoNpc.get(index).getId());
             hasNoNpc.remove(index);
         } else {
             hasNoPlanet.add(this._npcs.get(curId));
@@ -538,6 +579,7 @@ public class Game {
         if(hasNoNpc.size() > 0) {
             index = (int)Math.random()*hasNoNpc.size();
             hasNoNpc.get(index).setNpcId(curId);
+            this._npcs.get(curId).setPlanetId(hasNoNpc.get(index).getId());
             hasNoNpc.remove(index);
         } else {
             hasNoPlanet.add(this._npcs.get(curId));
@@ -550,6 +592,7 @@ public class Game {
     }
     
     public void createItems() {
-        
+        UUID newItemUuid = UUID.randomUUID();
+        this._items.put(newItemUuid, new Items(2, "wow item", 0));
     }
 }

@@ -18,6 +18,8 @@ public class NPC {
     private String _description;
     private UUID _id;
     private int _rid;
+    private UUID _packageId;
+    private UUID _planetId;
     private int _conversationId;
     private int _nextConversationId;
     Inventory _inventory;
@@ -34,9 +36,25 @@ public class NPC {
     public UUID getId() {
         return this._id;
     }
+    
+    public UUID getPlanetId() {
+        return this._planetId;
+    }
 
     public int getRid() {
         return this._rid;
+    }
+    
+    public UUID getPackageId() {
+        return this._packageId;
+    }
+    
+    public String getName() {
+        return this._name;
+    }
+    
+    public String getDescription() {
+        return this._description;
     }
     // ***** GETTERS END *****
 
@@ -44,60 +62,43 @@ public class NPC {
     public void setReceiverRid(int rid) {
         this._rid = rid;
     }
+    
+    public void setPlanetId(UUID planetId) {
+        this._planetId = planetId;
+    }
 
     public void setNextConversationId(int id) {
         this._nextConversationId = id;
     }
+    
+    public void setPackageId(UUID uuid) {
+        this._packageId = uuid;
+    }
     // ***** SETTERS END *****
 
     // ***** GETTERS REGARDING INVENTORY *****
-    public String getInventoryString() {
-        return this._inventory.showInventory();
-    }
-
-    public String getItemInfo(int rid) {
-        return this._inventory.getItemInfo(rid);
-    }
-
-    public int[] getRids() {
-        return this._inventory.getItemRids();
+    public UUID[] getInventoryUuids() {
+        return this._inventory.getInventoryUuids();
     }
     // ***** GETTERS REGARDING INVENTORY END *****
 
     /**
      * Creates an item using the method in inventory
-     * @param name
+     * @param uuid
      * @param weight
-     * @param rid the receiver id
      * @return the UUID of the newly created item
      */
-    public UUID createItem(String name, int weight, int rid) {
-        return this._inventory.addItem(weight, name, rid);
+    public boolean addItem(UUID uuid, int weight) {
+        return this._inventory.addItem(uuid, weight);
     }
 
     /**
      * Removes an item based on the UUID of that item
      * @param itemId the UUID if the item
+     * @param weight
      */
-    public void removeItem(UUID itemId) {
-        this._inventory.remItem(itemId);
-    }
-
-    /**
-     * Removes an item based on the RID of that item
-     * @param rid the receiver id of the item
-     */
-    public void removeItem(int rid) {
-        this._inventory.remItem(rid);
-    }
-
-    /**
-     * Creates a new item based on a string
-     * @param info a string that contains the information of the item
-     * @return the UUID of the newly created item
-     */
-    public UUID setItemInfo(String info) {
-        return this._inventory.setItemInfo(info);
+    public void removeItem(UUID itemId, int weight) {
+        this._inventory.remItem(itemId, weight);
     }
 
 }

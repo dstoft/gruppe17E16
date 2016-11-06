@@ -49,11 +49,8 @@ public class Player {
     // ***** SETTERS END *****
     
     // ***** GETTERS *****
-    public UUID getCurrentPlanetId() {
+    public UUID getPlanetId() {
         return this._currentPlanetId;
-    }
-    public Inventory getInventory() {
-        return this._inventory;
     }
     public int getMaxFuel() {
         return this._maxFuel;
@@ -67,47 +64,31 @@ public class Player {
     // ***** GETTERS END *****
     
     // ***** HANDLING INVENTORY *****
-    /**
-     * Drops an item
-     * @param itemName the inventory position as a number
-     * @return whether or not it was dropped
-     */
-    public boolean dropItem(int itemName) {
-        UUID tempUUID = this._inventory.getUUIDFromInvPos((itemName-1));
-        if(tempUUID == null) {
-            return false;
-        } else {
-            this._inventory.remItem(tempUUID);
-            return true;
-        }
+    public UUID[] getInventoryUuids() {
+        return this._inventory.getInventoryUuids();
     }
     
     /**
-     * Attemps to add an item from an itemString (contains all of its information in a string)
-     * @param itemString a string containing item's information
-     * @return whether or not it was succesfully added
+     * Creates an item using the method in inventory
+     * @param uuid
+     * @param weight
+     * @return the UUID of the newly created item
      */
-    public boolean addItem(String itemString) {
-        if(this._inventory.setItemInfo(itemString) == null) {
-            return false;
-        }
-        return true;
+    public boolean addItem(UUID uuid, int weight) {
+        return this._inventory.addItem(uuid, weight);
+    }
+
+    /**
+     * Removes an item based on the UUID of that item
+     * @param itemId the UUID if the item
+     * @param weight
+     */
+    public void removeItem(UUID itemId, int weight) {
+        this._inventory.remItem(itemId, weight);
     }
     
-    /**
-     * Gets a description of the inventory
-     * @return a string
-     */
-    public String getInventoryString() {
-        return this._inventory.showInventory();
-    }
-    
-    /**
-     * Gets all the items' rids in inventory 
-     * @return an array of integers containing the rids
-     */
-    public int[] getInventoryRids() {
-        return this._inventory.getItemRids();
+    public boolean hasInventorySpaceFor(int weight) {
+        return this._inventory.hasSpaceFor(weight);
     }
     // ***** HANDLING INVENTORY END *****
 }

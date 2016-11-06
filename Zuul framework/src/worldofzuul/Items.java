@@ -11,12 +11,16 @@ import java.util.UUID;
  * difficulty to deliver the pakage.
  */
 public class Items {
+    
+    public static int referenceCounter = 0;
 
     //Initializing variables
     private UUID id; //Every item have an ID
     private int weight; // The weight of the item
     private String description; // The description of the item
     private int rid;  // The RID for the destination
+    private UUID npcId;
+    private int referenceNumber;
     //private boolean papers; // Does the user have papers on the item
 
     /**
@@ -30,6 +34,8 @@ public class Items {
         this.weight = weight;
         this.description = desciption;
         this.rid = rid;
+        this.referenceNumber = Items.referenceCounter;
+        Items.referenceCounter++;
         //this.papers = papers;
 
     }
@@ -44,6 +50,10 @@ public class Items {
 
         return rid;
     }
+    
+    public UUID getNpcId() {
+        return this.npcId;
+    }
 
     public int getWeight() {         //Method for getting the weight of the item.
 
@@ -54,9 +64,19 @@ public class Items {
 
         return id;
     }
+    
+    public int getReferenceNumber() {
+        return this.referenceNumber;
+    }
 
     /*public boolean getPapers() {         //Method to check if the user have papers on the item.
     return papers;
     }*/
     // ***** GETTERS END *****
+    
+    // ***** SETTERS *****
+    public void setNpcId(UUID npcId) {
+        this.npcId = npcId;
+    }
+    // ***** SETTERS END *****
 }
