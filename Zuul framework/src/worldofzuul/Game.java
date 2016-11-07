@@ -597,7 +597,7 @@ public class Game {
         }
         
         curId = UUID.randomUUID();
-        this._npcs.put(curId, new NPC("Planet2NPC", "He be not wow!!", 1, 2, curId));
+        this._npcs.put(curId, new NPC("Planet2NPC", "He be not wow!!", 1, 1, curId));
         if(hasNoNpc.size() > 0) {
             index = (int)Math.random()*hasNoNpc.size();
             hasNoNpc.get(index).setNpcId(curId);
