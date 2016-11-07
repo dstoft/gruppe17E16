@@ -15,6 +15,7 @@ public class Question{
         this._qText = qText;
         this._numOfAns = numOfAns;
         this._answers = new ArrayList<>();
+        this._currentAnswer = null;
     }
 
 

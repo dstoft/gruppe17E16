@@ -34,27 +34,32 @@ public class Conversation{
      * @param text the list fetched from a file
      */
     public void createWholeConversation(List<String> text) {
-        for(int i=1; i <= text.size(); i += 2 + 5*(i+1)) {
+        //System.out.println(text.size());
+        for(int i=1; i <= text.size(); ) {
             String qText = text.get(i);
             int numOfAns = Character.getNumericValue(text.get(i+1).charAt(0));
+            //System.out.println(qText + " with answer: " + numOfAns);
             this._questionList.add(new Question(qText, numOfAns)); //Prøver at indsætte spørgsmål med samme index, som i .txt
             
             //ArrayList<String> answers;
             int count = 1;
             int n = i;
+            //System.out.println("n at: " + n);
             while(count <= numOfAns) {
-                String ansText = text.get(n+2);
-                String reactText = text.get(n+3);
-                int nextLineNumber = Character.getNumericValue(text.get(n+4).charAt(0));
-                String exeLine = text.get(n+5);
+                String ansText = text.get(n+3);
+                String reactText = text.get(n+4);
+                int nextLineNumber = Character.getNumericValue(text.get(n+5).charAt(0));
+                String exeLine = text.get(n+6);
                 
+                //System.out.println(ansText + ": " + reactText + " nxtLine: " + nextLineNumber + " with exe: " + exeLine);
                 this._questionList.get(this._questionList.size()-1).addAnswer(nextLineNumber, ansText, reactText, exeLine);
                 
                 count++;
                 n+=5;
             }
-                        
+            i += 3 + 5*numOfAns;
         }
+        //System.out.println(this._questionList.size());
         this._currentQuestion = this._questionList.get(this._currentQuestionNumber);
 
     }
@@ -81,7 +86,8 @@ public class Conversation{
      */
     public void setNextQuestion(int questionNumber) {
         this._currentQuestionNumber = questionNumber;
-        this._questionList.get(this._currentQuestionNumber);
+        this._currentQuestion = this._questionList.get(this._currentQuestionNumber);
+        //System.out.println(this._currentQuestion.getQText());
     }
     // ***** GETTERS *****
     public int getConversationId() {
@@ -96,6 +102,12 @@ public class Conversation{
         return this._currentQuestion.getQText();
     }
     // ***** GETTERS END *****
+    
+    // ***** SETTERS *****
+    public void setNpcId(UUID npcId) {
+        this._npcId = npcId;
+    }
+    // ***** SETTERS END *****
 
     // ***** GETTERS FROM ANSWER *****
     public boolean hasCurrentAnswer() {

@@ -24,10 +24,11 @@ public class NPC {
     private int _nextConversationId;
     Inventory _inventory;
 
-    public NPC(String name, String description, int rid, UUID id) {
+    public NPC(String name, String description, int rid, int conversationId, UUID id) {
         this._name = name;
         this._description = description;
         this._rid = rid;
+        this._conversationId = conversationId;
         this._id = id;
         this._inventory = new Inventory();
     }
@@ -55,6 +56,10 @@ public class NPC {
     
     public String getDescription() {
         return this._description;
+    }
+    
+    public int getConversationId() {
+        return this._conversationId;
     }
     // ***** GETTERS END *****
 

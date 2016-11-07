@@ -28,7 +28,10 @@ public class Game {
     HashMap<UUID, NPC> _npcs;
     HashMap<UUID, Items> _items;
     private MovementCalculator _movementCalculator;
+    private FileHandler _fileHandler;
     private Conversation _currentConversation;
+    
+    private UUID _startingPlanet;
 
     /**
      * Constructor for the class Game, using the method createRooms() it creates
@@ -38,13 +41,16 @@ public class Game {
         this._planets = new HashMap<>();
         this._npcs = new HashMap<>();
         this._items = new HashMap<>();
-        UUID currentPlanetId = this.createPlanets();
+        this._startingPlanet = this.createPlanets();
+        this.createNpcs();
+        this.createItems();
         
         
         parser = new Parser(); //Creates a new object of the type Parser
-        this._player = new Player(currentPlanetId, 100, 10);
+        this._player = new Player(this._startingPlanet, 100, 10);
         this._dashboard = new Dashboard(); // Creates a new object of the type Dashboard. 
         this._movementCalculator = new MovementCalculator();
+        this._fileHandler = new FileHandler();
 
         //createPlanets(); 
         //createNpcs();
@@ -60,6 +66,8 @@ public class Game {
         
         System.out.println("NOTE: MAKE THE PLAYER GO TO THE FIRST PLANET WHEN PRESSING PLAY, THAT WAY THE FIRST CONVERSATION WILL START!");
 
+        this.travelToPlanet(this._player, this._startingPlanet);
+        
         //Note, the while-loop below, is basically a do..while loop, because the value to check is set to false right before the loop itself
         //meaning, no matter what, the loop will run through at least once
         boolean finished = false;
@@ -322,6 +330,12 @@ public class Game {
     public void startConversation() {
         //IF the NPC has a nextConversationId (if it is not null) use that!
         // Starting conversation!
+        UUID npcId = this._planets.get(this._player.getPlanetId()).getNpcId();
+        this._currentConversation = new Conversation(this._npcs.get(npcId).getConversationId());
+        this._currentConversation.setNpcId(npcId);
+        this._currentConversation.createWholeConversation(this._fileHandler.getText(this._currentConversation.getConversationId()));
+        this._dashboard.print(this._currentConversation.getQText());
+        this._dashboard.print(this._currentConversation.getPossibleAnswers());
     }
     
     /**
@@ -350,10 +364,16 @@ public class Game {
         this._currentConversation.processAnswer(answer.toLowerCase());
         if(this._currentConversation.hasCurrentAnswer()) {
             this._dashboard.print(this._currentConversation.getReactText());
-            if(this.processExecution(this._currentConversation.getExecutionLine(), npcId)) {
+            if(!this.processExecution(this._currentConversation.getExecutionLine(), npcId)) {
+                if(this._currentConversation.getNextLineNumber() == -1) {
+                    this._currentConversation = null;
+                    this._dashboard.print("Conversation has been terminated");
+                    return;
+                }
                 this._currentConversation.setNextQuestion(this._currentConversation.getNextLineNumber());
             }
             this._dashboard.print(this._currentConversation.getQText());
+            this._dashboard.print(this._currentConversation.getPossibleAnswers());
         } else {
             this._dashboard.print("Sorry, I don't know how to respond to that answer.");
             this._dashboard.print(this._currentConversation.getPossibleAnswers());
@@ -426,12 +446,13 @@ public class Game {
     
     public void checkPackage(UUID npcId, String executionSplit) {
         String[] whichQuestion = executionSplit.split("|");
+        //System.out.println(whichQuestion[0] + " " + whichQuestion[1] + " " + whichQuestion[2]);
         int[] questionNumbers = new int[2];
         try {
             questionNumbers[0] = Integer.parseInt(whichQuestion[0]);
-            questionNumbers[1] = Integer.parseInt(whichQuestion[1]);
+            questionNumbers[1] = Integer.parseInt(whichQuestion[2]);
         } catch(NumberFormatException e) {
-
+            System.out.println("Runtime error?");
         }
         
         for(UUID itemUuid : this._player.getInventoryUuids()) {
@@ -441,6 +462,7 @@ public class Game {
             }
         }
         
+        //System.out.println("Setting question to second option! which is: " + questionNumbers[1]);
         this._currentConversation.setNextQuestion(questionNumbers[1]);
     }
     
@@ -449,7 +471,7 @@ public class Game {
         int[] questionNumbers = new int[2];
         try {
             questionNumbers[0] = Integer.parseInt(whichQuestion[0]);
-            questionNumbers[1] = Integer.parseInt(whichQuestion[1]);
+            questionNumbers[1] = Integer.parseInt(whichQuestion[2]);
         } catch(NumberFormatException e) {
 
         }
@@ -564,7 +586,7 @@ public class Game {
         
         //A method for creating NPCs
         UUID curId = UUID.randomUUID();
-        this._npcs.put(curId, new NPC("Planet1NPC", "He be wow!", 0, curId));
+        this._npcs.put(curId, new NPC("Planet1NPC", "He be wow!", 0, 1, curId));
         if(hasNoNpc.size() > 0) {
             index = (int)Math.random()*hasNoNpc.size();
             hasNoNpc.get(index).setNpcId(curId);
@@ -575,7 +597,7 @@ public class Game {
         }
         
         curId = UUID.randomUUID();
-        this._npcs.put(curId, new NPC("Planet2NPC", "He be not wow!!", 1, curId));
+        this._npcs.put(curId, new NPC("Planet2NPC", "He be not wow!!", 1, 2, curId));
         if(hasNoNpc.size() > 0) {
             index = (int)Math.random()*hasNoNpc.size();
             hasNoNpc.get(index).setNpcId(curId);
@@ -592,7 +614,64 @@ public class Game {
     }
     
     public void createItems() {
-        UUID newItemUuid = UUID.randomUUID();
-        this._items.put(newItemUuid, new Items(2, "wow item", 0));
+        HashMap<Integer, Items> hasNoNpc = new HashMap<>();
+        Items newItem = new Items(2, "wow item", 0);
+        this._items.put(newItem.getId(), newItem);
+        hasNoNpc.put(newItem.getRID(), newItem);
+        
+        newItem = new Items(3, "wow2 item", 1);
+        this._items.put(newItem.getId(), newItem);
+        hasNoNpc.put(newItem.getRID(), newItem);
+        
+        ArrayList<NPC> hasNoPackageDelivery = new ArrayList<>();
+        ArrayList<Items> hasNpcDelivery = new ArrayList<>();
+        
+        for(NPC npc : this._npcs.values()) {
+            if(npc.getRid() == -1) {
+                hasNoPackageDelivery.add(npc);
+                continue;
+            }
+            if(hasNoNpc.containsKey(npc.getRid())) {
+                npc.setPackageId(hasNoNpc.get(npc.getRid()).getId());
+                hasNoNpc.get(npc.getRid()).setNpcId(npc.getId());
+                hasNpcDelivery.add(hasNoNpc.get(npc.getRid()));
+                hasNoNpc.remove(npc.getRid());
+            }
+        }
+        
+        for(NPC npc : hasNoPackageDelivery) {
+            if(hasNoNpc.size() > 0) {
+                int itemRid = 0;
+                for(Items item : hasNoNpc.values()) {
+                    npc.setReceiverRid(item.getRID());
+                    hasNpcDelivery.add(hasNoNpc.get(npc.getRid()));
+                    itemRid = item.getRID();
+                    break;
+                }
+                hasNoNpc.remove(itemRid);
+            }
+        }
+        
+        ArrayList<NPC> allNpcs = new ArrayList<>();
+        for(NPC npc : this._npcs.values()) {
+            allNpcs.add(npc);
+        }
+        
+        int index = 0;
+        for(Items item : hasNpcDelivery) {
+            if(index >= allNpcs.size()) {
+                index = 0;
+            }
+            
+            if(item.getRID() == allNpcs.get(index).getRid()) {
+                index++;
+                if(index >= allNpcs.size()) {
+                    index = 0;
+                }
+            }
+            
+            allNpcs.get(index).addItem(item.getId(), item.getWeight());
+            index++;
+        }
     }
 }
