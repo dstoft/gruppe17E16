@@ -10,17 +10,17 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- *
+ * Holds all of the information regarding the player. 
+ * Contains methods for accessing the players inventory
  * @author DanielToft
  */
 public class Player {
     //Defines variables
-    private UUID _currentPlanetId; //Skal være Planet istedet for String
-    private Inventory _inventory; //Skal være Inventory istedet for String
-    private Dashboard _dashboard;
-    private int _maxFuel;
-    private int _fuel;
-    private int _reputation; //Maximum is 10
+    private UUID _currentPlanetId; //The planet the player is currently at
+    private Inventory _inventory; //The players inventory
+    private int _maxFuel; //How much fuel the player can hold
+    private int _fuel; //How much fuel the player currently has
+    private int _reputation; //How much reputation the player has
     
     public Player(UUID currentPlanet, int maxFuel, int startingReputation) {
         this._currentPlanetId = currentPlanet;
@@ -28,7 +28,7 @@ public class Player {
         this._fuel = maxFuel;
         this._reputation = startingReputation;
         
-        this._inventory = new Inventory(); //Inventory istedet for String
+        this._inventory = new Inventory();
     }
     
     // ***** SETTERS *****
@@ -49,14 +49,8 @@ public class Player {
     // ***** SETTERS END *****
     
     // ***** GETTERS *****
-    public UUID getCurrentPlanetId() {
+    public UUID getPlanetId() {
         return this._currentPlanetId;
-    }
-    public Inventory getInventory() {
-        return this._inventory;
-    }
-    public Dashboard getDashboard() {
-        return this._dashboard;
     }
     public int getMaxFuel() {
         return this._maxFuel;
@@ -69,34 +63,32 @@ public class Player {
     }
     // ***** GETTERS END *****
     
-    public boolean dropItem(int itemName) {
-        UUID tempUUID = this._inventory.getUUIDFromInvPos((itemName-1));
-        if(tempUUID == null) {
-            return false;
-        } else {
-            this._inventory.remItem(tempUUID);
-            return true;
-        }
+    // ***** HANDLING INVENTORY *****
+    public UUID[] getInventoryUuids() {
+        return this._inventory.getInventoryUuids();
     }
     
-    public boolean addItem(String itemString) {
-        if(this._inventory.setItemInfo(itemString) == null) {
-            return false;
-        }
-        return true;
+    /**
+     * Creates an item using the method in inventory
+     * @param uuid
+     * @param weight
+     * @return the UUID of the newly created item
+     */
+    public boolean addItem(UUID uuid, int weight) {
+        return this._inventory.addItem(uuid, weight);
+    }
+
+    /**
+     * Removes an item based on the UUID of that item
+     * @param itemId the UUID if the item
+     * @param weight
+     */
+    public void removeItem(UUID itemId, int weight) {
+        this._inventory.remItem(itemId, weight);
     }
     
-    public String getInventoryString() {
-        return this._inventory.showInventory();
+    public boolean hasInventorySpaceFor(int weight) {
+        return this._inventory.hasSpaceFor(weight);
     }
-    
-    public int[] getInventoryRids() {
-        return this._inventory.getItemRids();
-    }
-    
-    public void setItemInfo(String info) {
-        this._inventory.setItemInfo(info);
-    }
-    
-    
+    // ***** HANDLING INVENTORY END *****
 }
