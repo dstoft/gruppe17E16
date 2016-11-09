@@ -99,6 +99,7 @@ public class Player {
 
     /**
      * Removes an item based on the UUID of that item
+     * 
      * @param itemId the UUID if the item
      * @param weight
      */
