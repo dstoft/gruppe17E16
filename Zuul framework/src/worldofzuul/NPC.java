@@ -18,16 +18,18 @@ public class NPC {
     private String _description;
     private UUID _id;
     private int _rid;
+    private int _pid;
     private UUID _packageId;
     private UUID _planetId;
     private int _conversationId;
     private int _nextConversationId;
     Inventory _inventory;
 
-    public NPC(String name, String description, int rid, int conversationId, UUID id) {
+    public NPC(String name, String description, int rid, int pid, int conversationId, UUID id) {
         this._name = name;
         this._description = description;
         this._rid = rid;
+        this._pid = pid;
         this._conversationId = conversationId;
         this._id = id;
         this._inventory = new Inventory();
@@ -44,6 +46,10 @@ public class NPC {
 
     public int getRid() {
         return this._rid;
+    }
+    
+    public int getPid() {
+        return this._pid;
     }
     
     public UUID getPackageId() {

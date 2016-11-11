@@ -41,6 +41,9 @@ public class Game {
         this._planets = new HashMap<>();
         this._npcs = new HashMap<>();
         this._items = new HashMap<>();
+        this._movementCalculator = new MovementCalculator();
+        this._fileHandler = new FileHandler();
+        
         this._startingPlanet = this.createPlanets();
         this.createNpcs();
         this.createItems();
@@ -49,8 +52,7 @@ public class Game {
         parser = new Parser(); //Creates a new object of the type Parser
         this._player = new Player(this._startingPlanet, 100, 10);
         this._dashboard = new Dashboard(); // Creates a new object of the type Dashboard. 
-        this._movementCalculator = new MovementCalculator();
-        this._fileHandler = new FileHandler();
+        
 
         //createPlanets(); 
         //createNpcs();
@@ -566,10 +568,10 @@ public class Game {
      */
     public UUID createPlanets() {
         UUID curUUID = UUID.randomUUID();
-        this._planets.put(curUUID, new Planet("hej", "wow!", 1, 1, new Moon("wow1 moon!"), curUUID));
+        this._planets.put(curUUID, new Planet("hej", "wow!", 1, 1, new Moon("wow1 moon!"), curUUID, -1));
         
         UUID starterUUID = UUID.randomUUID();
-        this._planets.put(starterUUID, new Planet("Starter!", "starterdesc!", 20, 20, new Moon("wowmoon2!"), starterUUID));
+        this._planets.put(starterUUID, new Planet("Starter!", "starterdesc!", 20, 20, new Moon("wowmoon2!"), starterUUID, -1));
         return starterUUID;
     }
     
@@ -586,7 +588,7 @@ public class Game {
         
         //A method for creating NPCs
         UUID curId = UUID.randomUUID();
-        this._npcs.put(curId, new NPC("Planet1NPC", "He be wow!", 0, 1, curId));
+        this._npcs.put(curId, new NPC("Planet1NPC", "He be wow!", 0, 1, 1, curId));
         if(hasNoNpc.size() > 0) {
             index = (int)Math.random()*hasNoNpc.size();
             hasNoNpc.get(index).setNpcId(curId);
@@ -597,7 +599,7 @@ public class Game {
         }
         
         curId = UUID.randomUUID();
-        this._npcs.put(curId, new NPC("Planet2NPC", "He be not wow!!", 1, 1, curId));
+        this._npcs.put(curId, new NPC("Planet2NPC", "He be not wow!!", 1, -1, 1, curId));
         if(hasNoNpc.size() > 0) {
             index = (int)Math.random()*hasNoNpc.size();
             hasNoNpc.get(index).setNpcId(curId);
@@ -615,13 +617,25 @@ public class Game {
     
     public void createItems() {
         HashMap<Integer, Items> hasNoNpc = new HashMap<>();
-        Items newItem = new Items(2, "wow item", 0);
-        this._items.put(newItem.getId(), newItem);
-        hasNoNpc.put(newItem.getRID(), newItem);
+        ArrayList<Items> hasPid = new ArrayList<>();
         
-        newItem = new Items(3, "wow2 item", 1);
-        this._items.put(newItem.getId(), newItem);
-        hasNoNpc.put(newItem.getRID(), newItem);
+        int i = 0;
+        while(true) {
+            System.out.println("data/items/" + i + ".json");
+            if(!this._fileHandler.doesFileExist("data/items/" + i + ".json")) {
+                break;
+            }
+            Items newItem = this._fileHandler.getJSON("data/items/" + i + ".json", Items.class);
+            this._items.put(newItem.getId(), newItem);
+            hasNoNpc.put(newItem.getRid(), newItem);
+            
+            if(newItem.getPid() != -1) {
+                hasPid.add(newItem);
+            }
+            i++;
+        }
+        
+        System.out.println(hasPid.get(0).getDescription());
         
         ArrayList<NPC> hasNoPackageDelivery = new ArrayList<>();
         ArrayList<Items> hasNpcDelivery = new ArrayList<>();
@@ -632,10 +646,13 @@ public class Game {
                 continue;
             }
             if(hasNoNpc.containsKey(npc.getRid())) {
+                System.out.println("Reaching here?");
                 npc.setPackageId(hasNoNpc.get(npc.getRid()).getId());
                 hasNoNpc.get(npc.getRid()).setNpcId(npc.getId());
                 hasNpcDelivery.add(hasNoNpc.get(npc.getRid()));
                 hasNoNpc.remove(npc.getRid());
+            } else {
+                hasNoPackageDelivery.add(npc);
             }
         }
         
@@ -643,9 +660,9 @@ public class Game {
             if(hasNoNpc.size() > 0) {
                 int itemRid = 0;
                 for(Items item : hasNoNpc.values()) {
-                    npc.setReceiverRid(item.getRID());
+                    npc.setReceiverRid(item.getRid());
                     hasNpcDelivery.add(hasNoNpc.get(npc.getRid()));
-                    itemRid = item.getRID();
+                    itemRid = item.getRid();
                     break;
                 }
                 hasNoNpc.remove(itemRid);
@@ -657,13 +674,21 @@ public class Game {
             allNpcs.add(npc);
         }
         
+        for(Items item : hasPid) {
+            for(NPC npc : this._npcs.values()) {
+                if(item.getPid() == npc.getPid()) {
+                    npc.addItem(item.getId(), item.getWeight());
+                }
+            }
+        }
+        
         int index = 0;
         for(Items item : hasNpcDelivery) {
             if(index >= allNpcs.size()) {
                 index = 0;
             }
             
-            if(item.getRID() == allNpcs.get(index).getRid()) {
+            if(item.getRid() == allNpcs.get(index).getRid()) {
                 index++;
                 if(index >= allNpcs.size()) {
                     index = 0;

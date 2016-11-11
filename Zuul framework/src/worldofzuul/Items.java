@@ -19,6 +19,7 @@ public class Items {
     private int weight; // The weight of the item
     private String description; // The description of the item
     private int rid;  // The RID for the destination
+    private int pid;
     private UUID npcId;
     private int referenceNumber;
     //private boolean papers; // Does the user have papers on the item
@@ -29,15 +30,22 @@ public class Items {
      * @param desciption
      * @param rid the id of where the item is to be delivered
      */
-    public Items(int weight, String desciption, int rid) {
+    public Items(int weight, String desciption, int rid, int pid) {
         this.id = UUID.randomUUID();
         this.weight = weight;
         this.description = desciption;
         this.rid = rid;
+        this.pid = pid;
         this.referenceNumber = Items.referenceCounter;
         Items.referenceCounter++;
         //this.papers = papers;
 
+    }
+    
+    public Items() {
+        this.id = UUID.randomUUID();
+        this.referenceNumber = Items.referenceCounter;
+        Items.referenceCounter++;
     }
 
     // ***** GETTERS *****
@@ -46,9 +54,12 @@ public class Items {
         return description;
     }
 
-    public int getRID() {        //Method for returning  destination RID
-
+    public int getRid() {        //Method for returning  destination RID
         return rid;
+    }
+    
+    public int getPid() {        //Method for returning  destination RID
+        return pid;
     }
     
     public UUID getNpcId() {
