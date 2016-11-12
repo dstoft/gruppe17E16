@@ -65,10 +65,9 @@ public class Game {
      */
     public void play() {
         printWelcome(); //Prints a welcome message
-        
-        System.out.println("NOTE: MAKE THE PLAYER GO TO THE FIRST PLANET WHEN PRESSING PLAY, THAT WAY THE FIRST CONVERSATION WILL START!");
 
-        this.travelToPlanet(this._player, this._startingPlanet);
+        this._player.setCurrentPlanet(this._startingPlanet);
+        this.startConversation();
         
         //Note, the while-loop below, is basically a do..while loop, because the value to check is set to false right before the loop itself
         //meaning, no matter what, the loop will run through at least once
@@ -333,11 +332,18 @@ public class Game {
         //IF the NPC has a nextConversationId (if it is not null) use that!
         // Starting conversation!
         UUID npcId = this._planets.get(this._player.getPlanetId()).getNpcId();
-        this._currentConversation = new Conversation(this._npcs.get(npcId).getConversationId());
+        NPC npc = this._npcs.get(npcId);
+        if(npc.hasNextConversationId()) {
+            npc.setConversationId(npc.getNextConversationId());
+            npc.setNextConversationId(-1);
+        }
+        this._currentConversation = new Conversation(npc.getConversationId());
         this._currentConversation.setNpcId(npcId);
         this._currentConversation.createWholeConversation(this._fileHandler.getText(this._currentConversation.getConversationId()));
-        this._dashboard.print(this._currentConversation.getQText());
-        this._dashboard.print(this._currentConversation.getPossibleAnswers());
+        this._dashboard.print("A connection with " + npc.getName() + " has been established...");
+        this._dashboard.print(npc.getName() + " looks like " + npc.getDescription());
+        this._dashboard.print(npc.getName() + ": " + this._currentConversation.getQText());
+        this._dashboard.print("You can answer using the \"say\" command: " + this._currentConversation.getPossibleAnswers());
     }
     
     /**
@@ -365,7 +371,7 @@ public class Game {
         
         this._currentConversation.processAnswer(answer.toLowerCase());
         if(this._currentConversation.hasCurrentAnswer()) {
-            this._dashboard.print(this._currentConversation.getReactText());
+            this._dashboard.print(this._npcs.get(this._currentConversation.getNpcId()).getName() + ": " + this._currentConversation.getReactText());
             if(!this.processExecution(this._currentConversation.getExecutionLine(), npcId)) {
                 if(this._currentConversation.getNextLineNumber() == -1) {
                     this._currentConversation = null;
@@ -374,11 +380,11 @@ public class Game {
                 }
                 this._currentConversation.setNextQuestion(this._currentConversation.getNextLineNumber());
             }
-            this._dashboard.print(this._currentConversation.getQText());
-            this._dashboard.print(this._currentConversation.getPossibleAnswers());
+            this._dashboard.print(this._npcs.get(this._currentConversation.getNpcId()).getName() + ": " + this._currentConversation.getQText());
+            this._dashboard.print("You can answer: " + this._currentConversation.getPossibleAnswers());
         } else {
-            this._dashboard.print("Sorry, I don't know how to respond to that answer.");
-            this._dashboard.print(this._currentConversation.getPossibleAnswers());
+            this._dashboard.print(this._npcs.get(this._currentConversation.getNpcId()).getName() + ": Sorry, I don't know how to respond to that answer.");
+            this._dashboard.print("The only answers I seek: " + this._currentConversation.getPossibleAnswers());
         }
     }
     
@@ -430,6 +436,7 @@ public class Game {
     
     public void deliverPackage(UUID npcId) {
         Items item = this._items.get(this._npcs.get(npcId).getPackageId());
+        this._player.setReputation(this._player.getReputation() + item.getReputationWorth());
         this._player.removeItem(item.getId(), item.getWeight());
     }
     
@@ -556,6 +563,7 @@ public class Game {
         for(UUID itemId : this._player.getInventoryUuids()) {
             if(itemId == itemUuid) {
                 this._player.removeItem(itemId, this._items.get(itemId).getWeight());
+                this._player.setReputation(this._player.getReputation()-this._items.get(itemId).getReputationWorth());
                 return;
             }
         }
@@ -604,7 +612,6 @@ public class Game {
             index = (int)Math.random()*hasNoNpc.size();
             hasNoNpc.get(index).setNpcId(curId);
             this._npcs.get(curId).setPlanetId(hasNoNpc.get(index).getId());
-            System.out.println("Placed NPC with rid: " + this._npcs.get(curId).getRid() + " at planet: " + hasNoNpc.get(index).getName());
             hasNoNpc.remove(index);
         } else {
             hasNoPlanet.add(this._npcs.get(curId));
@@ -718,7 +725,6 @@ public class Game {
         for(Items item : itemsHaveNoPickup) {
             if(npcsHaveNoPickup.size() > 0) {
                 while(true) {
-                    System.out.println("reached here?");
                     int randomNpcIndex = (int)(Math.random()*npcsHaveNoPickup.size());
                     NPC npc = npcsHaveNoPickup.get(randomNpcIndex);
                     if(npc.getPackageId() == item.getId()) {
@@ -735,90 +741,5 @@ public class Game {
             }
         }
         //END: Adding where the items are going to be picked up
-        
-        /*
-        HashMap<Integer, Items> hasNoNpc = new HashMap<>();
-        ArrayList<Items> hasPid = new ArrayList<>();
-        
-        int i = 0;
-        while(true) {
-            System.out.println("data/items/" + i + ".json");
-            if(!this._fileHandler.doesFileExist("data/items/" + i + ".json")) {
-                break;
-            }
-            Items newItem = this._fileHandler.getJSON("data/items/" + i + ".json", Items.class);
-            this._items.put(newItem.getId(), newItem);
-            hasNoNpc.put(newItem.getRid(), newItem);
-            
-            if(newItem.getPid() != -1) {
-                hasPid.add(newItem);
-            }
-            i++;
-        }
-        
-        System.out.println(hasPid.get(0).getDescription());
-        
-        ArrayList<NPC> hasNoPackageDelivery = new ArrayList<>();
-        ArrayList<Items> hasNpcDelivery = new ArrayList<>();
-        
-        for(NPC npc : this._npcs.values()) {
-            if(npc.getRid() == -1) {
-                hasNoPackageDelivery.add(npc);
-                continue;
-            }
-            if(hasNoNpc.containsKey(npc.getRid())) {
-                System.out.println("Reaching here?");
-                npc.setPackageId(hasNoNpc.get(npc.getRid()).getId());
-                hasNoNpc.get(npc.getRid()).setNpcId(npc.getId());
-                hasNpcDelivery.add(hasNoNpc.get(npc.getRid()));
-                hasNoNpc.remove(npc.getRid());
-            } else {
-                hasNoPackageDelivery.add(npc);
-            }
-        }
-        
-        for(NPC npc : hasNoPackageDelivery) {
-            if(hasNoNpc.size() > 0) {
-                int itemRid = 0;
-                for(Items item : hasNoNpc.values()) {
-                    npc.setReceiverRid(item.getRid());
-                    hasNpcDelivery.add(hasNoNpc.get(npc.getRid()));
-                    itemRid = item.getRid();
-                    break;
-                }
-                hasNoNpc.remove(itemRid);
-            }
-        }
-        
-        ArrayList<NPC> allNpcs = new ArrayList<>();
-        for(NPC npc : this._npcs.values()) {
-            allNpcs.add(npc);
-        }
-        
-        for(Items item : hasPid) {
-            for(NPC npc : this._npcs.values()) {
-                if(item.getPid() == npc.getPid()) {
-                    npc.addItem(item.getId(), item.getWeight());
-                }
-            }
-        }
-        
-        int index = 0;
-        for(Items item : hasNpcDelivery) {
-            if(index >= allNpcs.size()) {
-                index = 0;
-            }
-            
-            if(item.getRid() == allNpcs.get(index).getRid()) {
-                index++;
-                if(index >= allNpcs.size()) {
-                    index = 0;
-                }
-            }
-            
-            allNpcs.get(index).addItem(item.getId(), item.getWeight());
-            index++;
-        }
-        */
     }
 }

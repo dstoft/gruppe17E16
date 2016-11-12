@@ -33,7 +33,7 @@ public class Question{
 
     //Method for getting possible answer.
     public String getPossibleAnswers() {
-        String returnString = "You can answer: "; //returns a string ""
+        String returnString = ""; //returns a string ""
         for (Answer answer:this._answers) {		  //for loop, which returns a String with possible answers
             returnString += answer.getReferenceWord() + ", "; //and adds a "," between the ReferenceWord = possible answers.
         }

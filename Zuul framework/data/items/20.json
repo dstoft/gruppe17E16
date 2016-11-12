@@ -2,5 +2,6 @@
     "rid": -1,
     "weight": 4,
     "description": "Daniels Acer",
-	"pid" : -1
+	"pid" : -1,
+	"reputationWorth" : 2
 }

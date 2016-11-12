@@ -13,7 +13,6 @@ public class FileHandler{
         List<String> text = null;
         try {
             text = Files.readAllLines(Paths.get("NPC" + id + ".txt"));
-            System.out.println(text.size());
         } catch (IOException e) {
             return null;
         }

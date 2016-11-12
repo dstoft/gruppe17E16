@@ -2,5 +2,6 @@
     "rid": -1,
     "weight": 5,
     "description": "The orb of wind",
-	"pid" : -1
+	"pid" : -1,
+	"reputationWorth" : 2
 }

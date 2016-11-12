@@ -31,6 +31,7 @@ public class NPC {
         this._rid = rid;
         this._pid = pid;
         this._conversationId = conversationId;
+        this._nextConversationId = -1;
         this._id = id;
         this._inventory = new Inventory();
     }
@@ -67,6 +68,10 @@ public class NPC {
     public int getConversationId() {
         return this._conversationId;
     }
+    
+    public int getNextConversationId() {
+        return this._conversationId;
+    }
     // ***** GETTERS END *****
 
     // ***** SETTERS *****
@@ -78,6 +83,10 @@ public class NPC {
         this._planetId = planetId;
     }
 
+    public void setConversationId(int id) {
+        this._conversationId = id;
+    }
+    
     public void setNextConversationId(int id) {
         this._nextConversationId = id;
     }
@@ -87,6 +96,10 @@ public class NPC {
     }
     // ***** SETTERS END *****
 
+    public boolean hasNextConversationId() {
+        return this._nextConversationId != -1;
+    }
+    
     // ***** GETTERS REGARDING INVENTORY *****
     public UUID[] getInventoryUuids() {
         return this._inventory.getInventoryUuids();

@@ -17,6 +17,7 @@ public class Items {
     //Initializing variables
     private UUID id; //Every item have an ID
     private int weight; // The weight of the item
+    private int reputationWorth;
     private String description; // The description of the item
     private int rid;  // The RID for the destination
     private int pid;
@@ -30,9 +31,10 @@ public class Items {
      * @param desciption
      * @param rid the id of where the item is to be delivered
      */
-    public Items(int weight, String desciption, int rid, int pid) {
+    public Items(int weight, int reputationWorth, String desciption, int rid, int pid) {
         this.id = UUID.randomUUID();
         this.weight = weight;
+        this.reputationWorth = reputationWorth;
         this.description = desciption;
         this.rid = rid;
         this.pid = pid;
@@ -50,7 +52,6 @@ public class Items {
 
     // ***** GETTERS *****
     public String getDescription() {        //Method for getting the description of the item.
-
         return description;
     }
 
@@ -67,12 +68,14 @@ public class Items {
     }
 
     public int getWeight() {         //Method for getting the weight of the item.
-
         return weight;
+    }
+    
+    public int getReputationWorth() {
+        return this.reputationWorth;
     }
 
     public UUID getId() {        // //Method for getting the ID of the item.
-
         return id;
     }
     
