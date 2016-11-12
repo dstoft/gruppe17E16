@@ -588,7 +588,7 @@ public class Game {
         
         //A method for creating NPCs
         UUID curId = UUID.randomUUID();
-        this._npcs.put(curId, new NPC("Planet1NPC", "He be wow!", 0, 1, 1, curId));
+        this._npcs.put(curId, new NPC("Planet1NPC", "He be wow!", -1, -1, 1, curId));
         if(hasNoNpc.size() > 0) {
             index = (int)Math.random()*hasNoNpc.size();
             hasNoNpc.get(index).setNpcId(curId);
@@ -604,6 +604,7 @@ public class Game {
             index = (int)Math.random()*hasNoNpc.size();
             hasNoNpc.get(index).setNpcId(curId);
             this._npcs.get(curId).setPlanetId(hasNoNpc.get(index).getId());
+            System.out.println("Placed NPC with rid: " + this._npcs.get(curId).getRid() + " at planet: " + hasNoNpc.get(index).getName());
             hasNoNpc.remove(index);
         } else {
             hasNoPlanet.add(this._npcs.get(curId));
@@ -616,6 +617,126 @@ public class Game {
     }
     
     public void createItems() {
+        ArrayList<Items> itemsUsed = new ArrayList<>();
+        ArrayList<Items> itemsHaveNoDelivery = new ArrayList<>();
+        ArrayList<Items> itemsHaveNoPickup = new ArrayList<>();
+        ArrayList<NPC> npcsHaveNoDelivery = new ArrayList<>();
+        ArrayList<NPC> npcsHaveNoPickup = new ArrayList<>();
+        
+        HashMap<Integer, Items> itemsWithRid = new HashMap<>(); //Could just a be a list, as the key is never used
+        HashMap<Integer, Items> itemsWithPid = new HashMap<>(); //Could just a be a list, as the key is never used
+        HashMap<Integer, NPC> npcsWithRid = new HashMap<>();
+        HashMap<Integer, NPC> npcsWithPid = new HashMap<>();
+        
+        //Filling the lists for NPC, because this will be used in the "create items" block
+        for(NPC npc : this._npcs.values()) {
+            npcsHaveNoDelivery.add(npc);
+            npcsHaveNoPickup.add(npc);
+            if(npc.getRid() != -1) {
+                npcsWithRid.put(npc.getRid(), npc);
+            } else if(npc.getPid() != -1) {
+                npcsWithPid.put(npc.getPid(), npc);
+            }
+        }
+        
+        //Creating the items list
+        int i = 0;
+        while(true) {
+            if(!this._fileHandler.doesFileExist("data/items/" + i + ".json")) {
+                break;
+            }
+            Items newItem = this._fileHandler.getJSON("data/items/" + i + ".json", Items.class);
+            this._items.put(newItem.getId(), newItem);
+            i++;
+            if(npcsWithPid.containsKey(newItem.getPid()) || npcsWithRid.containsKey(newItem.getRid())) {
+                itemsUsed.add(newItem);
+            }
+        }
+        
+        //Fill up itemsUsed, so that it has as many items as there are NPCs
+        ArrayList<Items> allItems = new ArrayList<>(this._items.values());
+        while(itemsUsed.size() < this._npcs.size()) {
+            while(true) {
+                int randomIndex = (int)(Math.random()*this._items.size());
+                if(itemsUsed.contains(allItems.get(randomIndex))) {
+                    continue;
+                }
+                itemsUsed.add(allItems.get(randomIndex));
+                break;
+            }
+        }
+        
+        //START: Filling the lists and hashmaps for items
+        for(Items item : itemsUsed) {
+            itemsHaveNoDelivery.add(item);
+            itemsHaveNoPickup.add(item);
+            if(item.getRid() != -1) {
+                itemsWithRid.put(item.getRid(), item);
+            } else if(item.getPid() != -1) {
+                itemsWithPid.put(item.getPid(), item);
+            }
+        }
+        //END: Filling the lists and hashmaps for items
+        
+        //START: Adding receivers to both items and npcs
+        for(Items item : itemsWithRid.values()) {
+            if(npcsWithRid.containsKey(item.getRid())) {
+                NPC npc = npcsWithRid.get(item.getRid());
+                npc.setPackageId(item.getId());
+                item.setNpcId(npc.getId());
+                
+                itemsHaveNoDelivery.remove(item);
+                npcsHaveNoDelivery.remove(npc);
+            }
+        }
+        
+        for(Items item : itemsHaveNoDelivery) {
+            if(npcsHaveNoDelivery.size() > 0) {
+                int randomNpcIndex = (int)(Math.random()*npcsHaveNoDelivery.size());
+                NPC npc = npcsHaveNoDelivery.get(randomNpcIndex);
+                item.setNpcId(npc.getId());
+                npc.setPackageId(item.getId());
+                
+                npcsHaveNoDelivery.remove(npc);
+            } else {
+                break;
+            }
+        }
+        //END: Adding receivers to both items and npcs
+        
+        //START: Adding where the items are going to be picked up
+        for(Items item : itemsWithPid.values()) {
+            if(npcsWithPid.containsKey(item.getPid())) {
+                NPC npc = npcsWithPid.get(item.getPid());
+                npc.addItem(item.getId(), item.getWeight());
+                
+                itemsHaveNoPickup.remove(item);
+                npcsHaveNoPickup.remove(npc);
+            }
+        }
+        
+        for(Items item : itemsHaveNoPickup) {
+            if(npcsHaveNoPickup.size() > 0) {
+                while(true) {
+                    System.out.println("reached here?");
+                    int randomNpcIndex = (int)(Math.random()*npcsHaveNoPickup.size());
+                    NPC npc = npcsHaveNoPickup.get(randomNpcIndex);
+                    if(npc.getPackageId() == item.getId()) {
+                        continue;
+                    }
+                    npc.addItem(item.getId(), item.getWeight());
+                    npcsHaveNoPickup.remove(npc);
+                    break;
+                }
+                
+                
+            } else {
+                break;
+            }
+        }
+        //END: Adding where the items are going to be picked up
+        
+        /*
         HashMap<Integer, Items> hasNoNpc = new HashMap<>();
         ArrayList<Items> hasPid = new ArrayList<>();
         
@@ -698,5 +819,6 @@ public class Game {
             allNpcs.get(index).addItem(item.getId(), item.getWeight());
             index++;
         }
+        */
     }
 }
