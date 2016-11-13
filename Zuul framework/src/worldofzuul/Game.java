@@ -25,6 +25,7 @@ public class Game {
     private Dashboard _dashboard;
     private Player _player;
     HashMap<UUID, Planet> _planets;
+    HashMap<UUID, Moon> _moons;
     HashMap<UUID, NPC> _npcs;
     HashMap<UUID, Items> _items;
     private MovementCalculator _movementCalculator;
@@ -331,7 +332,7 @@ public class Game {
     public void startConversation() {
         //IF the NPC has a nextConversationId (if it is not null) use that!
         // Starting conversation!
-        UUID npcId = this._planets.get(this._player.getPlanetId()).getNpcId();
+        UUID npcId = this._planets.get(this._player.getPlanetId()).getNpcIds()[0];
         NPC npc = this._npcs.get(npcId);
         if(npc.hasNextConversationId()) {
             npc.setConversationId(npc.getNextConversationId());
@@ -362,8 +363,8 @@ public class Game {
             return;
         }
         
-        UUID npcId = this._planets.get(this._player.getPlanetId()).getNpcId();
-        if(npcId != this._currentConversation.getNpcId()) {
+        //UUID npcId = this._planets.get(this._player.getPlanetId()).getNpcId();
+        if(!this._planets.get(this._player.getPlanetId()).hasNpcId(this._currentConversation.getNpcId())) {
             this._dashboard.print("Sorry, you're no longer at the same position as the NPC and can therefore not talk with him!");
             this._currentConversation = null;
             return;
@@ -372,7 +373,7 @@ public class Game {
         this._currentConversation.processAnswer(answer.toLowerCase());
         if(this._currentConversation.hasCurrentAnswer()) {
             this._dashboard.print(this._npcs.get(this._currentConversation.getNpcId()).getName() + ": " + this._currentConversation.getReactText());
-            if(!this.processExecution(this._currentConversation.getExecutionLine(), npcId)) {
+            if(!this.processExecution(this._currentConversation.getExecutionLine(), this._currentConversation.getNpcId())) {
                 if(this._currentConversation.getNextLineNumber() == -1) {
                     this._currentConversation = null;
                     this._dashboard.print("Conversation has been terminated");
@@ -575,12 +576,50 @@ public class Game {
      * @return what UUID the player should be starting on
      */
     public UUID createPlanets() {
-        UUID curUUID = UUID.randomUUID();
-        this._planets.put(curUUID, new Planet("hej", "wow!", 1, 1, new Moon("wow1 moon!"), curUUID, -1));
+        this.createMoons();
         
-        UUID starterUUID = UUID.randomUUID();
-        this._planets.put(starterUUID, new Planet("Starter!", "starterdesc!", 20, 20, new Moon("wowmoon2!"), starterUUID, -1));
-        return starterUUID;
+        /*
+        UUID returnUuid = null;
+        //Creating the items list
+        int i = 0;
+        while(true) {
+            if(!this._fileHandler.doesFileExist("data/planets/" + i + ".json")) {
+                break;
+            }
+            Planet newPlanet = this._fileHandler.getJSON("data/planets/" + i + ".json", Planet.class);
+            this._planets.put(newPlanet.getId(), newPlanet);
+            i++;
+            
+            if(newPlanet.getPid() == 0) {
+                returnUuid = newPlanet.getId();
+            }
+        }
+        
+        return returnUuid;
+        */
+        
+        
+        Planet newPlanet = new Planet("hej", "wow!", 1, 1, new Moon("wow1 moon!"), -1);
+        this._planets.put(newPlanet.getId(), newPlanet);
+        
+        newPlanet = new Planet("Starter!", "starterdesc!", 20, 20, new Moon("wowmoon2!"), -1);
+        this._planets.put(newPlanet.getId(), newPlanet);
+        return newPlanet.getId();
+        
+    }
+    
+    public void createMoons() {
+        /*
+        int i = 0;
+        while(true) {
+            if(!this._fileHandler.doesFileExist("data/moons/" + i + ".json")) {
+                break;
+            }
+            Moon newMoon = this._fileHandler.getJSON("data/moons/" + i + ".json", Moon.class);
+            this._moons.put(newMoon.getId(), newMoon);
+            i++;
+        }
+        */
     }
     
     /**
@@ -599,7 +638,7 @@ public class Game {
         this._npcs.put(curId, new NPC("Planet1NPC", "He be wow!", -1, -1, 1, curId));
         if(hasNoNpc.size() > 0) {
             index = (int)Math.random()*hasNoNpc.size();
-            hasNoNpc.get(index).setNpcId(curId);
+            hasNoNpc.get(index).addNpcId(curId);
             this._npcs.get(curId).setPlanetId(hasNoNpc.get(index).getId());
             hasNoNpc.remove(index);
         } else {
@@ -610,7 +649,7 @@ public class Game {
         this._npcs.put(curId, new NPC("Planet2NPC", "He be not wow!!", 1, -1, 1, curId));
         if(hasNoNpc.size() > 0) {
             index = (int)Math.random()*hasNoNpc.size();
-            hasNoNpc.get(index).setNpcId(curId);
+            hasNoNpc.get(index).addNpcId(curId);
             this._npcs.get(curId).setPlanetId(hasNoNpc.get(index).getId());
             hasNoNpc.remove(index);
         } else {

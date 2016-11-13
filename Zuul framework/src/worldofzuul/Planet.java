@@ -1,5 +1,6 @@
 package worldofzuul;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -10,7 +11,7 @@ public class Planet {
 
     //Initializing variables
     private UUID _id;
-    private UUID _npcId;
+    private ArrayList<UUID> _npcIds;
     private Moon _moon;
     private String _description; //a short description of the planet
     private String _name;        //name of the planet
@@ -21,8 +22,8 @@ public class Planet {
     public static int referenceNumCounter = 1;    //static counter for creating new referencenumbers			
 
     //Constructor
-    public Planet(String name, String description, int xCoor, int yCoor, Moon moon, UUID id, int pid) {
-        this._id = id;
+    public Planet(String name, String description, int xCoor, int yCoor, Moon moon, int pid) {
+        this._id = UUID.randomUUID();
         this._moon = moon;
         this._name = name;
         this._description = description;
@@ -31,7 +32,7 @@ public class Planet {
         this._yCoor = yCoor;
         this._referenceNum = Planet.referenceNumCounter;
         Planet.referenceNumCounter++;
-        this._npcId = null;
+        this._npcIds = new ArrayList<>();
     }
 
     // ***** GETTERS *****
@@ -62,14 +63,32 @@ public class Planet {
         return this._referenceNum;
     }
     
-    public UUID getNpcId() {
-        return this._npcId;
+    public UUID[] getNpcIds() {
+        UUID[] returnArray = new UUID[this._npcIds.size()];
+        int i = 0;
+        for(UUID uuid : this._npcIds) {
+            returnArray[i] = uuid;
+            i++;
+        }
+        return returnArray;
+    }
+    
+    public boolean hasNpcId(UUID id) {
+        return this._npcIds.contains(id);
+    }
+    
+    public int getPid() {
+        return this._pid;
     }
     // ***** GETTERS END *****
     
     // ***** SETTERS *****
-    public void setNpcId(UUID npcId) {
-        this._npcId = npcId;
+    public void addNpcId(UUID npcId) {
+        this._npcIds.add(npcId);
+    }
+    
+    public void removeNpcId(UUID npcId) {
+        this._npcIds.remove(npcId);
     }
     // ***** SETTERS END *****
 }
