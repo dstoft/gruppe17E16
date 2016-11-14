@@ -13,10 +13,12 @@ import java.util.UUID;
  * @author emil_daniel
  */
 public class NPC {
-
+    public static int referenceCounter = 0;
+    
     private String _name;
     private String _description;
     private UUID _id;
+    private int _referenceNumber;
     private int _rid;
     private int _pid;
     private UUID _packageId;
@@ -33,12 +35,19 @@ public class NPC {
         this._conversationId = conversationId;
         this._nextConversationId = -1;
         this._id = id;
+        
+        this._referenceNumber = NPC.referenceCounter;
+        NPC.referenceCounter++;
         this._inventory = new Inventory();
     }
 
     // ***** GETTERS *****
     public UUID getId() {
         return this._id;
+    }
+    
+    public int getReferenceNumber() {
+        return this._referenceNumber;
     }
     
     public UUID getPlanetId() {

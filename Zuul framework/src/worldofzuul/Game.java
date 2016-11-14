@@ -3,6 +3,7 @@ package worldofzuul;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * This class controls the flow of the game, it contains the while loop that
@@ -68,7 +69,9 @@ public class Game {
         printWelcome(); //Prints a welcome message
 
         this._player.setCurrentPlanet(this._startingPlanet);
-        this.startConversation();
+        
+        //Start conversation or use the greet command for first encounter?
+        this.startConversation(this._planets.get(this._player.getPlanetId()).getNpcIds()[0]);
         
         //Note, the while-loop below, is basically a do..while loop, because the value to check is set to false right before the loop itself
         //meaning, no matter what, the loop will run through at least once
@@ -131,6 +134,8 @@ public class Game {
             this.whichScan(command.getSecondWord());
         } else if (commandWord == CommandWord.SAY) {
             this.processAnswer(command.getSecondWord());
+        } else if(commandWord == CommandWord.GREET) {
+            this.processGreet(command.getSecondWord());
         }
         
         return wantToQuit; //Return the boolean, whether the player wants to quit or not
@@ -200,12 +205,15 @@ public class Game {
             this.printAllPlanets();
         } else if(secondWord.equals("possible")) {
             this.printPossiblePlanets();
+        } else if(secondWord.equals("npcs")) {
+            this.printPossibleNpcs();
         } else if(this.printSpecPlanet(secondWord)) {
             
         } else {
             this._dashboard.print("\"" + secondWord + "\" was not recognized, please use: "
                     + "\n\t\"scan all\" for showing all planets and their ids,"
                     + "\n\t\"scan possible\" for showing all planets and their ids you can travel to,"
+                    + "\n\t\"scan npcs\" for showing all NPCs on this planet and their ids, that you can \"greet [id]\","
                     + "\n\t\"scan [id]\" for showing a specific id, the id can be found like: [id:planet name] when scanning possible or all planets.");
         }
     }
@@ -235,6 +243,20 @@ public class Game {
             toPrint += planet.getReferenceNum() + ": " + planet.getName() + ", ";
         }
         this._dashboard.print(toPrint);
+    }
+    
+    public void printPossibleNpcs() {
+        if(this._planets.get(this._player.getPlanetId()).getNpcIds().length < 0) {
+            this._dashboard.print("There is no NPCs to talk to at this location!");
+            return;
+        }
+        
+        this._dashboard.print("These are the NPCs you can talk to here: ");
+        for(UUID npcUuid : this._planets.get(this._player.getPlanetId()).getNpcIds()) {
+            NPC npc = this._npcs.get(npcUuid);
+            this._dashboard.print(npc.getReferenceNumber() + ": " + npc.getName() + " is described as " + npc.getDescription());
+        }
+        this._dashboard.print("Use the command \"greet [id]\" to start a conversation with the NPC.");
     }
 
     /**
@@ -320,19 +342,46 @@ public class Game {
             this._dashboard.print("Refilled fuel tank!");
             this._player.setFuel(this._player.getMaxFuel());
             
-            this.startConversation();
+            this._dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
+            
+            //this.startConversation(this._planets.get(planetId).getNpcIds()[0]);
         } else {
             this._dashboard.print("Sorry, you're unable to reach the planet you were trying to travel to, try moving to a closer planet and try again.");
+        }
+    }
+    
+    public void processGreet(String secondWord) {
+        if(secondWord == null) {
+            this._dashboard.print("Use the greet command by writting \"greet [id]\". Write \"scan npcs\" to show possible NPCs and their ids.");
+            return;
+        }
+        
+        int secondWordNumber = -1;
+        try {
+            secondWordNumber = Integer.parseInt(secondWord);
+        } catch(NumberFormatException e) {
+            
+        }
+        
+        if(secondWordNumber != -1) {
+            for(UUID npcUuid : this._planets.get(this._player.getPlanetId()).getNpcIds()) {
+                if(secondWordNumber == this._npcs.get(npcUuid).getReferenceNumber()) {
+                    this.startConversation(this._npcs.get(npcUuid).getId());
+                    return;
+                }
+            }
+        } else {
+            this._dashboard.print("NPCid was not recognized, please only use the id numbers to refer to NPCs. Write \"scan npcs\" to show possible NPCs and their ids.");
         }
     }
     
     /**
      * A method for starting a conversation with the NPC on the planet, that the player is currently at
      */
-    public void startConversation() {
+    public void startConversation(UUID npcId) {
         //IF the NPC has a nextConversationId (if it is not null) use that!
         // Starting conversation!
-        UUID npcId = this._planets.get(this._player.getPlanetId()).getNpcIds()[0];
+        //UUID npcId = this._planets.get(this._player.getPlanetId()).getNpcIds()[0];
         NPC npc = this._npcs.get(npcId);
         if(npc.hasNextConversationId()) {
             npc.setConversationId(npc.getNextConversationId());
@@ -558,8 +607,8 @@ public class Game {
      * Drops an item according to it's id, if the item id is not recognized, it will print so
      * @param itemName the second word that the user typed in
      */
-    public void dropItem(String itemName) {
-        UUID itemUuid = this.getItemIdFromReferenceNumber(itemName);
+    public void dropItem(String itemReferenceNumber) {
+        UUID itemUuid = this.getItemIdFromReferenceNumber(itemReferenceNumber);
         
         for(UUID itemId : this._player.getInventoryUuids()) {
             if(itemId == itemUuid) {
@@ -599,10 +648,10 @@ public class Game {
         */
         
         
-        Planet newPlanet = new Planet("hej", "wow!", 1, 1, new Moon("wow1 moon!"), -1);
+        Planet newPlanet = new Planet("hej", "wow!", 1, 1, new Moon("wow1 moon!"), 0);
         this._planets.put(newPlanet.getId(), newPlanet);
         
-        newPlanet = new Planet("Starter!", "starterdesc!", 20, 20, new Moon("wowmoon2!"), -1);
+        newPlanet = new Planet("Starter!", "starterdesc!", 20, 20, new Moon("wowmoon2!"), 1);
         this._planets.put(newPlanet.getId(), newPlanet);
         return newPlanet.getId();
         
@@ -627,39 +676,67 @@ public class Game {
      */
     public void createNpcs() {
         ArrayList<Planet> hasNoNpc = new ArrayList<>();
-        ArrayList<NPC> hasNoPlanet = new ArrayList<>();
+        HashMap<Integer, Planet> planetPids = new HashMap<>();
+        ArrayList<NPC> hasNoPid = new ArrayList<>();
         int index;
         for(Planet planet : this._planets.values()) {
             hasNoNpc.add(planet);
+            planetPids.put(planet.getPid(), planet);
         }
         
         //A method for creating NPCs
         UUID curId = UUID.randomUUID();
-        this._npcs.put(curId, new NPC("Planet1NPC", "He be wow!", -1, -1, 1, curId));
-        if(hasNoNpc.size() > 0) {
-            index = (int)Math.random()*hasNoNpc.size();
-            hasNoNpc.get(index).addNpcId(curId);
-            this._npcs.get(curId).setPlanetId(hasNoNpc.get(index).getId());
-            hasNoNpc.remove(index);
-        } else {
-            hasNoPlanet.add(this._npcs.get(curId));
-        }
+        this._npcs.put(curId, new NPC("Planet1NPC", "He be wow!", -1, 0, 1, curId));
         
         curId = UUID.randomUUID();
-        this._npcs.put(curId, new NPC("Planet2NPC", "He be not wow!!", 1, -1, 1, curId));
-        if(hasNoNpc.size() > 0) {
-            index = (int)Math.random()*hasNoNpc.size();
-            hasNoNpc.get(index).addNpcId(curId);
-            this._npcs.get(curId).setPlanetId(hasNoNpc.get(index).getId());
-            hasNoNpc.remove(index);
-        } else {
-            hasNoPlanet.add(this._npcs.get(curId));
+        this._npcs.put(curId, new NPC("Planet2NPC", "He be not wow!!", 1, 1, 1, curId));
+        
+        curId = UUID.randomUUID();
+        this._npcs.put(curId, new NPC("Planet2NPC2", "He be not wow!!", 1, 1, 1, curId));
+        
+        //After creating NPCs using JSON
+        for(NPC npc : this._npcs.values()) {
+            if(npc.getPid() == -1) {
+                hasNoPid.add(npc);
+            } else {
+                planetPids.get(npc.getPid()).addNpcId(npc.getId());
+                hasNoNpc.remove(planetPids.get(npc.getPid()));
+            }
         }
         
+        int i = 0;
+        for(NPC npc : hasNoPid) {
+            if(hasNoNpc.isEmpty()) {
+                break;
+            }
+            
+            if(i > hasNoNpc.size()) {
+                i = 0;
+            }
+            
+            hasNoNpc.get(i).addNpcId(npc.getId());
+            hasNoNpc.remove(i);
+            i++;
+        }
         
-        //What about fucking moons?
-        //Change moons to be of the type planet? Then have a boolean called "isMoon"?
+        Planet[] planets = new Planet[this._planets.size()];
+        this._planets.values().toArray(planets);
+        i = (int)(Math.random()*this._planets.size());
+        for(NPC npc : hasNoPid) {
+            if(i > this._planets.size()) {
+                i = 0;
+            }
+            
+            planets[i].addNpcId(npc.getId());
+            i++;
+        }
         
+        //createRebels();
+        
+    }
+    
+    private void createRebels() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     public void createItems() {
