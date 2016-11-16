@@ -7,35 +7,8 @@ import java.util.UUID;
  * because their UUID will get assigned to a planet
  * @author DanielToft
  */
-public class Moon {
-
-    //Initializing variables
-    private String _description;
-    private UUID _npcId;
-    private UUID _Uuid;
-
-    //Constructor
-    public Moon(String description) {
-        this._description = description;
+public class Moon extends NPCHolders {
+    public Moon(String description, int pid) {
+        super(description, pid);
     }
-
-    // ***** GETTERS *****
-    public String getDescription() {
-        return this._description;
-    }
-    
-    public UUID getId() {
-        return this._Uuid;
-    }
-
-    public UUID getNpcId() {
-        return this._npcId;
-    }
-    // ***** GETTERS END *****
-    
-    // ***** SETTERS *****
-    public void setNpcId(UUID npcId) {
-        this._npcId = npcId;
-    }
-    // ***** SETTERS END *****
 }

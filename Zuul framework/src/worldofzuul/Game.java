@@ -25,10 +25,10 @@ public class Game {
     private Parser parser;
     private Dashboard _dashboard;
     private Player _player;
-    HashMap<UUID, Planet> _planets;
-    HashMap<UUID, Moon> _moons;
-    HashMap<UUID, NPC> _npcs;
-    HashMap<UUID, Items> _items;
+    private HashMap<UUID, Planet> _planets;
+    private HashMap<UUID, Moon> _moons;
+    private HashMap<UUID, NPC> _npcs;
+    private HashMap<UUID, Items> _items;
     private MovementCalculator _movementCalculator;
     private FileHandler _fileHandler;
     private Conversation _currentConversation;
@@ -648,10 +648,10 @@ public class Game {
         */
         
         
-        Planet newPlanet = new Planet("hej", "wow!", 1, 1, new Moon("wow1 moon!"), 0);
+        Planet newPlanet = new Planet("hej", "wow!", 1, 1, 0);
         this._planets.put(newPlanet.getId(), newPlanet);
         
-        newPlanet = new Planet("Starter!", "starterdesc!", 20, 20, new Moon("wowmoon2!"), 1);
+        newPlanet = new Planet("Starter!", "starterdesc!", 20, 20, 1);
         this._planets.put(newPlanet.getId(), newPlanet);
         return newPlanet.getId();
         
@@ -669,12 +669,35 @@ public class Game {
             i++;
         }
         */
+        
+        Moon newMoon = new Moon("hej!", 0);
+        this._moons.put(newMoon.getId(), newMoon);
+        
+        newMoon = new Moon("hej2!", 1);
+        this._moons.put(newMoon.getId(), newMoon);
+        
+        
+        for(Moon moon : this._moons.values()) {
+            
+        }
     }
     
     /**
      * Creates the NPCs
      */
     public void createNpcs() {
+        /*
+        int i = 0;
+        while(true) {
+            if(!this._fileHandler.doesFileExist("data/npcs/" + i + ".json")) {
+                break;
+            }
+            NPC newNpc = this._fileHandler.getJSON("data/npcs/" + i + ".json", NPC.class);
+            this._npcs.put(newNpc.getId(), newNpc);
+            i++;
+        }
+        */
+        
         ArrayList<Planet> hasNoNpc = new ArrayList<>();
         HashMap<Integer, Planet> planetPids = new HashMap<>();
         ArrayList<NPC> hasNoPid = new ArrayList<>();
@@ -685,6 +708,7 @@ public class Game {
         }
         
         //A method for creating NPCs
+        
         UUID curId = UUID.randomUUID();
         this._npcs.put(curId, new NPC("Planet1NPC", "He be wow!", -1, 0, 1, curId));
         
@@ -694,12 +718,14 @@ public class Game {
         curId = UUID.randomUUID();
         this._npcs.put(curId, new NPC("Planet2NPC2", "He be not wow!!", 1, 1, 1, curId));
         
+        
         //After creating NPCs using JSON
         for(NPC npc : this._npcs.values()) {
             if(npc.getPid() == -1) {
                 hasNoPid.add(npc);
             } else {
                 planetPids.get(npc.getPid()).addNpcId(npc.getId());
+                npc.setPlanetId(planetPids.get(npc.getPid()).getId());
                 hasNoNpc.remove(planetPids.get(npc.getPid()));
             }
         }
@@ -715,6 +741,7 @@ public class Game {
             }
             
             hasNoNpc.get(i).addNpcId(npc.getId());
+            npc.setPlanetId(hasNoNpc.get(i).getId());
             hasNoNpc.remove(i);
             i++;
         }
@@ -728,10 +755,15 @@ public class Game {
             }
             
             planets[i].addNpcId(npc.getId());
+            npc.setPlanetId(planets[i].getId());
             i++;
         }
         
         //createRebels();
+        
+    }
+    
+    public void placeNpcs(HashMap<UUID, NPC> npcList, NPCHolders holdersList) {
         
     }
     
@@ -857,5 +889,9 @@ public class Game {
             }
         }
         //END: Adding where the items are going to be picked up
+        
+        for(Planet item : this._planets.values()) {
+            System.out.println(item.getXCoor());
+        }
     }
 }
