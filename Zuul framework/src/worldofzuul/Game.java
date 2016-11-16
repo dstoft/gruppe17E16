@@ -1,6 +1,7 @@
 package worldofzuul;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -28,6 +29,7 @@ public class Game {
     private HashMap<UUID, Planet> _planets;
     private HashMap<UUID, Moon> _moons;
     private HashMap<UUID, NPC> _npcs;
+    private HashMap<UUID, NPC> _rebels;
     private HashMap<UUID, Items> _items;
     private MovementCalculator _movementCalculator;
     private FileHandler _fileHandler;
@@ -41,7 +43,9 @@ public class Game {
      */
     public Game() {
         this._planets = new HashMap<>();
+        this._moons = new HashMap<>();
         this._npcs = new HashMap<>();
+        this._rebels = new HashMap<>();
         this._items = new HashMap<>();
         this._movementCalculator = new MovementCalculator();
         this._fileHandler = new FileHandler();
@@ -125,7 +129,12 @@ public class Game {
             //Here comes a movementment method from the class MovementCalculator, which is extended!
             UUID planetId = this.getPlanetIdFromReferenceNumber(command.getSecondWord());
             if(planetId == null) { return false; }
-            this.travelToPlanet(this._player, planetId);
+            if(this._planets.containsKey(planetId)) {
+                this.travelToPlanet(this._player, planetId, false);
+            } else {
+                this.travelToPlanet(this._player, planetId, true);
+            }
+            
         } else if (commandWord == CommandWord.DROP) {
             this.dropItem(command.getSecondWord());
         } else if (commandWord == CommandWord.PRINT) {
@@ -237,6 +246,12 @@ public class Game {
     public void printPossiblePlanets() {
         String toPrint = "";
         UUID currentPlanetId = this._player.getPlanetId();
+        
+        if(this._planets.get(currentPlanetId).hasMoon()) {
+            Moon moon = this._moons.get(this._planets.get(currentPlanetId).getMoonUuid());
+            toPrint += "0: " + moon.getName() + ", ";
+        }
+        
         ArrayList<Planet> planetList = this.getPossiblePlanets(this._planets.get(currentPlanetId).getXCoor(), this._planets.get(currentPlanetId).getYCoor(), this._player.getFuel());
         for (Planet planet : planetList) {
             if(this._player.getPlanetId() == planet.getId()) { continue; }
@@ -246,14 +261,24 @@ public class Game {
     }
     
     public void printPossibleNpcs() {
-        if(this._planets.get(this._player.getPlanetId()).getNpcIds().length < 0) {
+        NPCHolder npcHolder;
+        HashMap<UUID, NPC> currentList;
+        if(this._planets.containsKey(this._player.getPlanetId())) {
+            npcHolder = this._planets.get(this._player.getPlanetId());
+            currentList = this._npcs;
+        } else {
+            npcHolder = this._moons.get(this._player.getPlanetId());
+            currentList = this._rebels;
+        }
+        
+        if(npcHolder.getNpcIds().length < 0) {
             this._dashboard.print("There is no NPCs to talk to at this location!");
             return;
         }
         
         this._dashboard.print("These are the NPCs you can talk to here: ");
-        for(UUID npcUuid : this._planets.get(this._player.getPlanetId()).getNpcIds()) {
-            NPC npc = this._npcs.get(npcUuid);
+        for(UUID npcUuid : npcHolder.getNpcIds()) {
+            NPC npc = currentList.get(npcUuid);
             this._dashboard.print(npc.getReferenceNumber() + ": " + npc.getName() + " is described as " + npc.getDescription());
         }
         this._dashboard.print("Use the command \"greet [id]\" to start a conversation with the NPC.");
@@ -333,10 +358,22 @@ public class Game {
      * @param characterToTravel which character to move
      * @param planetId which planet to move to
      */
-    public void travelToPlanet(Player characterToTravel, UUID planetId) {
-        Planet nextPlanet = this._planets.get(planetId), curPlanet = this._planets.get(characterToTravel.getPlanetId());
-        if(this._movementCalculator.isReachable(curPlanet.getXCoor(), curPlanet.getYCoor(), nextPlanet.getXCoor(), nextPlanet.getYCoor(), characterToTravel.getFuel())) {
-            this._dashboard.print("Now traveling to " + this._planets.get(planetId).getName());
+    public void travelToPlanet(Player characterToTravel, UUID planetId, boolean isMoon) {
+        Planet curPlanet = this._planets.get(characterToTravel.getPlanetId());
+        int nextX, nextY;
+        String nextName;
+        if(isMoon) {
+            nextX = curPlanet.getXCoor();
+            nextY = curPlanet.getYCoor();
+            nextName = this._moons.get(planetId).getName();
+        } else {
+            Planet nextPlanet = this._planets.get(planetId);
+            nextX = nextPlanet.getXCoor();
+            nextY = nextPlanet.getYCoor();
+            nextName = nextPlanet.getName();
+        }
+        if(this._movementCalculator.isReachable(curPlanet.getXCoor(), curPlanet.getYCoor(), nextX, nextY, characterToTravel.getFuel())) {
+            this._dashboard.print("Now traveling to " + nextName);
             characterToTravel.setCurrentPlanet(planetId);
 
             this._dashboard.print("Refilled fuel tank!");
@@ -363,10 +400,20 @@ public class Game {
             
         }
         
+        NPCHolder npcHolder;
+        HashMap<UUID, NPC> npcList;
+        if(this._planets.containsKey(this._player.getPlanetId())) {
+            npcHolder = this._planets.get(this._player.getPlanetId());
+            npcList = this._npcs;
+        } else {
+            npcHolder = this._moons.get(this._player.getPlanetId());
+            npcList = this._rebels;
+        }
+        
         if(secondWordNumber != -1) {
-            for(UUID npcUuid : this._planets.get(this._player.getPlanetId()).getNpcIds()) {
-                if(secondWordNumber == this._npcs.get(npcUuid).getReferenceNumber()) {
-                    this.startConversation(this._npcs.get(npcUuid).getId());
+            for(UUID npcUuid : npcHolder.getNpcIds()) {
+                if(secondWordNumber == npcList.get(npcUuid).getReferenceNumber()) {
+                    this.startConversation(npcList.get(npcUuid).getId());
                     return;
                 }
             }
@@ -562,6 +609,17 @@ public class Game {
             return null;
         }
         
+        if(planetNumber == 0) {
+            UUID curUuid = this._player.getPlanetId();
+            Planet curPlanet = this._planets.get(curUuid);
+            if(curPlanet.hasMoon()) {
+                return curPlanet.getMoonUuid();
+            } else {
+                this._dashboard.print("Sorry, there is no moon to travel to at this planet!");
+                return null;
+            }
+        }
+        
         for(Planet planet : this._planets.values()) {
             if(planetNumber == planet.getReferenceNum()) {
                 return planet.getId();
@@ -625,8 +683,6 @@ public class Game {
      * @return what UUID the player should be starting on
      */
     public UUID createPlanets() {
-        this.createMoons();
-        
         /*
         UUID returnUuid = null;
         //Creating the items list
@@ -653,6 +709,9 @@ public class Game {
         
         newPlanet = new Planet("Starter!", "starterdesc!", 20, 20, 1);
         this._planets.put(newPlanet.getId(), newPlanet);
+        
+        createMoons();
+        
         return newPlanet.getId();
         
     }
@@ -670,15 +729,21 @@ public class Game {
         }
         */
         
-        Moon newMoon = new Moon("hej!", 0);
+        Moon newMoon = new Moon("navn","hej!", 0);
         this._moons.put(newMoon.getId(), newMoon);
         
-        newMoon = new Moon("hej2!", 1);
+        newMoon = new Moon("navn","hej2!", 1);
         this._moons.put(newMoon.getId(), newMoon);
         
+        HashMap<Integer, Planet> planetPids = new HashMap<>();
+        for(Planet planet : this._planets.values()) {
+            planetPids.put(planet.getPid(), planet);
+        }
         
         for(Moon moon : this._moons.values()) {
-            
+            if(planetPids.containsKey(moon.getPid())) {
+                planetPids.get(moon.getPid()).setMoonUuid(moon.getId());
+            }
         }
     }
     
@@ -698,15 +763,6 @@ public class Game {
         }
         */
         
-        ArrayList<Planet> hasNoNpc = new ArrayList<>();
-        HashMap<Integer, Planet> planetPids = new HashMap<>();
-        ArrayList<NPC> hasNoPid = new ArrayList<>();
-        int index;
-        for(Planet planet : this._planets.values()) {
-            hasNoNpc.add(planet);
-            planetPids.put(planet.getPid(), planet);
-        }
-        
         //A method for creating NPCs
         
         UUID curId = UUID.randomUUID();
@@ -718,9 +774,61 @@ public class Game {
         curId = UUID.randomUUID();
         this._npcs.put(curId, new NPC("Planet2NPC2", "He be not wow!!", 1, 1, 1, curId));
         
+        ArrayList<NPCHolder> npcHolders = new ArrayList<>();
+        for(Planet planet : this._planets.values()) {
+            npcHolders.add(planet);
+        }
+        placeNpcs(this._npcs.values(), npcHolders);
+        
+        createRebels();
+        
+    }
+    
+    private void createRebels() {
+        /*
+        int i = 0;
+        while(true) {
+            if(!this._fileHandler.doesFileExist("data/npcs/" + i + ".json")) {
+                break;
+            }
+            NPC newNpc = this._fileHandler.getJSON("data/npcs/" + i + ".json", NPC.class);
+            this._npcs.put(newNpc.getId(), newNpc);
+            i++;
+        }
+        */
+        
+        //A method for creating NPCs
+        
+        UUID curId = UUID.randomUUID();
+        this._rebels.put(curId, new NPC("Rebel1", "He be wow!", -1, 0, 1, curId));
+        
+        curId = UUID.randomUUID();
+        this._rebels.put(curId, new NPC("Rebel2", "He be not wow!!", -1, 1, 1, curId));
+        
+        curId = UUID.randomUUID();
+        this._rebels.put(curId, new NPC("Rebel3", "He be not wow!!", -1, 1, 1, curId));
+        
+        ArrayList<NPCHolder> npcHolders = new ArrayList<>();
+        for(Moon moon : this._moons.values()) {
+            npcHolders.add(moon);
+        }
+        placeNpcs(this._rebels.values(), npcHolders);
+        
+        //createRebels();
+    }
+    
+    public void placeNpcs(Collection<NPC> npcList, ArrayList<NPCHolder> holdersList) {
+        ArrayList<NPCHolder> hasNoNpc = new ArrayList<>();
+        HashMap<Integer, NPCHolder> planetPids = new HashMap<>();
+        ArrayList<NPC> hasNoPid = new ArrayList<>();
+        int index;
+        for(NPCHolder planet : holdersList) {
+            hasNoNpc.add(planet);
+            planetPids.put(planet.getPid(), planet);
+        }
         
         //After creating NPCs using JSON
-        for(NPC npc : this._npcs.values()) {
+        for(NPC npc : npcList) {
             if(npc.getPid() == -1) {
                 hasNoPid.add(npc);
             } else {
@@ -746,11 +854,11 @@ public class Game {
             i++;
         }
         
-        Planet[] planets = new Planet[this._planets.size()];
-        this._planets.values().toArray(planets);
-        i = (int)(Math.random()*this._planets.size());
+        NPCHolder[] planets = new NPCHolder[holdersList.size()];
+        holdersList.toArray(planets);
+        i = (int)(Math.random()*holdersList.size());
         for(NPC npc : hasNoPid) {
-            if(i > this._planets.size()) {
+            if(i > holdersList.size()) {
                 i = 0;
             }
             
@@ -758,17 +866,6 @@ public class Game {
             npc.setPlanetId(planets[i].getId());
             i++;
         }
-        
-        //createRebels();
-        
-    }
-    
-    public void placeNpcs(HashMap<UUID, NPC> npcList, NPCHolders holdersList) {
-        
-    }
-    
-    private void createRebels() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     public void createItems() {

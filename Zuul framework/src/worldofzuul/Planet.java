@@ -7,11 +7,10 @@ import java.util.UUID;
  * Holds all of the information regarding planets
  * @author DanielToft
  */
-public class Planet extends NPCHolders {
+public class Planet extends NPCHolder {
 
     //Initializing variables
-    private UUID _moon;
-    private String _name;        //name of the planet
+    private UUID _moonUuid;
     private int _xCoor;          //x-coordinate of the planet
     private int _yCoor;          //y-coordinate of the planet
     private int _referenceNum;   //unique referencenumber for the planet
@@ -19,8 +18,7 @@ public class Planet extends NPCHolders {
 
     //Constructor
     public Planet(String name, String description, int xCoor, int yCoor, int pid) {
-        super(description, pid);
-        this._name = name;
+        super(name, description, pid);
         this._xCoor = xCoor;
         this._yCoor = yCoor;
         this._referenceNum = Planet.referenceNumCounter;
@@ -29,11 +27,11 @@ public class Planet extends NPCHolders {
 
     // ***** GETTERS *****
     public boolean hasMoon() {
-        return this._moon != null;
+        return this._moonUuid != null;
     }
-
-    public String getName() {
-        return this._name;
+    
+    public UUID getMoonUuid() {
+        return this._moonUuid;
     }
 
     public int getXCoor() {
@@ -50,8 +48,8 @@ public class Planet extends NPCHolders {
     // ***** GETTERS END *****
     
     // ***** SETTERS *****
-    public void setMoonId(UUID moonId) {
-        this._moon = moonId;
+    public void setMoonUuid(UUID moonId) {
+        this._moonUuid = moonId;
     }
     // ***** SETTERS END *****
 }

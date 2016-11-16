@@ -7,8 +7,8 @@ import java.util.UUID;
  * because their UUID will get assigned to a planet
  * @author DanielToft
  */
-public class Moon extends NPCHolders {
-    public Moon(String description, int pid) {
-        super(description, pid);
+public class Moon extends NPCHolder {
+    public Moon(String name, String description, int pid) {
+        super(name, description, pid);
     }
 }

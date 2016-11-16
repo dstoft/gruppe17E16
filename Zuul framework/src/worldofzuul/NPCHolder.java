@@ -12,14 +12,16 @@ import java.util.UUID;
  *
  * @author DanielToft
  */
-public abstract class NPCHolders {
+public abstract class NPCHolder {
     
     private UUID _id;
     private int _pid;
     private ArrayList<UUID> _npcIds;
     private String _description;
+    private String _name;
     
-    public NPCHolders(String description, int pid) {
+    public NPCHolder(String name, String description, int pid) {
+        this._name = name;
         this._description = description;
         this._npcIds = new ArrayList<>();
         this._id = UUID.randomUUID();
@@ -32,6 +34,10 @@ public abstract class NPCHolders {
     
     public int getPid() {
         return this._pid;
+    }
+
+    public String getName() {
+        return this._name;
     }
 
     public String getDescription() {
