@@ -105,8 +105,7 @@ public class Game {
             wantToQuit = quit(command); //Use the quit() method to figure out whether the player really wants to quit, save the returned value
             incrementTime(1); // Adds 1 to the time
         } else if (commandWord == CommandWord.GO) { //If the command is go,
-            //Here comes a movementment method from the class MovementCalculator, which is extended!
-            incrementTime(5); // Adds 5 everytime you fly
+            //Here comes a movementment method from the class MovementCalculator, which is extended.
             UUID planetId = this.getPlanetIdFromReferenceNumber(command.getSecondWord());
             if (planetId == null) {
                 return false;
@@ -315,7 +314,8 @@ public class Game {
 
             this._dashboard.print("Refilled fuel tank!");
             this._player.setFuel(this._player.getMaxFuel());
-
+            int travelTime = 10;
+            incrementTime(this._movementCalculator.calculateDistance(curPlanet.getXCoor(), curPlanet.getYCoor(), nextPlanet.getXCoor(), nextPlanet.getYCoor()) / travelTime);
             this.startConversation();
         } else {
             this._dashboard.print("Sorry, you're unable to reach the planet you were trying to travel to, try moving to a closer planet and try again.");
@@ -334,7 +334,6 @@ public class Game {
         this._currentConversation.createWholeConversation(this._fileHandler.getText(this._currentConversation.getConversationId()));
         this._dashboard.print(this._currentConversation.getQText());
         this._dashboard.print(this._currentConversation.getPossibleAnswers());
-        incrementTime(3); // Adds 3 to the time
     }
 
     /**
@@ -429,14 +428,17 @@ public class Game {
     public void deliverPackage(UUID npcId) {
         Items item = this._items.get(this._npcs.get(npcId).getPackageId());
         this._player.removeItem(item.getId(), item.getWeight());
+        if (this.time  <= this.time + 20 ) {
+        this._player.setReputation(this._player.getReputation() + 5);
+        }
     }
-
+    
     public boolean pickupPackage(UUID npcId) {
         for (UUID itemUuid : this._npcs.get(npcId).getInventoryUuids()) {
-            incrementTime(1); // Adds 1 to the time
             if (this._player.addItem(itemUuid, this._items.get(itemUuid).getWeight())) {
                 this._dashboard.print("You picked up " + this._items.get(itemUuid).getDescription());
                 this._npcs.get(npcId).removeItem(itemUuid, this._items.get(itemUuid).getWeight());
+                this._items.get(itemUuid).setDeliveryTime(20);
             } else {
                 this._dashboard.print("You were unable to pick up " + this._items.get(itemUuid).getDescription() + ", since you don't have space in your inventory!");
                 return false;
@@ -686,14 +688,17 @@ public class Game {
     public void refillPakageTime(int i){ // This method  -  to the time
         time = -i;
     
+    } 
+    
+    public int checkTimers(){ // this method checks the times and returns it        
+        return time;
     }
     
-    public int checkTimers(){ // this method checks the times and returns it
-        
-    return time;
-            
-    }
-    
+  public void addDeliveryTime(){
+  
+     
+  
+  }
     
 }
 

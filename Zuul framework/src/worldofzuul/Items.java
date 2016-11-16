@@ -21,21 +21,25 @@ public class Items {
     private int rid;  // The RID for the destination
     private UUID npcId;
     private int referenceNumber;
+    private int deliverytime; // Each item have a delivery time
     //private boolean papers; // Does the user have papers on the item
+    
 
     /**
      * The constructor
      * @param weight
      * @param desciption
      * @param rid the id of where the item is to be delivered
+     * @param deliverytime is the time to deliver the item
      */
-    public Items(int weight, String desciption, int rid) {
+    public Items(int weight, String desciption, int rid, int deliverytime) {
         this.id = UUID.randomUUID();
         this.weight = weight;
         this.description = desciption;
         this.rid = rid;
         this.referenceNumber = Items.referenceCounter;
         Items.referenceCounter++;
+        this.deliverytime = deliverytime;
         //this.papers = papers;
 
     }
@@ -68,6 +72,11 @@ public class Items {
     public int getReferenceNumber() {
         return this.referenceNumber;
     }
+    
+    public int getDeliveryTime(){
+    
+    return this.deliverytime;
+    }
 
     /*public boolean getPapers() {         //Method to check if the user have papers on the item.
     return papers;
@@ -78,5 +87,11 @@ public class Items {
     public void setNpcId(UUID npcId) {
         this.npcId = npcId;
     }
+    
+   public void setDeliveryTime(int deliverytime){
+        this.deliverytime = deliverytime;
+            
+        }
+    
     // ***** SETTERS END *****
 }
