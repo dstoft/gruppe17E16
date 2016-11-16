@@ -8,7 +8,18 @@ import java.util.UUID;
  * @author DanielToft
  */
 public class Moon extends NPCHolder {
+    
+    private UUID parentPlanetUuid;
+    
     public Moon(String name, String description, int pid) {
         super(name, description, pid);
+    }
+    
+    public UUID getParentPlanetUuid() {
+        return this.parentPlanetUuid;
+    }
+    
+    public void setParentPlanetUuid(UUID parentPlanetUuid) {
+        this.parentPlanetUuid = parentPlanetUuid;
     }
 }

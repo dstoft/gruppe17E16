@@ -27,14 +27,14 @@ public class NPC {
     private int _nextConversationId;
     Inventory _inventory;
 
-    public NPC(String name, String description, int rid, int pid, int conversationId, UUID id) {
+    public NPC(String name, String description, int rid, int pid, int conversationId) {
         this._name = name;
         this._description = description;
         this._rid = rid;
         this._pid = pid;
         this._conversationId = conversationId;
         this._nextConversationId = -1;
-        this._id = id;
+        this._id = UUID.randomUUID();
         
         this._referenceNumber = NPC.referenceCounter;
         NPC.referenceCounter++;
