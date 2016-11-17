@@ -1,6 +1,7 @@
 package worldofzuul;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -38,4 +39,15 @@ public class FileHandler{
         return (file.exists() && !file.isDirectory());
     }
 
+    public void writeToFile(String src, String toWrite) {
+        try {
+            FileWriter fileWriter = new FileWriter(src);
+            fileWriter.write(toWrite);
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (Exception ex) {
+            
+        }
+    }
+    
 }
