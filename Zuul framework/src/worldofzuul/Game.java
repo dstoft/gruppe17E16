@@ -372,7 +372,9 @@ public class Game {
         if(this._movementCalculator.isReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getFuel())) {
             this._dashboard.print("Now traveling to " + nextNpcHolder.getName());
             characterToTravel.setCurrentPlanet(nextPositionUuid);
-
+            
+            tryNpcMovement();
+            
             this._dashboard.print("Refilled fuel tank!");
             this._player.setFuel(this._player.getMaxFuel());
             
@@ -757,15 +759,15 @@ public class Game {
         
         //A method for creating NPCs
         
-        NPC newNpc = new NPC("Planet1NPC", "He be wow!", -1, 0, 1);
+        NPC newNpc = new NPC("Planet1NPC", "He be wow!", -1, 0, 1, 0);
         this._npcs.put(newNpc.getId(), newNpc);
         this._civilians.put(newNpc.getId(), newNpc);
         
-        newNpc = new NPC("Planet2NPC", "He be not wow!!", 1, 1, 1);
+        newNpc = new NPC("Planet2NPC", "He be not wow!!", 1, 1, 1, 0);
         this._npcs.put(newNpc.getId(), newNpc);
         this._civilians.put(newNpc.getId(), newNpc);
         
-        newNpc = new NPC("Planet2NPC2", "He be not wow!!", 1, 1, 1);
+        newNpc = new NPC("Planet2NPC2", "He be not wow!!", 1, 1, 1, 0);
         this._npcs.put(newNpc.getId(), newNpc);
         this._civilians.put(newNpc.getId(), newNpc);
         
@@ -794,15 +796,15 @@ public class Game {
         
         //A method for creating NPCs
         
-        NPC newNpc = new NPC("Rebel1", "He be wow!", -1, 0, 1);
+        NPC newNpc = new NPC("Rebel1", "He be wow!", -1, 0, 1, 0);
         this._npcs.put(newNpc.getId(), newNpc);
         this._rebels.put(newNpc.getId(), newNpc);
         
-        newNpc = new NPC("Rebel2", "He be not wow!!", -1, 1, 1);
+        newNpc = new NPC("Rebel2", "He be not wow!!", -1, 1, 1, 0);
         this._npcs.put(newNpc.getId(), newNpc);
         this._rebels.put(newNpc.getId(), newNpc);
         
-        newNpc = new NPC("Rebel3", "He be not wow!!", -1, 1, 1);
+        newNpc = new NPC("Rebel3", "He be not wow!!", -1, 1, 1, 10);
         this._npcs.put(newNpc.getId(), newNpc);
         this._rebels.put(newNpc.getId(), newNpc);
         
@@ -1010,5 +1012,39 @@ public class Game {
         returnArray[1] = planet.getYCoor();
         return returnArray;
             
+    }
+    
+    public void tryNpcMovement() {
+        ArrayList<NPCHolder> npcHolders = new ArrayList<>();
+        for(Moon moon : this._moons.values()) {
+            npcHolders.add(moon);
+        }
+        tryNpcMovementCalculations(this._rebels.values(), npcHolders);
+        
+        npcHolders = new ArrayList<>();
+        for(Planet planet : this._planets.values()) {
+            npcHolders.add(planet);
+        }
+        tryNpcMovementCalculations(this._civilians.values(), npcHolders);
+    }
+    
+    public void tryNpcMovementCalculations(Collection<NPC> npcList, ArrayList<NPCHolder> holdersList) {
+        for(NPC npc : npcList) {
+            NPCHolder[] npcHolders = new NPCHolder[holdersList.size()];
+            holdersList.toArray(npcHolders);
+            
+            if(npc.getChanceToMove() > 0) {
+                int randomNumber = (int)(Math.random()*10);
+                if(npc.getChanceToMove() > randomNumber) {
+                    int randomPlanet = (int)(Math.random()*npcHolders.length);
+                    while(npcHolders[randomPlanet].getId() == npc.getPlanetId()) {
+                        randomPlanet = (int)(Math.random()*npcHolders.length);
+                    }
+                    getNPCHolderFromUuid(npc.getPlanetId()).removeNpcId(npc.getId());
+                    npc.setPlanetId(npcHolders[randomPlanet].getId());
+                    npcHolders[randomPlanet].addNpcId(npc.getId());
+                }
+            }
+        }
     }
 }

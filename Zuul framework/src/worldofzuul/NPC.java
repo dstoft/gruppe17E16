@@ -23,15 +23,17 @@ public class NPC {
     private int _pid;
     private UUID _packageId;
     private UUID _planetId;
+    private int _chanceToMove;
     private int _conversationId;
     private int _nextConversationId;
     Inventory _inventory;
 
-    public NPC(String name, String description, int rid, int pid, int conversationId) {
+    public NPC(String name, String description, int rid, int pid, int conversationId, int chanceToMove) {
         this._name = name;
         this._description = description;
         this._rid = rid;
         this._pid = pid;
+        this._chanceToMove = chanceToMove;
         this._conversationId = conversationId;
         this._nextConversationId = -1;
         this._id = UUID.randomUUID();
@@ -54,6 +56,10 @@ public class NPC {
         return this._planetId;
     }
 
+    public int getChanceToMove() {
+        return this._chanceToMove;
+    }
+    
     public int getRid() {
         return this._rid;
     }
