@@ -112,7 +112,7 @@ public class Game {
             }
             this.travelToPlanet(this._player, planetId);
         } else if (commandWord == CommandWord.DROP) {
-            this.dropItem(command.getSecondWord()); 
+            this.dropItem(command.getSecondWord());
             incrementTime(1); // Adds 1 to the time
         } else if (commandWord == CommandWord.PRINT) {
             this.whichPrint(command.getSecondWord());
@@ -258,7 +258,7 @@ public class Game {
     public void printPlayerStats() {
         this._dashboard.print("Current fuel: " + this._player.getFuel());
         this._dashboard.print("Current reputation: " + this._player.getReputation());
-        this._dashboard.print("You have used" + this.checkTimers() +  "time");
+        this._dashboard.print("You have used" + this.checkTimers() + "time");
     }
 
     /**
@@ -428,11 +428,14 @@ public class Game {
     public void deliverPackage(UUID npcId) {
         Items item = this._items.get(this._npcs.get(npcId).getPackageId());
         this._player.removeItem(item.getId(), item.getWeight());
-        if (this.time  <= this.time + 20 ) {
-        this._player.setReputation(this._player.getReputation() + 5);
+        if (this.time <= this.time + 20) {
+            this._player.setReputation(this._player.getReputation() + 5);
+        }
+        if (!item.getPapers()) {
+            this._player.setReputation(this._player.getReputation() - 15);
         }
     }
-    
+
     public boolean pickupPackage(UUID npcId) {
         for (UUID itemUuid : this._npcs.get(npcId).getInventoryUuids()) {
             if (this._player.addItem(itemUuid, this._items.get(itemUuid).getWeight())) {
@@ -552,7 +555,6 @@ public class Game {
      */
     public void dropItem(String itemName) {
         UUID itemUuid = this.getItemIdFromReferenceNumber(itemName);
-        
 
         for (UUID itemId : this._player.getInventoryUuids()) {
             if (itemId == itemUuid) {
@@ -625,82 +627,99 @@ public class Game {
         this._items.put(newItem.getId(), newItem);
         hasNoNpc.put(newItem.getRID(), newItem);
 
-        ArrayList<NPC> hasNoPackageDelivery = new ArrayList<>();
-        ArrayList<Items> hasNpcDelivery = new ArrayList<>();
+        for (Items item : this._items.values()) {
+            if (item.getRID() == -1) {
+                item.setPapersFalse();
+            } else {
+                item.setPapersTrue();
+            }
 
-        for (NPC npc : this._npcs.values()) {
+        }
+    }
+
+    // rid på -1 sæt til false. Ellers sæt math.random
+    ArrayList<NPC> hasNoPackageDelivery = new ArrayList<>();
+    ArrayList<Items> hasNpcDelivery = new ArrayList<>();
+
+    for (NPC npc
+
+    : this._npcs.values () 
+        ) {
             if (npc.getRid() == -1) {
-                hasNoPackageDelivery.add(npc);
-                continue;
-            }
-            if (hasNoNpc.containsKey(npc.getRid())) {
-                npc.setPackageId(hasNoNpc.get(npc.getRid()).getId());
-                hasNoNpc.get(npc.getRid()).setNpcId(npc.getId());
-                hasNpcDelivery.add(hasNoNpc.get(npc.getRid()));
-                hasNoNpc.remove(npc.getRid());
-            }
+            hasNoPackageDelivery.add(npc);
+            continue;
         }
+        if (hasNoNpc.containsKey(npc.getRid())) {
+            npc.setPackageId(hasNoNpc.get(npc.getRid()).getId());
+            hasNoNpc.get(npc.getRid()).setNpcId(npc.getId());
+            hasNpcDelivery.add(hasNoNpc.get(npc.getRid()));
+            hasNoNpc.remove(npc.getRid());
+        }
+    }
 
-        for (NPC npc : hasNoPackageDelivery) {
+    for (NPC npc : hasNoPackageDelivery
+
+    
+        ) {
             if (hasNoNpc.size() > 0) {
-                int itemRid = 0;
-                for (Items item : hasNoNpc.values()) {
-                    npc.setReceiverRid(item.getRID());
-                    hasNpcDelivery.add(hasNoNpc.get(npc.getRid()));
-                    itemRid = item.getRID();
-                    break;
-                }
-                hasNoNpc.remove(itemRid);
+            int itemRid = 0;
+            for (Items item : hasNoNpc.values()) {
+                npc.setReceiverRid(item.getRID());
+                hasNpcDelivery.add(hasNoNpc.get(npc.getRid()));
+                itemRid = item.getRID();
+                break;
             }
+            hasNoNpc.remove(itemRid);
         }
+    }
 
-        ArrayList<NPC> allNpcs = new ArrayList<>();
-        for (NPC npc : this._npcs.values()) {
+    ArrayList<NPC> allNpcs = new ArrayList<>();
+    for (NPC npc
+
+    : this._npcs.values () 
+        ) {
             allNpcs.add(npc);
+    }
+
+    int index = 0;
+    for (Items item : hasNpcDelivery
+
+    
+        ) {
+            if (index >= allNpcs.size()) {
+            index = 0;
         }
 
-        int index = 0;
-        for (Items item : hasNpcDelivery) {
+        if (item.getRID() == allNpcs.get(index).getRid()) {
+            index++;
             if (index >= allNpcs.size()) {
                 index = 0;
             }
-
-            if (item.getRID() == allNpcs.get(index).getRid()) {
-                index++;
-                if (index >= allNpcs.size()) {
-                    index = 0;
-                }
-            }
-
-            allNpcs.get(index).addItem(item.getId(), item.getWeight());
-            index++;
         }
-    }
 
-   /**
-     * Methods for chancing the time ingame
-     */
-    
-    public void incrementTime(int i) { // This method + to the time
-        time = +i;
+        allNpcs.get(index).addItem(item.getId(), item.getWeight());
+        index++;
     }
-    
-    public void refillPakageTime(int i){ // This method  -  to the time
-        time = -i;
-    
-    } 
-    
-    public int checkTimers(){ // this method checks the times and returns it        
-        return time;
-    }
-    
-  public void addDeliveryTime(){
-  
-     
-  
-  }
-    
 }
 
+/**
+ * Methods for chancing the time ingame
+ */
+public void incrementTime(int i) { // This method + to the time
+        time = +i;
+    }
 
-  
+    public void refillPakageTime(int i) { // This method  -  to the time
+        time = -i;
+
+    }
+
+    public int checkTimers() { // This method checks the times and returns it        
+        return time;
+    }
+
+    public void addDeliveryTime() { // Adds time to the delivery time
+
+    }
+
+}
