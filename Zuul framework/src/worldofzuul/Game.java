@@ -74,6 +74,8 @@ public class Game {
     public void play() {
         printWelcome(); //Prints a welcome message
 
+        this.printHighScore();
+        
         this._player.setCurrentPlanet(this._startingPlanet);
         
         //Start conversation or use the greet command for first encounter?
@@ -1050,5 +1052,44 @@ public class Game {
                 }
             }
         }
+    }
+    
+    public void printHighScore() {
+        HighScore currentHighScore = this._fileHandler.getJSON("highscore.json", HighScore.class);
+        HighScore playerScore = new HighScore(this._player.getReputation(), 2, "matias");
+        this._dashboard.print(currentHighScore.toString());
+        this._dashboard.print(playerScore.toString());
+    }
+
+    // saves the Score IF we beat the current HighScore. 
+    public void saveHighScore() {
+        HighScore playerScore = new HighScore(this._player.getReputation(), 2, "matias");  // tid : 2 og name :  matias er blot place holders. 
+        if (!this._fileHandler.doesFileExist("highscore.json")) {
+            this._fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
+
+        } else {
+            HighScore currentHighScore = this._fileHandler.getJSON("highscore.json", HighScore.class);
+            if (playerScore.getRep() == currentHighScore.getRep()) {
+                if (playerScore.getTime() > currentHighScore.getTime()) {
+                    this._fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
+                } else if (playerScore.getTime() < currentHighScore.getTime()) {
+                    this._dashboard.print("Sorry, the current highscore managed to get the same score, with a better time");
+                    this._dashboard.print("Your score was" + playerScore.getRep());
+                } else if (playerScore.getTime() == playerScore.getTime()) {
+                    this._dashboard.print("You managed to get exactly the same score and time, as the previous highscore player");
+                    this._dashboard.print("As programmers we didnt think this was possible, therefor we have no other option, to declare Matias Marek as the ruler and all time HighScore champion");
+
+                }
+
+            } else if (playerScore.getRep() > currentHighScore.getRep()) {
+                //Save high score!
+                this._fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
+            } else {
+                this._dashboard.print("Sorry, you didn't beat the highscore! Cunt");
+                this._dashboard.print("Your score was: " + playerScore.getRep());
+            }
+
+        }
+
     }
 }
