@@ -8,7 +8,7 @@ public enum CommandWord
     /**
      * The commands recognized by the system
      */
-    GO("go"), QUIT("quit"), HELP("help"), DROP("drop"), PRINT("print"), SCAN("scan"), UNKNOWN("?"), SAY("say"), GREET("greet");
+    GO("go"), QUIT("quit"), HELP("help"), DROP("drop"), PRINT("print"), SCAN("scan"), UNKNOWN("?"), SAY("say"), GREET("greet"), WARP("warp");
     
     private String commandString;
     

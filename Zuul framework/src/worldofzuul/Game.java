@@ -131,11 +131,7 @@ public class Game {
             //Here comes a movementment method from the class MovementCalculator, which is extended!
             UUID planetId = this.getPlanetIdFromReferenceNumber(command.getSecondWord());
             if(planetId == null) { return false; }
-            if(this._planets.containsKey(planetId)) {
-                this.travelToPlanet(this._player, planetId, false);
-            } else {
-                this.travelToPlanet(this._player, planetId, true);
-            }
+            this.travelToPlanet(this._player, planetId);
             
         } else if (commandWord == CommandWord.DROP) {
             this.dropItem(command.getSecondWord());
@@ -147,6 +143,10 @@ public class Game {
             this.processAnswer(command.getSecondWord());
         } else if(commandWord == CommandWord.GREET) {
             this.processGreet(command.getSecondWord());
+        } else if(commandWord == CommandWord.WARP) {
+            UUID planetId = this.getPlanetIdFromReferenceNumber(command.getSecondWord());
+            if(planetId == null) { return false; }
+            this.processWarp(this._player, planetId);
         }
         
         return wantToQuit; //Return the boolean, whether the player wants to quit or not
@@ -364,7 +364,7 @@ public class Game {
      * @param characterToTravel which character to move
      * @param planetId which planet to move to
      */
-    public void travelToPlanet(Player characterToTravel, UUID nextPositionUuid, boolean isMoon) {
+    public void travelToPlanet(Player characterToTravel, UUID nextPositionUuid) {
         int[] currentPosition = getPositionCoordinates(this._player.getPlanetId());
         int[] nextPosition = getPositionCoordinates(nextPositionUuid);
         NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
@@ -384,6 +384,10 @@ public class Game {
         } else {
             this._dashboard.print("Sorry, you're unable to reach the planet you were trying to travel to, try moving to a closer planet and try again.");
         }
+    }
+    
+    public void processWarp(Player characterToTravel, UUID nextPositionUuid) {
+        
     }
     
     public void processGreet(String secondWord) {
