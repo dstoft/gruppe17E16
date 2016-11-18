@@ -381,15 +381,25 @@ public class Game {
             this._player.setFuel(this._player.getMaxFuel());
             
             this._dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
-            
-            //this.startConversation(this._planets.get(planetId).getNpcIds()[0]);
         } else {
             this._dashboard.print("Sorry, you're unable to reach the planet you were trying to travel to, try moving to a closer planet and try again.");
         }
     }
     
     public void processWarp(Player characterToTravel, UUID nextPositionUuid) {
+        int[] currentPosition = getPositionCoordinates(this._player.getPlanetId());
+        int[] nextPosition = getPositionCoordinates(nextPositionUuid);
+        NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
         
+        if(this._movementCalculator.isWarpReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getWarpfuel())) {
+            this._dashboard.print("Now warping to " + nextNpcHolder.getName());
+            characterToTravel.setCurrentPlanet(nextPositionUuid);
+            characterToTravel.setWarpfuel(characterToTravel.getWarpfuel() - this._movementCalculator.calculateWarpFuelUsage(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1]));
+            
+            this._dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
+        } else {
+            this._dashboard.print("Sorry, you're unable to reach the planet you were trying to warp to, try moving to a closer planet and try again.");
+        }
     }
     
     public void processGreet(String secondWord) {

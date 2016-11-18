@@ -26,6 +26,7 @@ public class Player {
         this._currentPlanetId = currentPlanet;
         this._maxFuel = maxFuel;
         this._fuel = maxFuel;
+        this._warpFuel = 50;
         this._reputation = startingReputation;
         
         this._inventory = new Inventory();

@@ -40,6 +40,15 @@ public class MovementCalculator {
         return reachablePlanets;
     }
     
+    public boolean isWarpReachable(int startX, int startY, int toX, int toY, int currentFuel) {
+        if(currentFuel >= (this.calculateDistance(startX, startY, toX, toY)/10)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
-    //calculateFuelUsage
+    public int calculateWarpFuelUsage(int startX, int startY, int toX, int toY) {
+        return this.calculateDistance(startX, startY, toX, toY);
+    }
 }
