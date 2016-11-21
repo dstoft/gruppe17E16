@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- * Holds all of the information regarding planets
- * @author DanielToft
+ * Holds all of the information regarding planets, except from NPC handling, which is handled by the super class NPCHolder
  */
 public class Planet extends NPCHolder {
 
@@ -14,9 +13,18 @@ public class Planet extends NPCHolder {
     private int _xCoor;          //x-coordinate of the planet
     private int _yCoor;          //y-coordinate of the planet
     private int _referenceNum;   //unique referencenumber for the planet
-    public static int referenceNumCounter = 1;    //static counter for creating new referencenumbers			
+    
+    //static counter for creating new referencenumbers, it starts at one, because the moon always has the number 0
+    public static int referenceNumCounter = 1;    		
 
-    //Constructor
+    /**
+     * Constructor
+     * @param name of the planet
+     * @param description of the planet
+     * @param xCoor the x coordinate of the planet
+     * @param yCoor the y coordinate of the planet
+     * @param pid the "planet id" of the planet, which tells NPC where they should be placed by the start of the game
+     */
     public Planet(String name, String description, int xCoor, int yCoor, int pid) {
         super(name, description, pid);
         this._xCoor = xCoor;

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * This class controls the flow of the game, it contains the while loop that
@@ -28,7 +27,19 @@ public class Game {
     private Player _player;
     private HashMap<UUID, Planet> _planets;
     private HashMap<UUID, Moon> _moons;
-    private HashMap<UUID, NPC> _npcs;
+    
+    /**
+     * Three maps of NPCs, the first one, npcs, holds all of the npcs,
+     * which is used for starting a conversation, figuring out which npc is adressed, etc.
+     * The difference of civilians and rebels are simply their movement pattern.
+     * Rebels only move to and from moons, where civilians only move to and from planets.
+     * The creation of a list allows methods of handling both civilians and rebels,
+     * when there is no difference, f.ex. creation of a new conversation.
+     * The only thing needed by the NPC is the conversation id, which is common for both NPC types.
+     * The only reason for the separation into two maps, is purely due to the movement pattern,
+     * as that is the only thing that separates them.
+     */
+    private HashMap<UUID, NPC> _npcs; 
     private HashMap<UUID, NPC> _civilians;
     private HashMap<UUID, NPC> _rebels;
     private HashMap<UUID, Items> _items;
@@ -267,6 +278,10 @@ public class Game {
         this._dashboard.print(toPrint);
     }
     
+    /**
+     * Prints the NPCs that the user can currently talk to, f.ex. when arriving a planet or moon.
+     * This method can be called during runtime using the command "scan npcs".
+     */
     public void printPossibleNpcs() {
         NPCHolder npcHolder = getNPCHolderFromUuid(this._player.getPlanetId());
         
@@ -386,6 +401,14 @@ public class Game {
         }
     }
     
+    /**
+     * A method used for processing the "warp" command during runtime.
+     * Looks very much like the travelToPlanet method. However this uses the Warp fuel as a limiting factor.
+     * As Warp fuel is different from regular fuel it also uses different movement calculations.
+     * There is a possibility of not traveling, if you do not have enough warp fuel.
+     * @param characterToTravel which character that should be moved
+     * @param nextPositionUuid which planet or moon that is the intended target.
+     */
     public void processWarp(Player characterToTravel, UUID nextPositionUuid) {
         int[] currentPosition = getPositionCoordinates(this._player.getPlanetId());
         int[] nextPosition = getPositionCoordinates(nextPositionUuid);
@@ -402,6 +425,11 @@ public class Game {
         }
     }
     
+    /**
+     * A method used for processing the "greet" command during runtime.
+     * 
+     * @param secondWord 
+     */
     public void processGreet(String secondWord) {
         if(secondWord == null) {
             this._dashboard.print("Use the greet command by writting \"greet [id]\". Write \"scan npcs\" to show possible NPCs and their ids.");

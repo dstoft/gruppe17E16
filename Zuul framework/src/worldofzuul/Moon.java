@@ -9,17 +9,27 @@ import java.util.UUID;
  */
 public class Moon extends NPCHolder {
     
-    private UUID parentPlanetUuid;
+    private UUID parentPlanetUuid; //Which planet holds this moon
     
+    /**
+     * Constructor
+     * @param name of the moon
+     * @param description of the moon
+     * @param pid identifies which NPC and which planet holds this moon at the start of the game
+     */
     public Moon(String name, String description, int pid) {
         super(name, description, pid);
     }
     
+    // ***** GETTERS *****
     public UUID getParentPlanetUuid() {
         return this.parentPlanetUuid;
     }
+    // ****** GETTERS END *****
     
+    // ****** SETTERS *****
     public void setParentPlanetUuid(UUID parentPlanetUuid) {
         this.parentPlanetUuid = parentPlanetUuid;
     }
+    // ****** SETTERS END *****
 }

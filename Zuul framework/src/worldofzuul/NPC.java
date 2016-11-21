@@ -13,21 +13,31 @@ import java.util.UUID;
  * @author emil_daniel
  */
 public class NPC {
+    //The number used by the user to reference the NPC during runtime
     public static int referenceCounter = 0;
     
     private String _name;
     private String _description;
     private UUID _id;
-    private int _referenceNumber;
-    private int _rid;
-    private int _pid;
-    private UUID _packageId;
-    private UUID _planetId;
+    private int _referenceNumber; //The number used by the user to reference the NPC during runtime
+    private int _rid; //Identifies which Item the NPC has to receive by the start of the game
+    private int _pid; //Identifies where the NPC should be placed at the start of the game
+    private UUID _packageId; //Which Item UUID the NPC has to receive
+    private UUID _planetId; //Which Planet/Moon UUID the NPC is placed at
     private int _chanceToMove;
     private int _conversationId;
     private int _nextConversationId;
     Inventory _inventory;
 
+    /**
+     * Constructor
+     * @param name of the NPC
+     * @param description of the NPC
+     * @param rid used to identify which items this NPC has to receive by the start of the game
+     * @param pid used to tell where the NPC should be placed (on a moon or planet) at the start of the game
+     * @param conversationId the first conversation id (which conversation file) the NPC should use at the start of the game
+     * @param chanceToMove whether or not the NPC can move. 0 means completely no movement, 10 means certain of moving, in between means x/10 chance to move
+     */
     public NPC(String name, String description, int rid, int pid, int conversationId, int chanceToMove) {
         this._name = name;
         this._description = description;
@@ -37,10 +47,10 @@ public class NPC {
         this._conversationId = conversationId;
         this._nextConversationId = -1;
         this._id = UUID.randomUUID();
+        this._inventory = new Inventory();
         
         this._referenceNumber = NPC.referenceCounter;
         NPC.referenceCounter++;
-        this._inventory = new Inventory();
     }
 
     // ***** GETTERS *****

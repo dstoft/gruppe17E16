@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- *
+ * A super class for Moons and Planets, as they have holding an NPC in common.
+ * This class holds the information about which NPC is at what planet.
+ * Along with other common attributes, as id, name, pid and description.
  * @author DanielToft
  */
 public abstract class NPCHolder {
@@ -20,6 +22,12 @@ public abstract class NPCHolder {
     private String _description;
     private String _name;
     
+    /**
+     * Constructor
+     * @param name the name of the planet / moon
+     * @param description the description of the planet / moon
+     * @param pid the pid, which tells the game which NPCs should be placed where at the beginning of the game.
+     */
     public NPCHolder(String name, String description, int pid) {
         this._name = name;
         this._description = description;
@@ -28,6 +36,7 @@ public abstract class NPCHolder {
         this._pid = pid;
     }
     
+    // ****** GETTERS ******
     public UUID getId() {
         return this._id;
     }
@@ -44,6 +53,10 @@ public abstract class NPCHolder {
         return this._description;
     }
     
+    /**
+     * Gets all of the NPC ids that is currently at the planet / moon.
+     * @return an array of UUIDs
+     */
     public UUID[] getNpcIds() {
         UUID[] returnArray = new UUID[this._npcIds.size()];
         int i = 0;
@@ -57,6 +70,7 @@ public abstract class NPCHolder {
     public boolean hasNpcId(UUID id) {
         return this._npcIds.contains(id);
     }
+    // ***** GETTERS END *****
     
     // ***** SETTERS *****
     public void addNpcId(UUID npcId) {

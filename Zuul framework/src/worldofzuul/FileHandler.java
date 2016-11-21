@@ -10,6 +10,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 public class FileHandler{
 
+    /**
+     * Used by the conversation class to read the conversation files,
+     * this method reads a file, line by line, and puts each line into the returned list.
+     * @param id identifies which file that should be read
+     * @return the list of strings
+     */
     public List<String> getText(int id) {
         List<String> text = null;
         try {
@@ -20,9 +26,12 @@ public class FileHandler{
         return text;
     }
     
-    
-
-    //Method for JSON
+    /**
+     * Reads a json file and returns a freshly created object of the type passed into the parameter.
+     * @param fileSource where to read the file
+     * @param classType which type of object that should be written to and returned
+     * @return a new object of the type that was passed in, in the parameter
+     */
     public <T> T getJSON(String fileSource, Class<T> classType) {
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -32,6 +41,11 @@ public class FileHandler{
         }
     }
     
+    /**
+     * Checks whether a file exists and is not a directory ("folder").
+     * @param fileSource which path to check
+     * @return a boolean, whether the file exists or not and is not a "folder"
+     */
     public boolean doesFileExist(String fileSource) {
         File file = new File(fileSource);
         // .exists() will return true, if the fileSource is a directory (a folder), 
@@ -39,6 +53,12 @@ public class FileHandler{
         return (file.exists() && !file.isDirectory());
     }
 
+    /**
+     * Writes to a file, it simply overwrites whatever is already written to file,
+     * or it creates a new file, if the file is non-existing.
+     * @param src which path to write to
+     * @param toWrite what to write in the file
+     */
     public void writeToFile(String src, String toWrite) {
         try {
             FileWriter fileWriter = new FileWriter(src);
