@@ -50,7 +50,7 @@ public class Items {
         return rid;
     }
 
-    public UUID getNpcId() {
+    public UUID getNpcId() { // method for getting the NPC id
         return this.npcId;
     }
 
