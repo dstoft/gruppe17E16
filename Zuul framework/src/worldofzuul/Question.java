@@ -1,5 +1,10 @@
 package worldofzuul;
 
+/**
+ * Used to hold information for each question in a conversation.
+ * It holds information about it self (the text that should be printed),
+ * and the possible answers that the user can answer to this player.
+ */
 import java.util.ArrayList;
 
 public class Question{
@@ -10,18 +15,24 @@ public class Question{
     private Answer _currentAnswer;
 
 
-    //Constructor
+    /**
+     * Constructor
+     * @param qText the text that should be printed when the played "gets" to this question
+     * @param numOfAns the amount of possible answers this question has
+     */
     public Question(String qText, int numOfAns) {
         this._qText = qText;
         this._numOfAns = numOfAns;
         this._answers = new ArrayList<>();
         this._currentAnswer = null;
     }
-
-
-
+    
+    /**
+     * Finds the answer based on the answer reference that the player has typed in.
+     * @param answerRef the string of what the player has typed in
+     */
     public void findAnswer(String answerRef) { //Method for finding an answer
-        for (Answer answer:this._answers) {	   //for loop, which checks if rightAnswer is an answer
+        for (Answer answer : this._answers) {
             if (answerRef.equals(answer.getReferenceWord())) {
                 this._currentAnswer = answer;
                 break;
@@ -31,16 +42,19 @@ public class Question{
         }
     }
 
-    //Method for getting possible answer.
+    /**
+     * Gets a string with the possible answers.
+     * @return a string that contains the possible answers formatted correctly
+     */
     public String getPossibleAnswers() {
-        String returnString = ""; //returns a string ""
-        for (Answer answer:this._answers) {		  //for loop, which returns a String with possible answers
-            returnString += answer.getReferenceWord() + ", "; //and adds a "," between the ReferenceWord = possible answers.
+        String returnString = "";
+        for (Answer answer : this._answers) {
+            returnString += answer.getReferenceWord() + ", ";
         }
         return returnString;
     }
 
-    
+    // ***** GETTERS *****
     public String getQText() {
         return this._qText;
     }
@@ -48,13 +62,7 @@ public class Question{
     public int getNumOfAns() {
         return this._numOfAns;
     }
-
-
-    public ArrayList<Answer> getAnswer() {
-        return this._answers;
-    }
-
-
+    
     public boolean hasCurrentAnswer() {
         return this._currentAnswer != null;
     }
@@ -70,9 +78,16 @@ public class Question{
     public int getNextLineNumber() {
         return this._currentAnswer.getNextLineNumber();
     }
+    // ***** GETTERS END *****
     
-    public void addAnswer(int nextLineNumber, String referenceWord, 
-                          String reactText, String exeLine) {
-        _answers.add(new Answer(nextLineNumber, referenceWord, reactText, exeLine));
+    /**
+     * Adds a answer with the parameters. See Answers class for description of these parameters.
+     * @param nextLineNumber
+     * @param referenceWord
+     * @param reactText
+     * @param exeLine 
+     */
+    public void addAnswer(int nextLineNumber, String referenceWord, String reactText, String exeLine) {
+        this._answers.add(new Answer(nextLineNumber, referenceWord, reactText, exeLine));
     }
 }
