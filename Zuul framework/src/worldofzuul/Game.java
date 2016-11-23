@@ -568,12 +568,27 @@ public class Game {
         return changedQuestion;
     }
     
+    /**
+     * A method used for execution commands from the Conversation.
+     * The method delivers a package according to the package id an NPC has.
+     * This method does not include if the player has the package or not,
+     * and should therefore only be executed after the "checkPackage".
+     * @param npcId the npc which has to receive the package
+     */
     public void deliverPackage(UUID npcId) {
         Items item = this._items.get(this._npcs.get(npcId).getPackageId());
         this._player.setReputation(this._player.getReputation() + item.getReputationWorth());
         this._player.removeItem(item.getId(), item.getWeight());
     }
     
+    /**
+     * This method is executed from the execution commands from Conversation.
+     * This method picks up every package the NPC has, 
+     * if you don't have space for the package you're trying to pick up, 
+     * it will print that it failed.
+     * @param npcId the npc that the user picks up packages from
+     * @return whether you succeeded or not to pick up all the packages
+     */
     public boolean pickupPackage(UUID npcId) {
         for(UUID itemUuid : this._npcs.get(npcId).getInventoryUuids()) {
             if(this._player.addItem(itemUuid, this._items.get(itemUuid).getWeight())) {
@@ -587,11 +602,18 @@ public class Game {
         return true;
     }
     
+    /**
+     * A method used to execute executionlines from Conversation.
+     * It will set two different next questions, 
+     * according to whether the player has a package UUID that is equal to what the NPC wants delivered.
+     * @param npcId the npc that the player wants to deliver to
+     * @param executionSplit used to get the two different question numbers that you have to proceed to
+     */
     public void checkPackage(UUID npcId, String executionSplit) {
         String[] whichQuestion = executionSplit.split("|");
-        //System.out.println(whichQuestion[0] + " " + whichQuestion[1] + " " + whichQuestion[2]);
         int[] questionNumbers = new int[2];
         try {
+            //Note, the split command somehow splits "1|2" into three array indexes: "1", "|" and "2"
             questionNumbers[0] = Integer.parseInt(whichQuestion[0]);
             questionNumbers[1] = Integer.parseInt(whichQuestion[2]);
         } catch(NumberFormatException e) {
@@ -609,6 +631,12 @@ public class Game {
         this._currentConversation.setNextQuestion(questionNumbers[1]);
     }
     
+    /**
+     * This method is used to execute executionlines from Conversation.
+     * This sets two different question numbers according to whether the npc has any packages to pickup or not.
+     * @param npcId the npc to check whether it has items to pickup or not
+     * @param executionSplit used to extract which question to head to next
+     */
     public void checkPickup(UUID npcId, String executionSplit) {
         String[] whichQuestion = executionSplit.split("|");
         int[] questionNumbers = new int[2];
@@ -619,7 +647,7 @@ public class Game {
 
         }
         
-        if(this._npcs.get(npcId).getInventoryUuids().length > 0) { //What? Can the NPC have no items? Then why check for it?
+        if(this._npcs.get(npcId).getInventoryUuids().length > 0) { //The NPC can have 0 items
             Items curItem = this._items.get(this._npcs.get(npcId).getInventoryUuids()[0]);
             if(this._player.hasInventorySpaceFor(curItem.getWeight())) {
                 this._currentConversation.setNextQuestion(questionNumbers[0]);
@@ -753,6 +781,10 @@ public class Game {
         
     }
     
+    /**
+     * This creates the moons from JSON files, and places them according to their PID.
+     * This method assumes that every Moon has a PID that will match a planet's PID.
+     */
     public void createMoons() {
         /*
         int i = 0;
@@ -825,6 +857,10 @@ public class Game {
         
     }
     
+    /**
+     * A method used to create the rebels from JSON files.
+     * The method calls the method placeNPCs with the list of rebels and moons.
+     */
     private void createRebels() {
         /*
         int i = 0;
@@ -857,21 +893,39 @@ public class Game {
             npcHolders.add(moon);
         }
         placeNpcs(this._rebels.values(), npcHolders);
-        
-        //createRebels();
     }
     
+    /**
+     * A method for placing NPCs according to the two parameters.
+     * The method goes through 3 steps when placing NPCs:
+     * 1. it tries to match NPCs with PIDs and planets/moons with PIDs. Which can mean several NPCs at the same planet.
+     * 2. it then adds NPCs (who has no PID) to planets/moons without NPCs.
+     * 3. it then adds NPCs (who has no PID) to random planets/moons.
+     * These steps makes sure, that if there is NPCs without PIDs, these NPCs will be placed on empty planets/moons,
+     * and when there is no more empty planets/moons, NPCs without PIDs will be placed "randomly".
+     * @param npcList the list of NPCs to place (this "list" comes from the .values() from a HashMap)
+     * @param holdersList of the type NPCHolder, which is the superclass for Planets and Moons. NPCHolder holds the information and behaviour that handles NPCs at planets/moons.
+     */
     public void placeNpcs(Collection<NPC> npcList, ArrayList<NPCHolder> holdersList) {
+        //An array list that holds the planets/moons without an NPC.
+        //By the start all planets/moons are a part of this list.
+        //The planets/moons are removed from this list when they get an NPC.
         ArrayList<NPCHolder> hasNoNpc = new ArrayList<>();
+        //A HashMap, which makes it easy for this method to fecth the right planet/moon according to their PID.
+        //A PID is unique for each planet/moon.
         HashMap<Integer, NPCHolder> planetPids = new HashMap<>();
+        //A list used for step 2 and 3 (see the method Javadoc). 
+        //It holds all of the NPCs without a PID.
         ArrayList<NPC> hasNoPid = new ArrayList<>();
-        int index;
-        for(NPCHolder planet : holdersList) {
-            hasNoNpc.add(planet);
-            planetPids.put(planet.getPid(), planet);
+        
+        //Place all of the planets/moons in the lists.
+        for(NPCHolder npcHolder : holdersList) {
+            hasNoNpc.add(npcHolder);
+            planetPids.put(npcHolder.getPid(), npcHolder);
         }
         
-        //After creating NPCs using JSON
+        //Goes through the whole list of NPCs that has to be placed, and places them if they have an PID.
+        //If they don't have a PID, the NPC will be added to the list "hasNoPid".
         for(NPC npc : npcList) {
             if(npc.getPid() == -1) {
                 hasNoPid.add(npc);
@@ -882,14 +936,17 @@ public class Game {
             }
         }
         
+        //Goes through the NPC list that has no PID and places them on empty planets/moons,
+        // stops when there are not empty planets/moons left.
         int i = 0;
         for(NPC npc : hasNoPid) {
-            if(hasNoNpc.isEmpty()) {
+            //If the planet/moon list that has no NPC is empty, break this loop
+            if(hasNoNpc.isEmpty()) { 
                 break;
             }
             
             if(i > hasNoNpc.size()) {
-                i = 0;
+                break;
             }
             
             hasNoNpc.get(i).addNpcId(npc.getId());
@@ -898,33 +955,55 @@ public class Game {
             i++;
         }
         
+        //The NPCHolder list is made into an array, as it is easier to acces random entries in that compared to a list.
         NPCHolder[] planets = new NPCHolder[holdersList.size()];
         holdersList.toArray(planets);
-        i = (int)(Math.random()*holdersList.size());
         for(NPC npc : hasNoPid) {
-            if(i > holdersList.size()) {
-                i = 0;
+            //If the NPC already has a planet, skip placing them.
+            if(npc.getPlanetId() != null) { 
+                continue;
             }
+            
+            //Random which planet/moon that should get the next NPC
+            i = (int)(Math.random()*holdersList.size());
             
             planets[i].addNpcId(npc.getId());
             npc.setPlanetId(planets[i].getId());
-            i++;
         }
     }
     
+    /**
+     * This method is used for creating items from JSON files, determining receivers and placing the items.
+     * This method follows the algorithm (it is simplified here):
+     * 1. Creating the items from JSON files, and filling necessary lists
+     * 2. Making sure that there is as many items used run time as there is NPCs (and more filling of lists)
+     * 3a. Finding and adding receivers according to the RIDs of both NPCs and items.
+     * 3b. Finding and adding receivers that have no RIDs
+     * 4a. Finding and placing items at the right NPCs based on PIDs
+     * 4b. Finding and placing items without PIDs
+     */
     public void createItems() {
+        //There is more JSON files with items, than there actually has to be used in game.
+        //This list holds all the items currently in use
         ArrayList<Items> itemsUsed = new ArrayList<>();
+        
+        //Contains the items that has no delivery and pickup place.
+        //All items starts out in these lists, and slow gets removed during this method.
         ArrayList<Items> itemsHaveNoDelivery = new ArrayList<>();
         ArrayList<Items> itemsHaveNoPickup = new ArrayList<>();
+        
+        //Contains the NPCS that has no package it needs delivered and item the player can pickup.
+        //All items starts out in these lists, and slow gets removed during this method.
         ArrayList<NPC> npcsHaveNoDelivery = new ArrayList<>();
         ArrayList<NPC> npcsHaveNoPickup = new ArrayList<>();
         
+        //Holds all of the items and npcs that has a PID or RID
         HashMap<Integer, Items> itemsWithRid = new HashMap<>(); //Could just a be a list, as the key is never used
         HashMap<Integer, Items> itemsWithPid = new HashMap<>(); //Could just a be a list, as the key is never used
         HashMap<Integer, NPC> npcsWithRid = new HashMap<>();
         HashMap<Integer, NPC> npcsWithPid = new HashMap<>();
         
-        //Filling the lists for NPC, because this will be used in the "create items" block
+        //Filling the lists with NPCs
         for(NPC npc : this._npcs.values()) {
             npcsHaveNoDelivery.add(npc);
             npcsHaveNoPickup.add(npc);
@@ -935,7 +1014,7 @@ public class Game {
             }
         }
         
-        //Creating the items list
+        //1. Creating the items from JSON
         int i = 0;
         while(true) {
             if(!this._fileHandler.doesFileExist("data/items/" + i + ".json")) {
@@ -949,14 +1028,19 @@ public class Game {
             }
         }
         
-        //Fill up itemsUsed, so that it has as many items as there are NPCs
+        //2. Fill up itemsUsed, so that it has as many items as there are NPCs
         ArrayList<Items> allItems = new ArrayList<>(this._items.values());
+        //As long as the size of items used is smaller than the list of NPCs
         while(itemsUsed.size() < this._npcs.size()) {
             while(true) {
                 int randomIndex = (int)(Math.random()*this._items.size());
+                
+                //If the random picked item is already stated as being used,
+                // it will skip the rest of the while(true) and generate a new random index.
                 if(itemsUsed.contains(allItems.get(randomIndex))) {
                     continue;
                 }
+                
                 itemsUsed.add(allItems.get(randomIndex));
                 break;
             }
@@ -974,8 +1058,9 @@ public class Game {
         }
         //END: Filling the lists and hashmaps for items
         
-        //START: Adding receivers to both items and npcs
+        //START: 2a. Adding receivers to both items and npcs
         for(Items item : itemsWithRid.values()) {
+            //Uses the NPC HashMaps
             if(npcsWithRid.containsKey(item.getRid())) {
                 NPC npc = npcsWithRid.get(item.getRid());
                 npc.setPackageId(item.getId());
@@ -986,6 +1071,7 @@ public class Game {
             }
         }
         
+        //2b. Adding receivers for items and NPCs without an RID
         for(Items item : itemsHaveNoDelivery) {
             if(npcsHaveNoDelivery.size() > 0) {
                 int randomNpcIndex = (int)(Math.random()*npcsHaveNoDelivery.size());
@@ -1000,7 +1086,7 @@ public class Game {
         }
         //END: Adding receivers to both items and npcs
         
-        //START: Adding where the items are going to be picked up
+        //START: 3a. Adding where the items are going to be picked up
         for(Items item : itemsWithPid.values()) {
             if(npcsWithPid.containsKey(item.getPid())) {
                 NPC npc = npcsWithPid.get(item.getPid());
@@ -1011,31 +1097,34 @@ public class Game {
             }
         }
         
+        //3b. Adding where items without and PID are going to be picked up
         for(Items item : itemsHaveNoPickup) {
             if(npcsHaveNoPickup.size() > 0) {
                 while(true) {
                     int randomNpcIndex = (int)(Math.random()*npcsHaveNoPickup.size());
                     NPC npc = npcsHaveNoPickup.get(randomNpcIndex);
+                    
+                    //Avoid placing the item at the NPC that is set as the receiver
                     if(npc.getPackageId() == item.getId()) {
                         continue;
                     }
+                    
                     npc.addItem(item.getId(), item.getWeight());
                     npcsHaveNoPickup.remove(npc);
                     break;
                 }
-                
-                
             } else {
                 break;
             }
         }
         //END: Adding where the items are going to be picked up
-        
-        for(NPC item : this._npcs.values()) {
-            System.out.println(item.getPackageId());
-        }
     }
     
+    /**
+     * Gets a NPCHolder object from an UUID, this can either be a planet or moon UUID.
+     * @param positionUuid a planet or moon UUID
+     * @return the NPCHolder object
+     */
     public NPCHolder getNPCHolderFromUuid(UUID positionUuid) {
         if(this._planets.containsKey(positionUuid)) {
             return this._planets.get(positionUuid);
@@ -1044,6 +1133,11 @@ public class Game {
         }
     }
     
+    /**
+     * Gets the coordinates of a position based on a UUID
+     * @param positionUuid a planet or moons UUID
+     * @return an integer array of the size 2, with the x on index 0 and y on index 1
+     */
     public int[] getPositionCoordinates(UUID positionUuid) {
         Planet planet;
         if(this._planets.containsKey(positionUuid)) {
@@ -1058,6 +1152,9 @@ public class Game {
             
     }
     
+    /**
+     * This method prepares and calls the method that does the actual calculation for whether the NPC should move or not.
+     */
     public void tryNpcMovement() {
         ArrayList<NPCHolder> npcHolders = new ArrayList<>();
         for(Moon moon : this._moons.values()) {
@@ -1072,6 +1169,12 @@ public class Game {
         tryNpcMovementCalculations(this._civilians.values(), npcHolders);
     }
     
+    /**
+     * A method that goes through all of the NPCs passed in the parameter
+     * and places them at the planets/moons passed in the parameter.
+     * @param npcList The NPCs that has to be placed
+     * @param holdersList The places the NPCs can be placed
+     */
     public void tryNpcMovementCalculations(Collection<NPC> npcList, ArrayList<NPCHolder> holdersList) {
         for(NPC npc : npcList) {
             NPCHolder[] npcHolders = new NPCHolder[holdersList.size()];
@@ -1081,9 +1184,14 @@ public class Game {
                 int randomNumber = (int)(Math.random()*10);
                 if(npc.getChanceToMove() > randomNumber) {
                     int randomPlanet = (int)(Math.random()*npcHolders.length);
+                    
+                    //Make sure that the random generated new position, 
+                    // is not already the NPC's position.
                     while(npcHolders[randomPlanet].getId() == npc.getPlanetId()) {
                         randomPlanet = (int)(Math.random()*npcHolders.length);
                     }
+                    
+                    //Move the NPC
                     getNPCHolderFromUuid(npc.getPlanetId()).removeNpcId(npc.getId());
                     npc.setPlanetId(npcHolders[randomPlanet].getId());
                     npcHolders[randomPlanet].addNpcId(npc.getId());
@@ -1092,6 +1200,9 @@ public class Game {
         }
     }
     
+    /**
+     * Prints both the highscore fetched from the highscore file and the current player's highscore
+     */
     public void printHighScore() {
         HighScore currentHighScore = this._fileHandler.getJSON("highscore.json", HighScore.class);
         HighScore playerScore = new HighScore(this._player.getReputation(), 2, "matias");
@@ -1099,21 +1210,27 @@ public class Game {
         this._dashboard.print(playerScore.toString());
     }
 
-    // saves the Score IF we beat the current HighScore. 
+    /**
+     * Checks the current player's highscore, and if that highscore is better than the one fetched from the JSON file,
+     * save the current player's highscore as the highest.
+     */
     public void saveHighScore() {
+        //Creates a new highsore object based on the current player's stats
         HighScore playerScore = new HighScore(this._player.getReputation(), 2, "matias");  // tid : 2 og name :  matias er blot place holders. 
+        
+        //Read the highscore JSON file, if it exists!
         if (!this._fileHandler.doesFileExist("highscore.json")) {
             this._fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
-
         } else {
             HighScore currentHighScore = this._fileHandler.getJSON("highscore.json", HighScore.class);
             if (playerScore.getRep() == currentHighScore.getRep()) {
                 if (playerScore.getTime() > currentHighScore.getTime()) {
+                    //Save the highscore!
                     this._fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
                 } else if (playerScore.getTime() < currentHighScore.getTime()) {
                     this._dashboard.print("Sorry, the current highscore managed to get the same score, with a better time");
-                    this._dashboard.print("Your score was" + playerScore.getRep());
-                } else if (playerScore.getTime() == playerScore.getTime()) {
+                    this._dashboard.print("Your score was: " + playerScore.getRep());
+                } else if (playerScore.getTime() == playerScore.getTime()) { //Trolling, should possibly be removed.
                     this._dashboard.print("You managed to get exactly the same score and time, as the previous highscore player");
                     this._dashboard.print("As programmers we didnt think this was possible, therefor we have no other option, to declare Matias Marek as the ruler and all time HighScore champion");
 

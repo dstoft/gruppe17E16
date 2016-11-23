@@ -8,6 +8,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import org.codehaus.jackson.map.ObjectMapper;
 
+/**
+ * This files handles all of the file, both reading from and writing to.
+ */
 public class FileHandler{
 
     /**
