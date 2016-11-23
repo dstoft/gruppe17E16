@@ -709,7 +709,7 @@ public void incrementTime(int i) { // This method + to the time
         time = +i;
     }
 
-    public void refillPakageTime(int i) { // This method  -  to the time
+    public void decrementTime(int i) { // This method  -  to the time
         time = -i;
 
     }
@@ -717,9 +717,4 @@ public void incrementTime(int i) { // This method + to the time
     public int checkTimers() { // This method checks the times and returns it        
         return time;
     }
-
-    public void addDeliveryTime() { // Adds time to the delivery time
-
-    }
-
 }
