@@ -1,12 +1,12 @@
 package worldofzuul;
 
+import java.util.ArrayList;
+
 /**
  * Used to hold information for each question in a conversation.
  * It holds information about it self (the text that should be printed),
  * and the possible answers that the user can answer to this player.
  */
-import java.util.ArrayList;
-
 public class Question{
     //Attributter
     private String _qText;
