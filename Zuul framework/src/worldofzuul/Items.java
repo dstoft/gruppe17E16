@@ -34,7 +34,7 @@ public class Items {
      * @param rid identifies which NPC has to recieve the item at the start of the game
      * @param pid identifies where the item should "spawn" at the start of the game
      */
-    public Items(int weight, int reputationWorth, String desciption, int rid, int pid, int deliverytime, boolean papers) {
+    public Items(int weight, int reputationWorth, String desciption, int rid, int pid) {
         this.id = UUID.randomUUID();
         this.weight = weight;
         this.reputationWorth = reputationWorth;
@@ -43,8 +43,8 @@ public class Items {
         this.pid = pid;
         this.referenceNumber = Items.referenceCounter;
         Items.referenceCounter++;
-        this.deliverytime = deliverytime;
-        this.papers = papers;
+        this.deliverytime = 0;
+        this.papers = false;
 
     }
     
@@ -55,6 +55,7 @@ public class Items {
         this.id = UUID.randomUUID();
         this.referenceNumber = Items.referenceCounter;
         Items.referenceCounter++;
+        this.deliverytime = 0;
     }
 
     // ***** GETTERS *****

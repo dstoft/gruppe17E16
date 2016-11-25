@@ -612,7 +612,8 @@ public class Game {
         Items item = this._items.get(this._npcs.get(npcId).getPackageId());
         this._player.setReputation(this._player.getReputation() + item.getReputationWorth());
         this._player.removeItem(item.getId(), item.getWeight());
-        if (this.time <= this.time + 20) {
+        if (this.time <= item.getDeliveryTime()) {
+            this._dashboard.print("Congratulations, you delivered " + item.getDescription() + " on time!");
             this._player.setReputation(this._player.getReputation() + 5);
         }
         if (!item.getPapers()) {
@@ -629,11 +630,12 @@ public class Game {
      * @return whether you succeeded or not to pick up all the packages
      */
     public boolean pickupPackage(UUID npcId) {
+        incrementTime(1);
         for (UUID itemUuid : this._npcs.get(npcId).getInventoryUuids()) {
             if (this._player.addItem(itemUuid, this._items.get(itemUuid).getWeight())) {
                 this._dashboard.print("You picked up " + this._items.get(itemUuid).getDescription());
                 this._npcs.get(npcId).removeItem(itemUuid, this._items.get(itemUuid).getWeight());
-                this._items.get(itemUuid).setDeliveryTime(20);
+                this._items.get(itemUuid).setDeliveryTime(this.time + 200);
             } else {
                 this._dashboard.print("You were unable to pick up " + this._items.get(itemUuid).getDescription() + ", since you don't have space in your inventory!");
                 return false;
@@ -1103,8 +1105,12 @@ public class Game {
             itemsHaveNoPickup.add(item);
             if (item.getRid() != -1) {
                 itemsWithRid.put(item.getRid(), item);
+                item.setPapersTrue();
             } else if (item.getPid() != -1) {
                 itemsWithPid.put(item.getPid(), item);
+                item.setPapersTrue();
+            } else {
+                item.setPapersFalse();
             }
         }
         //END: Filling the lists and hashmaps for items
@@ -1308,6 +1314,7 @@ public class Game {
 
     /**
      * Methods for chancing the time ingame
+     * @param i the amount to increment the time with
      */
     public void incrementTime(int i) { // This method + to the time
         time = +i;
