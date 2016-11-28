@@ -9,10 +9,10 @@ import java.util.ArrayList;
  */
 public class Question{
     //Attributter
-    private String _qText;
-    private int _numOfAns;
-    private ArrayList<Answer> _answers;
-    private Answer _currentAnswer;
+    private String qText;
+    private int numOfAns;
+    private ArrayList<Answer> answers;
+    private Answer currentAnswer;
 
 
     /**
@@ -21,10 +21,10 @@ public class Question{
      * @param numOfAns the amount of possible answers this question has
      */
     public Question(String qText, int numOfAns) {
-        this._qText = qText;
-        this._numOfAns = numOfAns;
-        this._answers = new ArrayList<>();
-        this._currentAnswer = null;
+        this.qText = qText;
+        this.numOfAns = numOfAns;
+        this.answers = new ArrayList<>();
+        this.currentAnswer = null;
     }
     
     /**
@@ -32,12 +32,12 @@ public class Question{
      * @param answerRef the string of what the player has typed in
      */
     public void findAnswer(String answerRef) { //Method for finding an answer
-        for (Answer answer : this._answers) {
+        for (Answer answer : this.answers) {
             if (answerRef.equals(answer.getReferenceWord())) {
-                this._currentAnswer = answer;
+                this.currentAnswer = answer;
                 break;
             } else {
-                this._currentAnswer = null;
+                this.currentAnswer = null;
             }
         }
     }
@@ -48,7 +48,7 @@ public class Question{
      */
     public String getPossibleAnswers() {
         String returnString = "";
-        for (Answer answer : this._answers) {
+        for (Answer answer : this.answers) {
             returnString += answer.getReferenceWord() + ", ";
         }
         return returnString;
@@ -56,27 +56,27 @@ public class Question{
 
     // ***** GETTERS *****
     public String getQText() {
-        return this._qText;
+        return this.qText;
     }
 
     public int getNumOfAns() {
-        return this._numOfAns;
+        return this.numOfAns;
     }
     
     public boolean hasCurrentAnswer() {
-        return this._currentAnswer != null;
+        return this.currentAnswer != null;
     }
 
     public String getExecutionLine() {
-        return this._currentAnswer.getExecutionLine();
+        return this.currentAnswer.getExecutionLine();
     }
 
     public String getReactText() {
-        return this._currentAnswer.getReactText();
+        return this.currentAnswer.getReactText();
     }
 
     public int getNextLineNumber() {
-        return this._currentAnswer.getNextLineNumber();
+        return this.currentAnswer.getNextLineNumber();
     }
     // ***** GETTERS END *****
     
@@ -88,6 +88,6 @@ public class Question{
      * @param exeLine 
      */
     public void addAnswer(int nextLineNumber, String referenceWord, String reactText, String exeLine) {
-        this._answers.add(new Answer(nextLineNumber, referenceWord, reactText, exeLine));
+        this.answers.add(new Answer(nextLineNumber, referenceWord, reactText, exeLine));
     }
 }

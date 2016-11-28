@@ -23,10 +23,10 @@ public class Game {
 
     //Defines instance variables
     private Parser parser;
-    private Dashboard _dashboard;
-    private Player _player;
-    private HashMap<UUID, Planet> _planets;
-    private HashMap<UUID, Moon> _moons;
+    private Dashboard dashboard;
+    private Player player;
+    private HashMap<UUID, Planet> planets;
+    private HashMap<UUID, Moon> moons;
 
     /**
      * Three maps of NPCs, the first one, npcs, holds all of the npcs, which is
@@ -40,38 +40,38 @@ public class Game {
      * separation into two maps, is purely due to the movement pattern, as that
      * is the only thing that separates them.
      */
-    private HashMap<UUID, NPC> _npcs;
-    private HashMap<UUID, NPC> _civilians;
-    private HashMap<UUID, NPC> _rebels;
-    private HashMap<UUID, Items> _items;
-    private MovementCalculator _movementCalculator;
-    private FileHandler _fileHandler;
-    private Conversation _currentConversation;
+    private HashMap<UUID, NPC> npcs;
+    private HashMap<UUID, NPC> civilians;
+    private HashMap<UUID, NPC> rebels;
+    private HashMap<UUID, Items> items;
+    private MovementCalculator movementCalculator;
+    private FileHandler fileHandler;
+    private Conversation currentConversation;
     private int time;
-    private UUID _startingPlanet;
+    private UUID startingPlanet;
 
     /**
      * Constructor for the class Game, using the method createRooms() it creates
      * the rooms, sets current room and creates a new parser object
      */
     public Game() {
-        this._planets = new HashMap<>();
-        this._moons = new HashMap<>();
-        this._npcs = new HashMap<>();
-        this._civilians = new HashMap<>();
-        this._rebels = new HashMap<>();
-        this._items = new HashMap<>();
-        this._movementCalculator = new MovementCalculator();
-        this._fileHandler = new FileHandler();
+        this.planets = new HashMap<>();
+        this.moons = new HashMap<>();
+        this.npcs = new HashMap<>();
+        this.civilians = new HashMap<>();
+        this.rebels = new HashMap<>();
+        this.items = new HashMap<>();
+        this.movementCalculator = new MovementCalculator();
+        this.fileHandler = new FileHandler();
 
-        this._startingPlanet = this.createPlanets();
+        this.startingPlanet = this.createPlanets();
         this.createNpcs();
         this.createItems();
         this.time = 0;
 
         parser = new Parser(); //Creates a new object of the type Parser
-        this._player = new Player(this._startingPlanet, 100, 10);
-        this._dashboard = new Dashboard(); // Creates a new object of the type Dashboard. 
+        this.player = new Player(this.startingPlanet, 100, 10);
+        this.dashboard = new Dashboard(); // Creates a new object of the type Dashboard. 
 
         //createPlanets(); 
         //createNpcs();
@@ -87,20 +87,20 @@ public class Game {
 
         this.printHighScore();
 
-        this._player.setCurrentPlanet(this._startingPlanet);
+        this.player.setCurrentPlanet(this.startingPlanet);
 
         //Start conversation or use the greet command for first encounter?
-        this.startConversation(this._planets.get(this._player.getPlanetId()).getNpcIds()[0]);
+        this.startConversation(this.planets.get(this.player.getPlanetId()).getNpcIds()[0]);
 
         //Note, the while-loop below, is basically a do..while loop, because the value to check is set to false right before the loop itself
         //meaning, no matter what, the loop will run through at least once
         boolean finished = false;
         while (!finished) { //While it is not finished
-            this._dashboard.print();
+            this.dashboard.print();
             Command command = parser.getCommand(); //Returns a new object, holding the information, regarding the line typed by the user
             finished = processCommand(command); //Saves the boolean, whether the player wants to quit, in finished,
         }
-        this._dashboard.print("Thank you for playing.  Good bye."); //Print an end statement, this only happens when the game stops
+        this.dashboard.print("Thank you for playing.  Good bye."); //Print an end statement, this only happens when the game stops
     }
 
     /**
@@ -108,10 +108,10 @@ public class Game {
      * the starting room
      */
     private void printWelcome() {
-        this._dashboard.print();
-        this._dashboard.print("Welcome to the World of Zuul!");
-        this._dashboard.print("World of Zuul is a new, incredibly boring adventure game.");
-        this._dashboard.print("Type '" + CommandWord.HELP + "' if you need help."); //Command.HELP is found in the enum CommandWord, this returns the string corresponding to it
+        this.dashboard.print();
+        this.dashboard.print("Welcome to the World of Zuul!");
+        this.dashboard.print("World of Zuul is a new, incredibly boring adventure game.");
+        this.dashboard.print("Type '" + CommandWord.HELP + "' if you need help."); //Command.HELP is found in the enum CommandWord, this returns the string corresponding to it
     }
 
     /**
@@ -132,7 +132,7 @@ public class Game {
         CommandWord commandWord = command.getCommandWord(); //Returns an object held by the command object
 
         if (commandWord == CommandWord.UNKNOWN) { //If the command is unknown
-            this._dashboard.print("I don't know what you mean..."); //Print a simple String
+            this.dashboard.print("I don't know what you mean..."); //Print a simple String
             incrementTime(1); // Adds 1 to the time if a person types wrong
             return false; //Return that we do not want to quit
         }
@@ -149,7 +149,7 @@ public class Game {
             if (planetId == null) {
                 return false;
             }
-            this.travelToPlanet(this._player, planetId);
+            this.travelToPlanet(this.player, planetId);
 
         } else if (commandWord == CommandWord.DROP) {
             this.dropItem(command.getSecondWord());
@@ -169,7 +169,7 @@ public class Game {
             if (planetId == null) {
                 return false;
             }
-            this.processWarp(this._player, planetId);
+            this.processWarp(this.player, planetId);
             incrementTime(1); // Adds 1 to the time
         }
 
@@ -182,10 +182,10 @@ public class Game {
      */
     private void printHelp() {
         //Prints a few statements regarding the state of the game
-        this._dashboard.print("You are lost. You are alone. You wander");
-        this._dashboard.print("around at the university.");
-        this._dashboard.print();
-        this._dashboard.print("Your command words are:");
+        this.dashboard.print("You are lost. You are alone. You wander");
+        this.dashboard.print("around at the university.");
+        this.dashboard.print();
+        this.dashboard.print("Your command words are:");
 
         parser.showCommands(); //Prints out all of the command words known to the system
     }
@@ -200,7 +200,7 @@ public class Game {
      */
     private boolean quit(Command command) {
         if (command.hasSecondWord()) { //If the command passed in the parameter has a second word, the quit command must be a mistake
-            this._dashboard.print("Quit what?"); //meaning the game won't quit!
+            this.dashboard.print("Quit what?"); //meaning the game won't quit!
             return false; //Returns false, meaning the system will not quit
         } else { //If there is no second word,
             saveHighScore();
@@ -220,8 +220,8 @@ public class Game {
      */
     public ArrayList<Planet> getPossiblePlanets(int startX, int startY, int currentFuel) {
         ArrayList<Planet> reachablePlanets = new ArrayList<>();
-        for (Planet planet : this._planets.values()) {
-            if (this._movementCalculator.isReachable(startX, startY, planet.getXCoor(), planet.getYCoor(), currentFuel)) {
+        for (Planet planet : this.planets.values()) {
+            if (this.movementCalculator.isReachable(startX, startY, planet.getXCoor(), planet.getYCoor(), currentFuel)) {
                 reachablePlanets.add(planet);
             }
         }
@@ -235,8 +235,8 @@ public class Game {
      */
     public void whichScan(String secondWord) {
         if (secondWord == null) {
-            this._dashboard.print("The second word in the command was not recognized, please use one of the following second words (like \"scan all\"):");
-            this._dashboard.print("\"all\", for printing all planets\n\"possible\", for printing all planets you can reach\n[planet id], for getting the description of a specific planet");
+            this.dashboard.print("The second word in the command was not recognized, please use one of the following second words (like \"scan all\"):");
+            this.dashboard.print("\"all\", for printing all planets\n\"possible\", for printing all planets you can reach\n[planet id], for getting the description of a specific planet");
             return;
         }
 
@@ -249,7 +249,7 @@ public class Game {
         } else if (this.printSpecPlanet(secondWord)) {
 
         } else {
-            this._dashboard.print("\"" + secondWord + "\" was not recognized, please use: "
+            this.dashboard.print("\"" + secondWord + "\" was not recognized, please use: "
                     + "\n\t\"scan all\" for showing all planets and their ids,"
                     + "\n\t\"scan possible\" for showing all planets and their ids you can travel to,"
                     + "\n\t\"scan npcs\" for showing all NPCs on this planet and their ids, that you can \"greet [id]\","
@@ -261,12 +261,12 @@ public class Game {
      * A method for printing all planets
      */
     public void printAllPlanets() {
-        this._dashboard.print("This is a list of all planets and their ids:");
+        this.dashboard.print("This is a list of all planets and their ids:");
         String toPrint = "";
-        for (Planet planet : this._planets.values()) {
+        for (Planet planet : this.planets.values()) {
             toPrint += planet.getReferenceNum() + ": " + planet.getName() + ", ";
         }
-        this._dashboard.print(toPrint);
+        this.dashboard.print(toPrint);
 
     }
 
@@ -275,24 +275,24 @@ public class Game {
      */
     public void printPossiblePlanets() {
         String toPrint = "";
-        UUID currentPlanetId = this._player.getPlanetId();
+        UUID currentPlanetId = this.player.getPlanetId();
         int[] currentPosition = getPositionCoordinates(currentPlanetId);
 
-        if (this._planets.containsKey(currentPlanetId)) {
-            if (this._planets.get(currentPlanetId).hasMoon()) {
-                Moon moon = this._moons.get(this._planets.get(currentPlanetId).getMoonUuid());
+        if (this.planets.containsKey(currentPlanetId)) {
+            if (this.planets.get(currentPlanetId).hasMoon()) {
+                Moon moon = this.moons.get(this.planets.get(currentPlanetId).getMoonUuid());
                 toPrint += "0: " + moon.getName() + ", ";
             }
         }
 
-        ArrayList<Planet> planetList = this.getPossiblePlanets(currentPosition[0], currentPosition[0], this._player.getFuel());
+        ArrayList<Planet> planetList = this.getPossiblePlanets(currentPosition[0], currentPosition[0], this.player.getFuel());
         for (Planet planet : planetList) {
-            if (this._player.getPlanetId() == planet.getId()) {
+            if (this.player.getPlanetId() == planet.getId()) {
                 continue;
             }
             toPrint += planet.getReferenceNum() + ": " + planet.getName() + ", ";
         }
-        this._dashboard.print(toPrint);
+        this.dashboard.print(toPrint);
     }
 
     /**
@@ -301,19 +301,19 @@ public class Game {
      * command "scan npcs".
      */
     public void printPossibleNpcs() {
-        NPCHolder npcHolder = getNPCHolderFromUuid(this._player.getPlanetId());
+        NPCHolder npcHolder = getNPCHolderFromUuid(this.player.getPlanetId());
 
         if (npcHolder.getNpcIds().length < 0) {
-            this._dashboard.print("There is no NPCs to talk to at this location!");
+            this.dashboard.print("There is no NPCs to talk to at this location!");
             return;
         }
 
-        this._dashboard.print("These are the NPCs you can talk to here: ");
+        this.dashboard.print("These are the NPCs you can talk to here: ");
         for (UUID npcUuid : npcHolder.getNpcIds()) {
-            NPC npc = this._npcs.get(npcUuid);
-            this._dashboard.print(npc.getReferenceNumber() + ": " + npc.getName() + " is described as " + npc.getDescription());
+            NPC npc = this.npcs.get(npcUuid);
+            this.dashboard.print(npc.getReferenceNumber() + ": " + npc.getName() + " is described as " + npc.getDescription());
         }
-        this._dashboard.print("Use the command \"greet [id]\" to start a conversation with the NPC.");
+        this.dashboard.print("Use the command \"greet [id]\" to start a conversation with the NPC.");
     }
 
     /**
@@ -323,8 +323,8 @@ public class Game {
      */
     public void whichPrint(String secondWord) {
         if (secondWord == null) {
-            this._dashboard.print("The second word in the command was not recognized, please use one of the following second words (like \"print stats\"):");
-            this._dashboard.print("\"stats\", for viewing your stats\n\"position\", for viewing your position\n\"inventory\", for getting information about your inventory");
+            this.dashboard.print("The second word in the command was not recognized, please use one of the following second words (like \"print stats\"):");
+            this.dashboard.print("\"stats\", for viewing your stats\n\"position\", for viewing your position\n\"inventory\", for getting information about your inventory");
             return;
         }
 
@@ -335,7 +335,7 @@ public class Game {
         } else if (secondWord.equals("inventory")) {
             this.printInventory();
         } else {
-            this._dashboard.print("The second word you wrote is not recognized, please only use: stats, position or invetory!");
+            this.dashboard.print("The second word you wrote is not recognized, please only use: stats, position or invetory!");
         }
     }
 
@@ -343,20 +343,20 @@ public class Game {
      * A method for printing the player's stats
      */
     public void printPlayerStats() {
-        this._dashboard.print("Current fuel: " + this._player.getFuel());
-        this._dashboard.print("Current reputation: " + this._player.getReputation());
-        this._dashboard.print("You have used" + this.checkTimers() + "time");
+        this.dashboard.print("Current fuel: " + this.player.getFuel());
+        this.dashboard.print("Current reputation: " + this.player.getReputation());
+        this.dashboard.print("You have used" + this.checkTimers() + "time");
     }
 
     /**
      * Prints the player's current planet's position and name
      */
     public void printPlayerPosition() {
-        UUID currentPlanetId = this._player.getPlanetId();
+        UUID currentPlanetId = this.player.getPlanetId();
         NPCHolder npcHolder = getNPCHolderFromUuid(currentPlanetId);
         int[] currentPosition = getPositionCoordinates(currentPlanetId);
-        this._dashboard.print("Current planet name:  " + npcHolder.getName());
-        this._dashboard.print("This is your current position: " + "(" + currentPosition[0] + ";" + currentPosition[1] + ")");
+        this.dashboard.print("Current planet name:  " + npcHolder.getName());
+        this.dashboard.print("This is your current position: " + "(" + currentPosition[0] + ";" + currentPosition[1] + ")");
     }
 
     /**
@@ -364,20 +364,20 @@ public class Game {
      * the player how to drop an item
      */
     public void printInventory() {
-        for (UUID uuid : this._player.getInventoryUuids()) {
-            Items curItems = this._items.get(uuid);
-            this._dashboard.print(curItems.getReferenceNumber() + ": " + curItems.getDescription() + " weighting " + curItems.getWeight());
+        for (UUID uuid : this.player.getInventoryUuids()) {
+            Items curItems = this.items.get(uuid);
+            this.dashboard.print(curItems.getReferenceNumber() + ": " + curItems.getDescription() + " weighting " + curItems.getWeight());
 
-            if (this._planets.containsKey(this._npcs.get(curItems.getNpcId()).getPlanetId())) {
-                Planet deliveryPlanet = this._planets.get(this._npcs.get(curItems.getNpcId()).getPlanetId());
-                this._dashboard.print(" - and it has to be delivered at: [" + deliveryPlanet.getXCoor() + ";" + deliveryPlanet.getYCoor() + "] " + deliveryPlanet.getName());
+            if (this.planets.containsKey(this.npcs.get(curItems.getNpcId()).getPlanetId())) {
+                Planet deliveryPlanet = this.planets.get(this.npcs.get(curItems.getNpcId()).getPlanetId());
+                this.dashboard.print(" - and it has to be delivered at: [" + deliveryPlanet.getXCoor() + ";" + deliveryPlanet.getYCoor() + "] " + deliveryPlanet.getName());
             } else {
-                Moon deliveryMoon = this._moons.get(this._npcs.get(curItems.getNpcId()).getPlanetId());
-                Planet parentPlanet = this._planets.get(deliveryMoon.getParentPlanetUuid());
-                this._dashboard.print(" - and it has to be delivered at the moon called " + deliveryMoon.getName() + " of the planet: [" + parentPlanet.getXCoor() + ";" + parentPlanet.getYCoor() + "] " + parentPlanet.getName());
+                Moon deliveryMoon = this.moons.get(this.npcs.get(curItems.getNpcId()).getPlanetId());
+                Planet parentPlanet = this.planets.get(deliveryMoon.getParentPlanetUuid());
+                this.dashboard.print(" - and it has to be delivered at the moon called " + deliveryMoon.getName() + " of the planet: [" + parentPlanet.getXCoor() + ";" + parentPlanet.getYCoor() + "] " + parentPlanet.getName());
             }
             
-            this._dashboard.print("- and it has to be delivered before the time " + curItems.getDeliveryTime() + " is reached");
+            this.dashboard.print("- and it has to be delivered before the time " + curItems.getDeliveryTime() + " is reached");
         }
     }
 
@@ -394,7 +394,7 @@ public class Game {
         if (id == null) {
             return false;
         } else {
-            this._planets.get(id).getDescription();
+            this.planets.get(id).getDescription();
             return true;
         }
     }
@@ -406,25 +406,25 @@ public class Game {
      * @param planetId which planet to move to
      */
     public void travelToPlanet(Player characterToTravel, UUID nextPositionUuid) {
-        int[] currentPosition = getPositionCoordinates(this._player.getPlanetId());
+        int[] currentPosition = getPositionCoordinates(this.player.getPlanetId());
         int[] nextPosition = getPositionCoordinates(nextPositionUuid);
         NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
 
-        if (this._movementCalculator.isReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getFuel())) {
-            this._dashboard.print("Now traveling to " + nextNpcHolder.getName());
+        if (this.movementCalculator.isReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getFuel())) {
+            this.dashboard.print("Now traveling to " + nextNpcHolder.getName());
             characterToTravel.setCurrentPlanet(nextPositionUuid);
 
             tryNpcMovement();
 
-            this._dashboard.print("Refilled fuel tank!");
-            this._player.setFuel(this._player.getMaxFuel());
+            this.dashboard.print("Refilled fuel tank!");
+            this.player.setFuel(this.player.getMaxFuel());
 
             int travelTime = 10;
-            incrementTime(this._movementCalculator.calculateDistance(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1]) / travelTime);
+            incrementTime(this.movementCalculator.calculateDistance(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1]) / travelTime);
 
-            this._dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
+            this.dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
         } else {
-            this._dashboard.print("Sorry, you're unable to reach the planet you were trying to travel to, try moving to a closer planet and try again.");
+            this.dashboard.print("Sorry, you're unable to reach the planet you were trying to travel to, try moving to a closer planet and try again.");
         }
     }
 
@@ -439,18 +439,18 @@ public class Game {
      * @param nextPositionUuid which planet or moon that is the intended target.
      */
     public void processWarp(Player characterToTravel, UUID nextPositionUuid) {
-        int[] currentPosition = getPositionCoordinates(this._player.getPlanetId());
+        int[] currentPosition = getPositionCoordinates(this.player.getPlanetId());
         int[] nextPosition = getPositionCoordinates(nextPositionUuid);
         NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
 
-        if (this._movementCalculator.isWarpReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getWarpfuel())) {
-            this._dashboard.print("Now warping to " + nextNpcHolder.getName());
+        if (this.movementCalculator.isWarpReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getWarpfuel())) {
+            this.dashboard.print("Now warping to " + nextNpcHolder.getName());
             characterToTravel.setCurrentPlanet(nextPositionUuid);
-            characterToTravel.setWarpfuel(characterToTravel.getWarpfuel() - this._movementCalculator.calculateWarpFuelUsage(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1]));
+            characterToTravel.setWarpfuel(characterToTravel.getWarpfuel() - this.movementCalculator.calculateWarpFuelUsage(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1]));
 
-            this._dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
+            this.dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
         } else {
-            this._dashboard.print("Sorry, you're unable to reach the planet you were trying to warp to, try moving to a closer planet and try again.");
+            this.dashboard.print("Sorry, you're unable to reach the planet you were trying to warp to, try moving to a closer planet and try again.");
         }
     }
 
@@ -461,7 +461,7 @@ public class Game {
      */
     public void processGreet(String secondWord) {
         if (secondWord == null) {
-            this._dashboard.print("Use the greet command by writting \"greet [id]\". Write \"scan npcs\" to show possible NPCs and their ids.");
+            this.dashboard.print("Use the greet command by writting \"greet [id]\". Write \"scan npcs\" to show possible NPCs and their ids.");
             return;
         }
 
@@ -472,17 +472,17 @@ public class Game {
 
         }
 
-        NPCHolder npcHolder = getNPCHolderFromUuid(this._player.getPlanetId());
+        NPCHolder npcHolder = getNPCHolderFromUuid(this.player.getPlanetId());
 
         if (secondWordNumber != -1) {
             for (UUID npcUuid : npcHolder.getNpcIds()) {
-                if (secondWordNumber == this._npcs.get(npcUuid).getReferenceNumber()) {
-                    this.startConversation(this._npcs.get(npcUuid).getId());
+                if (secondWordNumber == this.npcs.get(npcUuid).getReferenceNumber()) {
+                    this.startConversation(this.npcs.get(npcUuid).getId());
                     return;
                 }
             }
         } else {
-            this._dashboard.print("NPCid was not recognized, please only use the id numbers to refer to NPCs. Write \"scan npcs\" to show possible NPCs and their ids.");
+            this.dashboard.print("NPCid was not recognized, please only use the id numbers to refer to NPCs. Write \"scan npcs\" to show possible NPCs and their ids.");
         }
     }
 
@@ -493,19 +493,19 @@ public class Game {
     public void startConversation(UUID npcId) {
         //IF the NPC has a nextConversationId (if it is not null) use that!
         // Starting conversation!
-        //UUID npcId = this._planets.get(this._player.getPlanetId()).getNpcIds()[0];
-        NPC npc = this._npcs.get(npcId);
+        //UUID npcId = this.planets.get(this.player.getPlanetId()).getNpcIds()[0];
+        NPC npc = this.npcs.get(npcId);
         if (npc.hasNextConversationId()) {
             npc.setConversationId(npc.getNextConversationId());
             npc.setNextConversationId(-1);
         }
-        this._currentConversation = new Conversation(npc.getConversationId());
-        this._currentConversation.setNpcId(npcId);
-        this._currentConversation.createWholeConversation(this._fileHandler.getText(this._currentConversation.getConversationId()));
-        this._dashboard.print("A connection with " + npc.getName() + " has been established...");
-        this._dashboard.print(npc.getName() + " looks like " + npc.getDescription());
-        this._dashboard.print(npc.getName() + ": " + this._currentConversation.getQText());
-        this._dashboard.print("You can answer using the \"say\" command: " + this._currentConversation.getPossibleAnswers());
+        this.currentConversation = new Conversation(npc.getConversationId());
+        this.currentConversation.setNpcId(npcId);
+        this.currentConversation.createWholeConversation(this.fileHandler.getText(this.currentConversation.getConversationId()));
+        this.dashboard.print("A connection with " + npc.getName() + " has been established...");
+        this.dashboard.print(npc.getName() + " looks like " + npc.getDescription());
+        this.dashboard.print(npc.getName() + ": " + this.currentConversation.getQText());
+        this.dashboard.print("You can answer using the \"say\" command: " + this.currentConversation.getPossibleAnswers());
     }
 
     /**
@@ -517,40 +517,40 @@ public class Game {
      */
     public void processAnswer(String answer) {
         if (answer == null) {
-            this._dashboard.print("You have to say something!");
+            this.dashboard.print("You have to say something!");
             return;
         }
 
-        if (this._currentConversation == null) {
-            this._dashboard.print("Sorry, you can't use say when you have no ongoing conversation!");
+        if (this.currentConversation == null) {
+            this.dashboard.print("Sorry, you can't use say when you have no ongoing conversation!");
             return;
         }
 
-        NPCHolder npcHolder = getNPCHolderFromUuid(this._player.getPlanetId());
+        NPCHolder npcHolder = getNPCHolderFromUuid(this.player.getPlanetId());
 
-        //UUID npcId = this._planets.get(this._player.getPlanetId()).getNpcId();
-        if (!npcHolder.hasNpcId(this._currentConversation.getNpcId())) {
-            this._dashboard.print("Sorry, you're no longer at the same position as the NPC and can therefore not talk with him!");
-            this._currentConversation = null;
+        //UUID npcId = this.planets.get(this.player.getPlanetId()).getNpcId();
+        if (!npcHolder.hasNpcId(this.currentConversation.getNpcId())) {
+            this.dashboard.print("Sorry, you're no longer at the same position as the NPC and can therefore not talk with him!");
+            this.currentConversation = null;
             return;
         }
 
-        this._currentConversation.processAnswer(answer.toLowerCase());
-        if (this._currentConversation.hasCurrentAnswer()) {
-            this._dashboard.print(this._npcs.get(this._currentConversation.getNpcId()).getName() + ": " + this._currentConversation.getReactText());
-            if (!this.processExecution(this._currentConversation.getExecutionLine(), this._currentConversation.getNpcId())) {
-                if (this._currentConversation.getNextLineNumber() == -1) {
-                    this._currentConversation = null;
-                    this._dashboard.print("Conversation has been terminated");
+        this.currentConversation.processAnswer(answer.toLowerCase());
+        if (this.currentConversation.hasCurrentAnswer()) {
+            this.dashboard.print(this.npcs.get(this.currentConversation.getNpcId()).getName() + ": " + this.currentConversation.getReactText());
+            if (!this.processExecution(this.currentConversation.getExecutionLine(), this.currentConversation.getNpcId())) {
+                if (this.currentConversation.getNextLineNumber() == -1) {
+                    this.currentConversation = null;
+                    this.dashboard.print("Conversation has been terminated");
                     return;
                 }
-                this._currentConversation.setNextQuestion(this._currentConversation.getNextLineNumber());
+                this.currentConversation.setNextQuestion(this.currentConversation.getNextLineNumber());
             }
-            this._dashboard.print(this._npcs.get(this._currentConversation.getNpcId()).getName() + ": " + this._currentConversation.getQText());
-            this._dashboard.print("You can answer: " + this._currentConversation.getPossibleAnswers());
+            this.dashboard.print(this.npcs.get(this.currentConversation.getNpcId()).getName() + ": " + this.currentConversation.getQText());
+            this.dashboard.print("You can answer: " + this.currentConversation.getPossibleAnswers());
         } else {
-            this._dashboard.print(this._npcs.get(this._currentConversation.getNpcId()).getName() + ": Sorry, I don't know how to respond to that answer.");
-            this._dashboard.print("The only answers I seek: " + this._currentConversation.getPossibleAnswers());
+            this.dashboard.print(this.npcs.get(this.currentConversation.getNpcId()).getName() + ": Sorry, I don't know how to respond to that answer.");
+            this.dashboard.print("The only answers I seek: " + this.currentConversation.getPossibleAnswers());
         }
     }
 
@@ -584,7 +584,7 @@ public class Game {
                 case "nextConvoId":
                     try {
                         int convoId = Integer.parseInt(executionSplit[1]);
-                        this._npcs.get(npcId).setNextConversationId(convoId);
+                        this.npcs.get(npcId).setNextConversationId(convoId);
                     } catch (NumberFormatException e) {
                         
                     }   
@@ -603,7 +603,7 @@ public class Game {
                 case "removeReputation":
                     try {
                         int reputationAmount = Integer.parseInt(executionSplit[1]);
-                        this._player.setReputation((this._player.getReputation() - reputationAmount));
+                        this.player.setReputation((this.player.getReputation() - reputationAmount));
                     } catch (NumberFormatException e) {
                         
                     }   
@@ -630,19 +630,19 @@ public class Game {
      * @param npcId the npc which has to receive the package
      */
     public void deliverPackage(UUID npcId) {
-        Items item = this._items.get(this._npcs.get(npcId).getPackageId());
-        this._player.setReputation(this._player.getReputation() + item.getReputationWorth());
-        this._player.removeItem(item.getId(), item.getWeight());
+        Items item = this.items.get(this.npcs.get(npcId).getPackageId());
+        this.player.setReputation(this.player.getReputation() + item.getReputationWorth());
+        this.player.removeItem(item.getId(), item.getWeight());
         if (this.time <= item.getDeliveryTime()) {
-            this._dashboard.print("Congratulations, you delivered " + item.getDescription() + " on time!");
-            this._player.setReputation(this._player.getReputation() + item.getReputationWorth());
+            this.dashboard.print("Congratulations, you delivered " + item.getDescription() + " on time!");
+            this.player.setReputation(this.player.getReputation() + item.getReputationWorth());
         } else {
-            this._dashboard.print("Unfortunately, you did not deliver  " + item.getDescription() + " on time!");
-            this._player.setReputation(this._player.getReputation() - item.getReputationWorth());
+            this.dashboard.print("Unfortunately, you did not deliver  " + item.getDescription() + " on time!");
+            this.player.setReputation(this.player.getReputation() - item.getReputationWorth());
         }
         if (!item.getPapers()) {
-            this._dashboard.print("Since you did not have the papers for " + item.getDescription() + " you lost some reputation. Go see the Headquarter for papers on your packages!");
-            this._player.setReputation(this._player.getReputation() - (item.getReputationWorth()*3));
+            this.dashboard.print("Since you did not have the papers for " + item.getDescription() + " you lost some reputation. Go see the Headquarter for papers on your packages!");
+            this.player.setReputation(this.player.getReputation() - (item.getReputationWorth()*3));
         }
     }
 
@@ -656,13 +656,13 @@ public class Game {
      */
     public boolean pickupPackage(UUID npcId) {
         incrementTime(1);
-        for (UUID itemUuid : this._npcs.get(npcId).getInventoryUuids()) {
-            if (this._player.addItem(itemUuid, this._items.get(itemUuid).getWeight())) {
-                this._dashboard.print("You picked up " + this._items.get(itemUuid).getDescription());
-                this._npcs.get(npcId).removeItem(itemUuid, this._items.get(itemUuid).getWeight());
-                this._items.get(itemUuid).setDeliveryTime(this.time + 200);
+        for (UUID itemUuid : this.npcs.get(npcId).getInventoryUuids()) {
+            if (this.player.addItem(itemUuid, this.items.get(itemUuid).getWeight())) {
+                this.dashboard.print("You picked up " + this.items.get(itemUuid).getDescription());
+                this.npcs.get(npcId).removeItem(itemUuid, this.items.get(itemUuid).getWeight());
+                this.items.get(itemUuid).setDeliveryTime(this.time + 200);
             } else {
-                this._dashboard.print("You were unable to pick up " + this._items.get(itemUuid).getDescription() + ", since you don't have space in your inventory!");
+                this.dashboard.print("You were unable to pick up " + this.items.get(itemUuid).getDescription() + ", since you don't have space in your inventory!");
                 return false;
             }
         }
@@ -689,15 +689,15 @@ public class Game {
             System.out.println("Runtime error?");
         }
 
-        for (UUID itemUuid : this._player.getInventoryUuids()) {
-            if (this._npcs.get(npcId).getPackageId() == itemUuid) {
-                this._currentConversation.setNextQuestion(questionNumbers[0]);
+        for (UUID itemUuid : this.player.getInventoryUuids()) {
+            if (this.npcs.get(npcId).getPackageId() == itemUuid) {
+                this.currentConversation.setNextQuestion(questionNumbers[0]);
                 return;
             }
         }
 
         //System.out.println("Setting question to second option! which is: " + questionNumbers[1]);
-        this._currentConversation.setNextQuestion(questionNumbers[1]);
+        this.currentConversation.setNextQuestion(questionNumbers[1]);
     }
 
     /**
@@ -718,15 +718,15 @@ public class Game {
 
         }
 
-        if (this._npcs.get(npcId).getInventoryUuids().length > 0) { //The NPC can have 0 items
-            Items curItem = this._items.get(this._npcs.get(npcId).getInventoryUuids()[0]);
-            if (this._player.hasInventorySpaceFor(curItem.getWeight())) {
-                this._currentConversation.setNextQuestion(questionNumbers[0]);
+        if (this.npcs.get(npcId).getInventoryUuids().length > 0) { //The NPC can have 0 items
+            Items curItem = this.items.get(this.npcs.get(npcId).getInventoryUuids()[0]);
+            if (this.player.hasInventorySpaceFor(curItem.getWeight())) {
+                this.currentConversation.setNextQuestion(questionNumbers[0]);
                 return;
             }
         }
 
-        this._currentConversation.setNextQuestion(questionNumbers[1]);
+        this.currentConversation.setNextQuestion(questionNumbers[1]);
     }
     
     /**
@@ -734,8 +734,8 @@ public class Game {
      * This takes all of the players items and adds papers to them.
      */
     public void getPapers() {
-        for(UUID uuid : this._player.getInventoryUuids()) {
-            this._items.get(uuid).setPapersTrue();
+        for(UUID uuid : this.player.getInventoryUuids()) {
+            this.items.get(uuid).setPapersTrue();
         }
     }
     
@@ -751,23 +751,23 @@ public class Game {
         try {
             planetNumber = Integer.parseInt(secondWord);
         } catch (Exception e) {
-            this._dashboard.print("Please only use id numbers to refer to which planet you want to travel to!");
-            //this._dashboard.print(e.toString());
+            this.dashboard.print("Please only use id numbers to refer to which planet you want to travel to!");
+            //this.dashboard.print(e.toString());
             return null;
         }
 
         if (planetNumber == 0) {
-            UUID curUuid = this._player.getPlanetId();
-            Planet curPlanet = this._planets.get(curUuid);
+            UUID curUuid = this.player.getPlanetId();
+            Planet curPlanet = this.planets.get(curUuid);
             if (curPlanet.hasMoon()) {
                 return curPlanet.getMoonUuid();
             } else {
-                this._dashboard.print("Sorry, there is no moon to travel to at this planet!");
+                this.dashboard.print("Sorry, there is no moon to travel to at this planet!");
                 return null;
             }
         }
 
-        for (Planet planet : this._planets.values()) {
+        for (Planet planet : this.planets.values()) {
             if (planetNumber == planet.getReferenceNum()) {
                 return planet.getId();
             }
@@ -791,12 +791,12 @@ public class Game {
         try {
             itemNumber = Integer.parseInt(secondWord);
         } catch (Exception e) {
-            this._dashboard.print("Invalid item id, \"" + secondWord + "\" was not recognized, use \"print inventory\" to show your items and their ids!");
-            //this._dashboard.print(e.toString());
+            this.dashboard.print("Invalid item id, \"" + secondWord + "\" was not recognized, use \"print inventory\" to show your items and their ids!");
+            //this.dashboard.print(e.toString());
             return null;
         }
 
-        for (Items item : this._items.values()) {
+        for (Items item : this.items.values()) {
             if (itemNumber == item.getReferenceNumber()) {
                 return item.getId();
             }
@@ -816,14 +816,14 @@ public class Game {
     public void dropItem(String itemReferenceNumber) {
         UUID itemUuid = this.getItemIdFromReferenceNumber(itemReferenceNumber);
 
-        for (UUID itemId : this._player.getInventoryUuids()) {
+        for (UUID itemId : this.player.getInventoryUuids()) {
             if (itemId == itemUuid) {
-                this._player.removeItem(itemId, this._items.get(itemId).getWeight());
-                this._player.setReputation(this._player.getReputation() - this._items.get(itemId).getReputationWorth());
+                this.player.removeItem(itemId, this.items.get(itemId).getWeight());
+                this.player.setReputation(this.player.getReputation() - this.items.get(itemId).getReputationWorth());
                 return;
             }
         }
-        this._dashboard.print("Sorry, you do not hold such item id, please use \"print inventory\" to show your items and their ids.");
+        this.dashboard.print("Sorry, you do not hold such item id, please use \"print inventory\" to show your items and their ids.");
     }
 
     /**
@@ -837,11 +837,11 @@ public class Game {
         //Creating the items list
         int i = 0;
         while(true) {
-            if(!this._fileHandler.doesFileExist("data/planets/" + i + ".json")) {
+            if(!this.fileHandler.doesFileExist("data/planets/" + i + ".json")) {
                 break;
             }
-            Planet newPlanet = this._fileHandler.getJSON("data/planets/" + i + ".json", Planet.class);
-            this._planets.put(newPlanet.getId(), newPlanet);
+            Planet newPlanet = this.fileHandler.getJSON("data/planets/" + i + ".json", Planet.class);
+            this.planets.put(newPlanet.getId(), newPlanet);
             i++;
             
             if(newPlanet.getPid() == 0) {
@@ -853,10 +853,10 @@ public class Game {
          */
 
         Planet newPlanet = new Planet("hej", "wow!", 1, 1, 0);
-        this._planets.put(newPlanet.getId(), newPlanet);
+        this.planets.put(newPlanet.getId(), newPlanet);
 
         newPlanet = new Planet("Starter!", "starterdesc!", 20, 20, 1);
-        this._planets.put(newPlanet.getId(), newPlanet);
+        this.planets.put(newPlanet.getId(), newPlanet);
 
         createMoons();
 
@@ -873,27 +873,27 @@ public class Game {
         /*
         int i = 0;
         while(true) {
-            if(!this._fileHandler.doesFileExist("data/moons/" + i + ".json")) {
+            if(!this.fileHandler.doesFileExist("data/moons/" + i + ".json")) {
                 break;
             }
-            Moon newMoon = this._fileHandler.getJSON("data/moons/" + i + ".json", Moon.class);
-            this._moons.put(newMoon.getId(), newMoon);
+            Moon newMoon = this.fileHandler.getJSON("data/moons/" + i + ".json", Moon.class);
+            this.moons.put(newMoon.getId(), newMoon);
             i++;
         }
          */
 
         Moon newMoon = new Moon("navn", "hej!", 0);
-        this._moons.put(newMoon.getId(), newMoon);
+        this.moons.put(newMoon.getId(), newMoon);
 
         newMoon = new Moon("navn", "hej2!", 1);
-        this._moons.put(newMoon.getId(), newMoon);
+        this.moons.put(newMoon.getId(), newMoon);
 
         HashMap<Integer, Planet> planetPids = new HashMap<>();
-        for (Planet planet : this._planets.values()) {
+        for (Planet planet : this.planets.values()) {
             planetPids.put(planet.getPid(), planet);
         }
 
-        for (Moon moon : this._moons.values()) {
+        for (Moon moon : this.moons.values()) {
             if (planetPids.containsKey(moon.getPid())) {
                 planetPids.get(moon.getPid()).setMoonUuid(moon.getId());
                 moon.setParentPlanetUuid(planetPids.get(moon.getPid()).getId());
@@ -908,33 +908,33 @@ public class Game {
         /*
         int i = 0;
         while(true) {
-            if(!this._fileHandler.doesFileExist("data/npcs/" + i + ".json")) {
+            if(!this.fileHandler.doesFileExist("data/npcs/" + i + ".json")) {
                 break;
             }
-            NPC newNpc = this._fileHandler.getJSON("data/npcs/" + i + ".json", NPC.class);
-            this._npcs.put(newNpc.getId(), newNpc);
+            NPC newNpc = this.fileHandler.getJSON("data/npcs/" + i + ".json", NPC.class);
+            this.npcs.put(newNpc.getId(), newNpc);
             i++;
         }
          */
 
         //A method for creating NPCs
         NPC newNpc = new NPC("Planet1NPC", "He be wow!", -1, 0, 1, 0);
-        this._npcs.put(newNpc.getId(), newNpc);
-        this._civilians.put(newNpc.getId(), newNpc);
+        this.npcs.put(newNpc.getId(), newNpc);
+        this.civilians.put(newNpc.getId(), newNpc);
 
         newNpc = new NPC("Planet2NPC", "He be not wow!!", 1, 1, 1, 0);
-        this._npcs.put(newNpc.getId(), newNpc);
-        this._civilians.put(newNpc.getId(), newNpc);
+        this.npcs.put(newNpc.getId(), newNpc);
+        this.civilians.put(newNpc.getId(), newNpc);
 
         newNpc = new NPC("Planet2NPC2", "He be not wow!!", 1, 1, 1, 0);
-        this._npcs.put(newNpc.getId(), newNpc);
-        this._civilians.put(newNpc.getId(), newNpc);
+        this.npcs.put(newNpc.getId(), newNpc);
+        this.civilians.put(newNpc.getId(), newNpc);
 
         ArrayList<NPCHolder> npcHolders = new ArrayList<>();
-        for (Planet planet : this._planets.values()) {
+        for (Planet planet : this.planets.values()) {
             npcHolders.add(planet);
         }
-        placeNpcs(this._civilians.values(), npcHolders);
+        placeNpcs(this.civilians.values(), npcHolders);
 
         createRebels();
 
@@ -948,33 +948,33 @@ public class Game {
         /*
         int i = 0;
         while(true) {
-            if(!this._fileHandler.doesFileExist("data/npcs/" + i + ".json")) {
+            if(!this.fileHandler.doesFileExist("data/npcs/" + i + ".json")) {
                 break;
             }
-            NPC newNpc = this._fileHandler.getJSON("data/npcs/" + i + ".json", NPC.class);
-            this._npcs.put(newNpc.getId(), newNpc);
+            NPC newNpc = this.fileHandler.getJSON("data/npcs/" + i + ".json", NPC.class);
+            this.npcs.put(newNpc.getId(), newNpc);
             i++;
         }
          */
 
         //A method for creating NPCs
         NPC newNpc = new NPC("Rebel1", "He be wow!", -1, 0, 1, 0);
-        this._npcs.put(newNpc.getId(), newNpc);
-        this._rebels.put(newNpc.getId(), newNpc);
+        this.npcs.put(newNpc.getId(), newNpc);
+        this.rebels.put(newNpc.getId(), newNpc);
 
         newNpc = new NPC("Rebel2", "He be not wow!!", -1, 1, 1, 0);
-        this._npcs.put(newNpc.getId(), newNpc);
-        this._rebels.put(newNpc.getId(), newNpc);
+        this.npcs.put(newNpc.getId(), newNpc);
+        this.rebels.put(newNpc.getId(), newNpc);
 
         newNpc = new NPC("Rebel3", "He be not wow!!", -1, 1, 1, 10);
-        this._npcs.put(newNpc.getId(), newNpc);
-        this._rebels.put(newNpc.getId(), newNpc);
+        this.npcs.put(newNpc.getId(), newNpc);
+        this.rebels.put(newNpc.getId(), newNpc);
 
         ArrayList<NPCHolder> npcHolders = new ArrayList<>();
-        for (Moon moon : this._moons.values()) {
+        for (Moon moon : this.moons.values()) {
             npcHolders.add(moon);
         }
-        placeNpcs(this._rebels.values(), npcHolders);
+        placeNpcs(this.rebels.values(), npcHolders);
     }
 
     /**
@@ -1091,7 +1091,7 @@ public class Game {
         HashMap<Integer, NPC> npcsWithPid = new HashMap<>();
 
         //Filling the lists with NPCs
-        for (NPC npc : this._npcs.values()) {
+        for (NPC npc : this.npcs.values()) {
             npcsHaveNoDelivery.add(npc);
             npcsHaveNoPickup.add(npc);
             if (npc.getRid() != -1) {
@@ -1104,11 +1104,11 @@ public class Game {
         //1. Creating the items from JSON
         int i = 0;
         while (true) {
-            if (!this._fileHandler.doesFileExist("data/items/" + i + ".json")) {
+            if (!this.fileHandler.doesFileExist("data/items/" + i + ".json")) {
                 break;
             }
-            Items newItem = this._fileHandler.getJSON("data/items/" + i + ".json", Items.class);
-            this._items.put(newItem.getId(), newItem);
+            Items newItem = this.fileHandler.getJSON("data/items/" + i + ".json", Items.class);
+            this.items.put(newItem.getId(), newItem);
             i++;
             if (npcsWithPid.containsKey(newItem.getPid()) || npcsWithRid.containsKey(newItem.getRid())) {
                 itemsUsed.add(newItem);
@@ -1117,11 +1117,11 @@ public class Game {
         }
 
         //2. Fill up itemsUsed, so that it has as many items as there are NPCs
-        ArrayList<Items> allItems = new ArrayList<>(this._items.values());
+        ArrayList<Items> allItems = new ArrayList<>(this.items.values());
         //As long as the size of items used is smaller than the list of NPCs
-        while (itemsUsed.size() < this._npcs.size()) {
+        while (itemsUsed.size() < this.npcs.size()) {
             while (true) {
-                int randomIndex = (int) (Math.random() * this._items.size());
+                int randomIndex = (int) (Math.random() * this.items.size());
 
                 //If the random picked item is already stated as being used,
                 // it will skip the rest of the while(true) and generate a new random index.
@@ -1220,10 +1220,10 @@ public class Game {
      * @return the NPCHolder object
      */
     public NPCHolder getNPCHolderFromUuid(UUID positionUuid) {
-        if (this._planets.containsKey(positionUuid)) {
-            return this._planets.get(positionUuid);
+        if (this.planets.containsKey(positionUuid)) {
+            return this.planets.get(positionUuid);
         } else {
-            return this._moons.get(positionUuid);
+            return this.moons.get(positionUuid);
         }
     }
 
@@ -1236,10 +1236,10 @@ public class Game {
      */
     public int[] getPositionCoordinates(UUID positionUuid) {
         Planet planet;
-        if (this._planets.containsKey(positionUuid)) {
-            planet = this._planets.get(positionUuid);
+        if (this.planets.containsKey(positionUuid)) {
+            planet = this.planets.get(positionUuid);
         } else {
-            planet = this._planets.get(this._moons.get(positionUuid).getParentPlanetUuid());
+            planet = this.planets.get(this.moons.get(positionUuid).getParentPlanetUuid());
         }
         int[] returnArray = new int[2];
         returnArray[0] = planet.getXCoor();
@@ -1254,16 +1254,16 @@ public class Game {
      */
     public void tryNpcMovement() {
         ArrayList<NPCHolder> npcHolders = new ArrayList<>();
-        for (Moon moon : this._moons.values()) {
+        for (Moon moon : this.moons.values()) {
             npcHolders.add(moon);
         }
-        tryNpcMovementCalculations(this._rebels.values(), npcHolders);
+        tryNpcMovementCalculations(this.rebels.values(), npcHolders);
 
         npcHolders = new ArrayList<>();
-        for (Planet planet : this._planets.values()) {
+        for (Planet planet : this.planets.values()) {
             npcHolders.add(planet);
         }
-        tryNpcMovementCalculations(this._civilians.values(), npcHolders);
+        tryNpcMovementCalculations(this.civilians.values(), npcHolders);
     }
 
     /**
@@ -1303,10 +1303,10 @@ public class Game {
      * player's highscore
      */
     public void printHighScore() {
-        HighScore currentHighScore = this._fileHandler.getJSON("highscore.json", HighScore.class);
-        HighScore playerScore = new HighScore(this._player.getReputation(), 2, "matias");
-        this._dashboard.print(currentHighScore.toString());
-        this._dashboard.print(playerScore.toString());
+        HighScore currentHighScore = this.fileHandler.getJSON("highscore.json", HighScore.class);
+        HighScore playerScore = new HighScore(this.player.getReputation(), 2, "matias");
+        this.dashboard.print(currentHighScore.toString());
+        this.dashboard.print(playerScore.toString());
     }
 
     /**
@@ -1316,32 +1316,32 @@ public class Game {
      */
     public void saveHighScore() {
         //Creates a new highsore object based on the current player's stats
-        HighScore playerScore = new HighScore(this._player.getReputation(), 2, "matias");  // tid : 2 og name :  matias er blot place holders. 
+        HighScore playerScore = new HighScore(this.player.getReputation(), 2, "matias");  // tid : 2 og name :  matias er blot place holders. 
 
         //Read the highscore JSON file, if it exists!
-        if (!this._fileHandler.doesFileExist("highscore.json")) {
-            this._fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
+        if (!this.fileHandler.doesFileExist("highscore.json")) {
+            this.fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
         } else {
-            HighScore currentHighScore = this._fileHandler.getJSON("highscore.json", HighScore.class);
+            HighScore currentHighScore = this.fileHandler.getJSON("highscore.json", HighScore.class);
             if (playerScore.getRep() == currentHighScore.getRep()) {
                 if (playerScore.getTime() > currentHighScore.getTime()) {
                     //Save the highscore!
-                    this._fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
+                    this.fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
                 } else if (playerScore.getTime() < currentHighScore.getTime()) {
-                    this._dashboard.print("Sorry, the current highscore managed to get the same score, with a better time");
-                    this._dashboard.print("Your score was: " + playerScore.getRep());
+                    this.dashboard.print("Sorry, the current highscore managed to get the same score, with a better time");
+                    this.dashboard.print("Your score was: " + playerScore.getRep());
                 } else if (playerScore.getTime() == playerScore.getTime()) { //Trolling, should possibly be removed.
-                    this._dashboard.print("You managed to get exactly the same score and time, as the previous highscore player");
-                    this._dashboard.print("As programmers we didnt think this was possible, therefor we have no other option, to declare Matias Marek as the ruler and all time HighScore champion");
+                    this.dashboard.print("You managed to get exactly the same score and time, as the previous highscore player");
+                    this.dashboard.print("As programmers we didnt think this was possible, therefor we have no other option, to declare Matias Marek as the ruler and all time HighScore champion");
 
                 }
 
             } else if (playerScore.getRep() > currentHighScore.getRep()) {
                 //Save high score!
-                this._fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
+                this.fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
             } else {
-                this._dashboard.print("Sorry, you didn't beat the highscore! Cunt");
-                this._dashboard.print("Your score was: " + playerScore.getRep());
+                this.dashboard.print("Sorry, you didn't beat the highscore! Cunt");
+                this.dashboard.print("Your score was: " + playerScore.getRep());
             }
 
         }

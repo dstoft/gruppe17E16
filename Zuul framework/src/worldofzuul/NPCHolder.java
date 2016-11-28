@@ -16,11 +16,11 @@ import java.util.UUID;
  */
 public abstract class NPCHolder {
     
-    private UUID _id;
-    private int _pid;
-    private ArrayList<UUID> _npcIds;
-    private String _description;
-    private String _name;
+    private UUID id;
+    private int pid;
+    private ArrayList<UUID> npcIds;
+    private String description;
+    private String name;
     
     /**
      * Constructor
@@ -29,28 +29,28 @@ public abstract class NPCHolder {
      * @param pid the pid, which tells the game which NPCs should be placed where at the beginning of the game.
      */
     public NPCHolder(String name, String description, int pid) {
-        this._name = name;
-        this._description = description;
-        this._npcIds = new ArrayList<>();
-        this._id = UUID.randomUUID();
-        this._pid = pid;
+        this.name = name;
+        this.description = description;
+        this.npcIds = new ArrayList<>();
+        this.id = UUID.randomUUID();
+        this.pid = pid;
     }
     
     // ****** GETTERS ******
     public UUID getId() {
-        return this._id;
+        return this.id;
     }
     
     public int getPid() {
-        return this._pid;
+        return this.pid;
     }
 
     public String getName() {
-        return this._name;
+        return this.name;
     }
 
     public String getDescription() {
-        return this._description;
+        return this.description;
     }
     
     /**
@@ -58,9 +58,9 @@ public abstract class NPCHolder {
      * @return an array of UUIDs
      */
     public UUID[] getNpcIds() {
-        UUID[] returnArray = new UUID[this._npcIds.size()];
+        UUID[] returnArray = new UUID[this.npcIds.size()];
         int i = 0;
-        for(UUID uuid : this._npcIds) {
+        for(UUID uuid : this.npcIds) {
             returnArray[i] = uuid;
             i++;
         }
@@ -68,17 +68,17 @@ public abstract class NPCHolder {
     }
     
     public boolean hasNpcId(UUID id) {
-        return this._npcIds.contains(id);
+        return this.npcIds.contains(id);
     }
     // ***** GETTERS END *****
     
     // ***** SETTERS *****
     public void addNpcId(UUID npcId) {
-        this._npcIds.add(npcId);
+        this.npcIds.add(npcId);
     }
     
     public void removeNpcId(UUID npcId) {
-        this._npcIds.remove(npcId);
+        this.npcIds.remove(npcId);
     }
     // ***** SETTERS END *****
 }

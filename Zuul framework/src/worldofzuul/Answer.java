@@ -6,10 +6,10 @@ package worldofzuul;
  */
 public class Answer{
     //Attributes
-    private int _nextLineNumber;
-    private String _referenceWord;		  
-    private String _reactText;
-    private String _executionLine; 
+    private int nextLineNumber;
+    private String referenceWord;		  
+    private String reactText;
+    private String executionLine; 
     
     /**
      * Constructor
@@ -19,27 +19,27 @@ public class Answer{
      * @param executionLine what methods / affects this answer has, if the answer is answered
      */
     public Answer(int nextLineNumber, String referenceWord, String reactText, String executionLine){
-        this._referenceWord = referenceWord;
-        this._executionLine = executionLine;
-        this._nextLineNumber = nextLineNumber;
-        this._reactText = reactText;
+        this.referenceWord = referenceWord;
+        this.executionLine = executionLine;
+        this.nextLineNumber = nextLineNumber;
+        this.reactText = reactText;
     }
 
     // ***** GETTERS *****
     public String getReferenceWord() {
-        return this._referenceWord;
+        return this.referenceWord;
     }
 
     public String getExecutionLine() {
-        return this._executionLine;
+        return this.executionLine;
     }
 
     public String getReactText() {
-        return this._reactText;
+        return this.reactText;
     }
 
     public int getNextLineNumber() {
-        return this._nextLineNumber;
+        return this.nextLineNumber;
     }
     // ***** GETTERS END *****
 }

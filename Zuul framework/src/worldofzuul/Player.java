@@ -14,78 +14,78 @@ import java.util.UUID;
  */
 public class Player {
     //Defines variables
-    private UUID _currentPlanetId; //The planet the player is currently at
-    private Inventory _inventory; //The players inventory
-    private int _maxFuel; //How much fuel the player can hold
-    private int _fuel; //How much fuel the player currently has
-    private int _reputation; //How much reputation the player has
-    private boolean _ITD;
-    private int _warpFuel;
+    private UUID currentPlanetId; //The planet the player is currently at
+    private Inventory inventory; //The players inventory
+    private int maxFuel; //How much fuel the player can hold
+    private int fuel; //How much fuel the player currently has
+    private int reputation; //How much reputation the player has
+    private boolean ITD;
+    private int warpFuel;
     
     public Player(UUID currentPlanet, int maxFuel, int startingReputation) {
-        this._currentPlanetId = currentPlanet;
-        this._maxFuel = maxFuel;
-        this._fuel = maxFuel;
-        this._warpFuel = 50;
-        this._reputation = startingReputation;
+        this.currentPlanetId = currentPlanet;
+        this.maxFuel = maxFuel;
+        this.fuel = maxFuel;
+        this.warpFuel = 50;
+        this.reputation = startingReputation;
         
-        this._inventory = new Inventory();
+        this.inventory = new Inventory();
     }
     
     // ***** SETTERS *****
     public void setCurrentPlanet(UUID planetId) {
-        this._currentPlanetId = planetId;
-        this.setFuel(this._maxFuel);
+        this.currentPlanetId = planetId;
+        this.setFuel(this.maxFuel);
     }
     public void setFuel(int fuel) {
-        if(fuel < this._maxFuel) {
-            this._fuel = fuel;
+        if(fuel < this.maxFuel) {
+            this.fuel = fuel;
         } else {
-            this._fuel = this._maxFuel;
+            this.fuel = this.maxFuel;
         }
     }
     public void setReputation(int reputation) {
-        this._reputation = reputation;
+        this.reputation = reputation;
     }
     public void setITD(boolean itd){
-        this._ITD = itd;
+        this.ITD = itd;
     }
 
     /**
      * Sets the value of warpfuel.
      * (Use addWarpfuel instead for adding fuel!)
      * 
-     * @param fuel int for new value og _warpFuel
+     * @param fuel int for new value og warpFuel
      */
     public void setWarpfuel(int fuel){
-        this._warpFuel = fuel;
+        this.warpFuel = fuel;
     }
     // ***** SETTERS END *****
     
     // ***** GETTERS *****
     public UUID getPlanetId() {
-        return this._currentPlanetId;
+        return this.currentPlanetId;
     }
     public int getMaxFuel() {
-        return this._maxFuel;
+        return this.maxFuel;
     }
     public int getFuel() {
-        return this._fuel;
+        return this.fuel;
     }
     public int getReputation() {
-        return this._reputation;
+        return this.reputation;
     }
     public boolean getITD(){
-        return _ITD;
+        return ITD;
     }
     public int getWarpfuel(){
-        return _warpFuel;
+        return warpFuel;
     }
     // ***** GETTERS END *****
     
     // ***** HANDLING INVENTORY *****
     public UUID[] getInventoryUuids() {
-        return this._inventory.getInventoryUuids();
+        return this.inventory.getInventoryUuids();
     }
     
     /**
@@ -95,7 +95,7 @@ public class Player {
      * @return the UUID of the newly created item
      */
     public boolean addItem(UUID uuid, int weight) {
-        return this._inventory.addItem(uuid, weight);
+        return this.inventory.addItem(uuid, weight);
     }
 
     /**
@@ -105,22 +105,22 @@ public class Player {
      * @param weight
      */
     public void removeItem(UUID itemId, int weight) {
-        this._inventory.remItem(itemId, weight);
+        this.inventory.remItem(itemId, weight);
     }
     
     public boolean hasInventorySpaceFor(int weight) {
-        return this._inventory.hasSpaceFor(weight);
+        return this.inventory.hasSpaceFor(weight);
     }
     // ***** HANDLING INVENTORY END *****
     
     // ***** HANDLING WARPFUEL *****
 
     /**
-     * Adds new warpfuel to the existing value of _warpFuel
+     * Adds new warpfuel to the existing value of warpFuel
      * @param newFuel int for warpfuel to be added
      */
     
     public void addWarpfuel(int newFuel){
-        _warpFuel += newFuel;
+        warpFuel += newFuel;
     }
 }

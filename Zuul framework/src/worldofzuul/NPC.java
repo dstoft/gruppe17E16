@@ -10,24 +10,24 @@ import java.util.UUID;
 /**
  * Holds all of the information regarding NPCs. It has methods for handling its
  * inventory, both deleting and adding items
- * @author emil_daniel
+ * @author emildaniel
  */
 public class NPC {
     //The number used by the user to reference the NPC during runtime
     public static int referenceCounter = 0;
     
-    private String _name;
-    private String _description;
-    private UUID _id;
-    private int _referenceNumber; //The number used by the user to reference the NPC during runtime
-    private int _rid; //Identifies which Item the NPC has to receive by the start of the game
-    private int _pid; //Identifies where the NPC should be placed at the start of the game
-    private UUID _packageId; //Which Item UUID the NPC has to receive
-    private UUID _planetId; //Which Planet/Moon UUID the NPC is placed at
-    private int _chanceToMove;
-    private int _conversationId;
-    private int _nextConversationId;
-    Inventory _inventory;
+    private String name;
+    private String description;
+    private UUID id;
+    private int referenceNumber; //The number used by the user to reference the NPC during runtime
+    private int rid; //Identifies which Item the NPC has to receive by the start of the game
+    private int pid; //Identifies where the NPC should be placed at the start of the game
+    private UUID packageId; //Which Item UUID the NPC has to receive
+    private UUID planetId; //Which Planet/Moon UUID the NPC is placed at
+    private int chanceToMove;
+    private int conversationId;
+    private int nextConversationId;
+    Inventory inventory;
 
     /**
      * Constructor
@@ -39,95 +39,95 @@ public class NPC {
      * @param chanceToMove whether or not the NPC can move. 0 means completely no movement, 10 means certain of moving, in between means x/10 chance to move
      */
     public NPC(String name, String description, int rid, int pid, int conversationId, int chanceToMove) {
-        this._name = name;
-        this._description = description;
-        this._rid = rid;
-        this._pid = pid;
-        this._chanceToMove = chanceToMove;
-        this._conversationId = conversationId;
-        this._nextConversationId = -1;
-        this._id = UUID.randomUUID();
-        this._inventory = new Inventory();
+        this.name = name;
+        this.description = description;
+        this.rid = rid;
+        this.pid = pid;
+        this.chanceToMove = chanceToMove;
+        this.conversationId = conversationId;
+        this.nextConversationId = -1;
+        this.id = UUID.randomUUID();
+        this.inventory = new Inventory();
         
-        this._referenceNumber = NPC.referenceCounter;
+        this.referenceNumber = NPC.referenceCounter;
         NPC.referenceCounter++;
     }
 
     // ***** GETTERS *****
     public UUID getId() {
-        return this._id;
+        return this.id;
     }
     
     public int getReferenceNumber() {
-        return this._referenceNumber;
+        return this.referenceNumber;
     }
     
     public UUID getPlanetId() {
-        return this._planetId;
+        return this.planetId;
     }
 
     public int getChanceToMove() {
-        return this._chanceToMove;
+        return this.chanceToMove;
     }
     
     public int getRid() {
-        return this._rid;
+        return this.rid;
     }
     
     public int getPid() {
-        return this._pid;
+        return this.pid;
     }
     
     public UUID getPackageId() {
-        return this._packageId;
+        return this.packageId;
     }
     
     public String getName() {
-        return this._name;
+        return this.name;
     }
     
     public String getDescription() {
-        return this._description;
+        return this.description;
     }
     
     public int getConversationId() {
-        return this._conversationId;
+        return this.conversationId;
     }
     
     public int getNextConversationId() {
-        return this._conversationId;
+        return this.conversationId;
     }
     // ***** GETTERS END *****
 
     // ***** SETTERS *****
     public void setReceiverRid(int rid) {
-        this._rid = rid;
+        this.rid = rid;
     }
     
     public void setPlanetId(UUID planetId) {
-        this._planetId = planetId;
+        this.planetId = planetId;
     }
 
     public void setConversationId(int id) {
-        this._conversationId = id;
+        this.conversationId = id;
     }
     
     public void setNextConversationId(int id) {
-        this._nextConversationId = id;
+        this.nextConversationId = id;
     }
     
     public void setPackageId(UUID uuid) {
-        this._packageId = uuid;
+        this.packageId = uuid;
     }
     // ***** SETTERS END *****
 
     public boolean hasNextConversationId() {
-        return this._nextConversationId != -1;
+        return this.nextConversationId != -1;
     }
     
     // ***** GETTERS REGARDING INVENTORY *****
     public UUID[] getInventoryUuids() {
-        return this._inventory.getInventoryUuids();
+        return this.inventory.getInventoryUuids();
     }
     // ***** GETTERS REGARDING INVENTORY END *****
 
@@ -138,7 +138,7 @@ public class NPC {
      * @return the UUID of the newly created item
      */
     public boolean addItem(UUID uuid, int weight) {
-        return this._inventory.addItem(uuid, weight);
+        return this.inventory.addItem(uuid, weight);
     }
 
     /**
@@ -147,7 +147,7 @@ public class NPC {
      * @param weight
      */
     public void removeItem(UUID itemId, int weight) {
-        this._inventory.remItem(itemId, weight);
+        this.inventory.remItem(itemId, weight);
     }
 
 }

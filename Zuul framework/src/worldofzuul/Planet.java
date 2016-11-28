@@ -9,10 +9,10 @@ import java.util.UUID;
 public class Planet extends NPCHolder {
 
     //Initializing variables
-    private UUID _moonUuid;
-    private int _xCoor;          //x-coordinate of the planet
-    private int _yCoor;          //y-coordinate of the planet
-    private int _referenceNum;   //unique referencenumber for the planet
+    private UUID moonUuid;
+    private int xCoor;          //x-coordinate of the planet
+    private int yCoor;          //y-coordinate of the planet
+    private int referenceNum;   //unique referencenumber for the planet
     
     //static counter for creating new referencenumbers, it starts at one, because the moon always has the number 0
     public static int referenceNumCounter = 1;    		
@@ -27,37 +27,37 @@ public class Planet extends NPCHolder {
      */
     public Planet(String name, String description, int xCoor, int yCoor, int pid) {
         super(name, description, pid);
-        this._xCoor = xCoor;
-        this._yCoor = yCoor;
-        this._referenceNum = Planet.referenceNumCounter;
+        this.xCoor = xCoor;
+        this.yCoor = yCoor;
+        this.referenceNum = Planet.referenceNumCounter;
         Planet.referenceNumCounter++;
     }
 
     // ***** GETTERS *****
     public boolean hasMoon() {
-        return this._moonUuid != null;
+        return this.moonUuid != null;
     }
     
     public UUID getMoonUuid() {
-        return this._moonUuid;
+        return this.moonUuid;
     }
 
     public int getXCoor() {
-        return this._xCoor;
+        return this.xCoor;
     }
 
     public int getYCoor() {
-        return this._yCoor;
+        return this.yCoor;
     }
 
     public int getReferenceNum() {
-        return this._referenceNum;
+        return this.referenceNum;
     }
     // ***** GETTERS END *****
     
     // ***** SETTERS *****
     public void setMoonUuid(UUID moonId) {
-        this._moonUuid = moonId;
+        this.moonUuid = moonId;
     }
     // ***** SETTERS END *****
 }

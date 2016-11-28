@@ -14,16 +14,16 @@ import java.util.UUID;
  */
 public class Conversation{
 
-    private int _currentQuestionNumber; 
-    private int _conversationId;
-    private UUID _npcId;
-    private Question _currentQuestion;
-    private ArrayList<Question> _questionList;
+    private int currentQuestionNumber; 
+    private int conversationId;
+    private UUID npcId;
+    private Question currentQuestion;
+    private ArrayList<Question> questionList;
     
     public Conversation(int conversationId) {
-        this._conversationId = conversationId;
-        this._currentQuestionNumber = 0;
-        this._questionList = new ArrayList<>();
+        this.conversationId = conversationId;
+        this.currentQuestionNumber = 0;
+        this.questionList = new ArrayList<>();
     }
 
     /**
@@ -35,7 +35,7 @@ public class Conversation{
         for(int i=1; i <= text.size(); ) {
             String qText = text.get(i);
             int numOfAns = Character.getNumericValue(text.get(i+1).charAt(0));
-            this._questionList.add(new Question(qText, numOfAns));
+            this.questionList.add(new Question(qText, numOfAns));
             
             int count = 1;
             int n = i;
@@ -45,14 +45,14 @@ public class Conversation{
                 int nextLineNumber = Character.getNumericValue(text.get(n+5).charAt(0));
                 String exeLine = text.get(n+6);
                 
-                this._questionList.get(this._questionList.size()-1).addAnswer(nextLineNumber, ansText, reactText, exeLine);
+                this.questionList.get(this.questionList.size()-1).addAnswer(nextLineNumber, ansText, reactText, exeLine);
                 
                 count++;
                 n+=5;
             }
             i += 3 + 5*numOfAns;
         }
-        this._currentQuestion = this._questionList.get(this._currentQuestionNumber);
+        this.currentQuestion = this.questionList.get(this.currentQuestionNumber);
 
     }
 
@@ -61,7 +61,7 @@ public class Conversation{
      * @param userAns a string, which is the second word the use typed in along with the command "say"
      */
     public void processAnswer(String userAns) {
-        this._currentQuestion.findAnswer(userAns);
+        this.currentQuestion.findAnswer(userAns);
     }
 
     /**
@@ -69,7 +69,7 @@ public class Conversation{
      * @return a string
      */
     public String getPossibleAnswers() {
-       return this._currentQuestion.getPossibleAnswers();
+       return this.currentQuestion.getPossibleAnswers();
     }
 
     /**
@@ -77,44 +77,44 @@ public class Conversation{
      * @param questionNumber the number of the question
      */
     public void setNextQuestion(int questionNumber) {
-        this._currentQuestionNumber = questionNumber;
-        this._currentQuestion = this._questionList.get(this._currentQuestionNumber);
+        this.currentQuestionNumber = questionNumber;
+        this.currentQuestion = this.questionList.get(this.currentQuestionNumber);
     }
     // ***** GETTERS *****
     public int getConversationId() {
-        return this._conversationId;
+        return this.conversationId;
     }
     
     public UUID getNpcId() {
-        return this._npcId;
+        return this.npcId;
     }
     
     public String getQText() {
-        return this._currentQuestion.getQText();
+        return this.currentQuestion.getQText();
     }
     // ***** GETTERS END *****
     
     // ***** SETTERS *****
     public void setNpcId(UUID npcId) {
-        this._npcId = npcId;
+        this.npcId = npcId;
     }
     // ***** SETTERS END *****
 
     // ***** GETTERS FROM ANSWER *****
     public boolean hasCurrentAnswer() {
-        return this._currentQuestion.hasCurrentAnswer();
+        return this.currentQuestion.hasCurrentAnswer();
     }
 
     public String getExecutionLine() {
-        return this._currentQuestion.getExecutionLine();
+        return this.currentQuestion.getExecutionLine();
     }
 
     public String getReactText() {
-        return this._currentQuestion.getReactText();
+        return this.currentQuestion.getReactText();
     }
 
     public int getNextLineNumber() {
-        return this._currentQuestion.getNextLineNumber();
+        return this.currentQuestion.getNextLineNumber();
     }
     // ***** GETTERS FROM ANSWER END *****
 }
