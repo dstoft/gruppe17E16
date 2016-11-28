@@ -55,7 +55,7 @@ public class HighScore {
      * @return a string
      */
     public String toJsonString() {
-        String jSonString = "{\"name\":\"" + this.name + "\",\"rep\":" + this.rep + ",\"time\"" + this.time + "}";
+        String jSonString = "{\"name\":\"" + this.name + "\",\"rep\":" + this.rep + ",\"time\":" + this.time + "}";
         return jSonString;
     }
 

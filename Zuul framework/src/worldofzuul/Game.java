@@ -91,7 +91,7 @@ public class Game {
 
         //Start conversation or use the greet command for first encounter?
         this.startConversation(this._planets.get(this._player.getPlanetId()).getNpcIds()[0]);
-        
+
         //Note, the while-loop below, is basically a do..while loop, because the value to check is set to false right before the loop itself
         //meaning, no matter what, the loop will run through at least once
         boolean finished = false;
@@ -203,6 +203,7 @@ public class Game {
             this._dashboard.print("Quit what?"); //meaning the game won't quit!
             return false; //Returns false, meaning the system will not quit
         } else { //If there is no second word,
+            saveHighScore();
             return true; //Return true, meaning the game will quit!
         }
     }
@@ -375,6 +376,8 @@ public class Game {
                 Planet parentPlanet = this._planets.get(deliveryMoon.getParentPlanetUuid());
                 this._dashboard.print(" - and it has to be delivered at the moon called " + deliveryMoon.getName() + " of the planet: [" + parentPlanet.getXCoor() + ";" + parentPlanet.getYCoor() + "] " + parentPlanet.getName());
             }
+            
+            this._dashboard.print("- and it has to be delivered before the time " + curItems.getDeliveryTime() + " is reached");
         }
     }
 
@@ -566,34 +569,52 @@ public class Game {
         allExecutions = executionLine.split(",");
         for (String eachExecution : allExecutions) {
             String[] executionSplit = eachExecution.split(":");
-            if (executionSplit[0].equals("deliverPackage")) {
-                this.deliverPackage(npcId);
-            } else if (executionSplit[0].equals("pickupPackage")) {
-                //Where should the conversation go if you do not have space?
-                if (!this.pickupPackage(npcId)) {
-                    //You were unable to pick up all the items the NPC has, so what should happen now? Terminate conversation? Head to another question?
-                    //"checkPickup" will only check for one item, should this too?
-                }
-            } else if (executionSplit[0].equals("nextConvoId")) {
-                try {
-                    int convoId = Integer.parseInt(executionSplit[1]);
-                    this._npcs.get(npcId).setNextConversationId(convoId);
-                } catch (NumberFormatException e) {
-
-                }
-            } else if (executionSplit[0].equals("checkPackage")) {
-                this.checkPackage(npcId, executionSplit[1]);
-                changedQuestion = true;
-            } else if (executionSplit[0].equals("checkPickup")) {
-                this.checkPickup(npcId, executionSplit[1]);
-                changedQuestion = true;
-            } else if (executionSplit[0].equals("removeReputation")) {
-                try {
-                    int reputationAmount = Integer.parseInt(executionSplit[1]);
-                    this._player.setReputation((this._player.getReputation() - reputationAmount));
-                } catch (NumberFormatException e) {
-
-                }
+            switch (executionSplit[0]) {
+                case "deliverPackage":
+                    this.deliverPackage(npcId);
+                    break;
+                case "pickupPackage":
+                    //Where should the conversation go if you do not have space?
+                    if (!this.pickupPackage(npcId)) {
+                        //You were unable to pick up all the items the NPC has, so what should happen now? Terminate conversation? Head to another question?
+                        //"checkPickup" will only check for one item, should this too?
+                    }   
+                    break;
+                    
+                case "nextConvoId":
+                    try {
+                        int convoId = Integer.parseInt(executionSplit[1]);
+                        this._npcs.get(npcId).setNextConversationId(convoId);
+                    } catch (NumberFormatException e) {
+                        
+                    }   
+                    break;
+                    
+                case "checkPackage":
+                    this.checkPackage(npcId, executionSplit[1]);
+                    changedQuestion = true;
+                    break;
+                    
+                case "checkPickup":
+                    this.checkPickup(npcId, executionSplit[1]);
+                    changedQuestion = true;
+                    break;
+                    
+                case "removeReputation":
+                    try {
+                        int reputationAmount = Integer.parseInt(executionSplit[1]);
+                        this._player.setReputation((this._player.getReputation() - reputationAmount));
+                    } catch (NumberFormatException e) {
+                        
+                    }   
+                    break;
+                    
+                case "getPapers":
+                    this.getPapers();
+                    break;
+                    
+                default:
+                    break;
             }
         }
 
@@ -614,10 +635,14 @@ public class Game {
         this._player.removeItem(item.getId(), item.getWeight());
         if (this.time <= item.getDeliveryTime()) {
             this._dashboard.print("Congratulations, you delivered " + item.getDescription() + " on time!");
-            this._player.setReputation(this._player.getReputation() + 5);
+            this._player.setReputation(this._player.getReputation() + item.getReputationWorth());
+        } else {
+            this._dashboard.print("Unfortunately, you did not deliver  " + item.getDescription() + " on time!");
+            this._player.setReputation(this._player.getReputation() - item.getReputationWorth());
         }
         if (!item.getPapers()) {
-            this._player.setReputation(this._player.getReputation() - 15);
+            this._dashboard.print("Since you did not have the papers for " + item.getDescription() + " you lost some reputation. Go see the Headquarter for papers on your packages!");
+            this._player.setReputation(this._player.getReputation() - (item.getReputationWorth()*3));
         }
     }
 
@@ -703,7 +728,17 @@ public class Game {
 
         this._currentConversation.setNextQuestion(questionNumbers[1]);
     }
-
+    
+    /**
+     * This method is used to execute executionlines from Conversation.
+     * This takes all of the players items and adds papers to them.
+     */
+    public void getPapers() {
+        for(UUID uuid : this._player.getInventoryUuids()) {
+            this._items.get(uuid).setPapersTrue();
+        }
+    }
+    
     /**
      * Changes a planet reference number to the planet's UUID. Can catch an
      * exception
@@ -1313,17 +1348,26 @@ public class Game {
     }
 
     /**
-     * Methods for chancing the time ingame
+     * Methods for incrementing the time ingame
+     *
      * @param i the amount to increment the time with
      */
     public void incrementTime(int i) { // This method + to the time
         time = +i;
     }
 
+    /**
+     * Method for decrementing the time ingame
+     * @param i 
+     */
     public void decrementTime(int i) { // This method  -  to the time
         time = -i;
     }
 
+    /**
+     * Purpose of this?
+     * @return 
+     */
     public int checkTimers() { // This method checks the times and returns it        
         return time;
     }
