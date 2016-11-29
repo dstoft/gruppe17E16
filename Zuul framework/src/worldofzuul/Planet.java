@@ -2,6 +2,7 @@ package worldofzuul;
 
 import java.util.ArrayList;
 import java.util.UUID;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * Holds all of the information regarding planets, except from NPC handling, which is handled by the super class NPCHolder
@@ -10,8 +11,8 @@ public class Planet extends NPCHolder {
 
     //Initializing variables
     private UUID moonUuid;
-    private int xCoor;          //x-coordinate of the planet
-    private int yCoor;          //y-coordinate of the planet
+    private int x;          //x-coordinate of the planet
+    private int y;          //y-coordinate of the planet
     private int referenceNum;   //unique referencenumber for the planet
     
     //static counter for creating new referencenumbers, it starts at one, because the moon always has the number 0
@@ -21,14 +22,19 @@ public class Planet extends NPCHolder {
      * Constructor
      * @param name of the planet
      * @param description of the planet
-     * @param xCoor the x coordinate of the planet
-     * @param yCoor the y coordinate of the planet
+     * @param x the x coordinate of the planet
+     * @param y the y coordinate of the planet
      * @param pid the "planet id" of the planet, which tells NPC where they should be placed by the start of the game
      */
-    public Planet(String name, String description, int xCoor, int yCoor, int pid) {
+    public Planet(String name, String description, int x, int y, int pid) {
         super(name, description, pid);
-        this.xCoor = xCoor;
-        this.yCoor = yCoor;
+        this.x = x;
+        this.y = y;
+        this.referenceNum = Planet.referenceNumCounter;
+        Planet.referenceNumCounter++;
+    }
+    
+    public Planet() {
         this.referenceNum = Planet.referenceNumCounter;
         Planet.referenceNumCounter++;
     }
@@ -41,13 +47,13 @@ public class Planet extends NPCHolder {
     public UUID getMoonUuid() {
         return this.moonUuid;
     }
-
-    public int getXCoor() {
-        return this.xCoor;
+    
+    public int getx() {
+        return this.x;
     }
 
-    public int getYCoor() {
-        return this.yCoor;
+    public int gety() {
+        return this.y;
     }
 
     public int getReferenceNum() {

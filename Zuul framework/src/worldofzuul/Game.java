@@ -70,7 +70,7 @@ public class Game {
         this.time = 0;
 
         parser = new Parser(); //Creates a new object of the type Parser
-        this.player = new Player(this.startingPlanet, 100, 10);
+        this.player = new Player(this.startingPlanet, 10000, 10);
         this.dashboard = new Dashboard(); // Creates a new object of the type Dashboard. 
 
         //createPlanets(); 
@@ -221,7 +221,7 @@ public class Game {
     public ArrayList<Planet> getPossiblePlanets(int startX, int startY, int currentFuel) {
         ArrayList<Planet> reachablePlanets = new ArrayList<>();
         for (Planet planet : this.planets.values()) {
-            if (this.movementCalculator.isReachable(startX, startY, planet.getXCoor(), planet.getYCoor(), currentFuel)) {
+            if (this.movementCalculator.isReachable(startX, startY, planet.getx(), planet.gety(), currentFuel)) {
                 reachablePlanets.add(planet);
             }
         }
@@ -370,11 +370,11 @@ public class Game {
 
             if (this.planets.containsKey(this.npcs.get(curItems.getNpcId()).getPlanetId())) {
                 Planet deliveryPlanet = this.planets.get(this.npcs.get(curItems.getNpcId()).getPlanetId());
-                this.dashboard.print(" - and it has to be delivered at: [" + deliveryPlanet.getXCoor() + ";" + deliveryPlanet.getYCoor() + "] " + deliveryPlanet.getName());
+                this.dashboard.print(" - and it has to be delivered at: [" + deliveryPlanet.getx() + ";" + deliveryPlanet.gety() + "] " + deliveryPlanet.getName());
             } else {
                 Moon deliveryMoon = this.moons.get(this.npcs.get(curItems.getNpcId()).getPlanetId());
                 Planet parentPlanet = this.planets.get(deliveryMoon.getParentPlanetUuid());
-                this.dashboard.print(" - and it has to be delivered at the moon called " + deliveryMoon.getName() + " of the planet: [" + parentPlanet.getXCoor() + ";" + parentPlanet.getYCoor() + "] " + parentPlanet.getName());
+                this.dashboard.print(" - and it has to be delivered at the moon called " + deliveryMoon.getName() + " of the planet: [" + parentPlanet.getx() + ";" + parentPlanet.gety() + "] " + parentPlanet.getName());
             }
             
             this.dashboard.print("- and it has to be delivered before the time " + curItems.getDeliveryTime() + " is reached");
@@ -832,26 +832,38 @@ public class Game {
      * @return what UUID the player should be starting on
      */
     public UUID createPlanets() {
-        /*
+        
         UUID returnUuid = null;
         //Creating the items list
         int i = 0;
         while(true) {
-            if(!this.fileHandler.doesFileExist("data/planets/" + i + ".json")) {
+            if(!this.fileHandler.doesFileExist("data/alpha_centauri/planets/" + i + ".json")) {
+                System.out.println("triggered? at " + i);
                 break;
             }
-            Planet newPlanet = this.fileHandler.getJSON("data/planets/" + i + ".json", Planet.class);
+            System.out.println("2triggered? at " + i);
+            Planet newPlanet = this.fileHandler.getJSON("data/alpha_centauri/planets/" + i + ".json", Planet.class);
+            System.out.println("3triggered? at " + i);
+            if(newPlanet == null) {
+                
+        System.out.println("makes it this far?");
+            }
             this.planets.put(newPlanet.getId(), newPlanet);
             i++;
-            
+            System.out.println("4triggered? at " + i);
             if(newPlanet.getPid() == 0) {
                 returnUuid = newPlanet.getId();
             }
         }
         
+        System.out.println(this.planets.size());
+        
+        createMoons();
+        
         return returnUuid;
-         */
-
+        
+        
+        /*
         Planet newPlanet = new Planet("hej", "wow!", 1, 1, 0);
         this.planets.put(newPlanet.getId(), newPlanet);
 
@@ -861,7 +873,7 @@ public class Game {
         createMoons();
 
         return newPlanet.getId();
-
+        */
     }
 
     /**
@@ -1242,8 +1254,8 @@ public class Game {
             planet = this.planets.get(this.moons.get(positionUuid).getParentPlanetUuid());
         }
         int[] returnArray = new int[2];
-        returnArray[0] = planet.getXCoor();
-        returnArray[1] = planet.getYCoor();
+        returnArray[0] = planet.getx();
+        returnArray[1] = planet.gety();
         return returnArray;
 
     }

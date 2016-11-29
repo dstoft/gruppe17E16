@@ -36,6 +36,11 @@ public abstract class NPCHolder {
         this.pid = pid;
     }
     
+    public NPCHolder() {
+        this.npcIds = new ArrayList<>();
+        this.id = UUID.randomUUID();
+    }
+    
     // ****** GETTERS ******
     public UUID getId() {
         return this.id;

@@ -40,6 +40,7 @@ public class FileHandler{
         try {
             return mapper.readValue(new File(fileSource), classType);
         } catch(IOException e) {
+            System.out.println(e);
             return null;
         }
     }

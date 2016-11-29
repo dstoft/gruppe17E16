@@ -1,0 +1,8 @@
+{
+    "name": "Officer Xiang",
+    "description": "An officer from the Republic of China",
+    "rid": 1,
+	"pid" : 0,
+	"chanceToMove" : 0,
+	"conversationId" : 10
+}
