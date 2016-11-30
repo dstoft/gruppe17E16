@@ -2,6 +2,6 @@
     "rid": 1,
     "weight": 5,
     "description": "The orb of grass",
-	"pid" : 0,
+	"pid" : 1,
 	"reputationWorth" : 2
 }

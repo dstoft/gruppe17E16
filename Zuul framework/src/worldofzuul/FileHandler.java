@@ -19,10 +19,10 @@ public class FileHandler{
      * @param id identifies which file that should be read
      * @return the list of strings
      */
-    public List<String> getText(int id) {
+    public List<String> getText(String path) {
         List<String> text = null;
         try {
-            text = Files.readAllLines(Paths.get("NPC" + id + ".txt"));
+            text = Files.readAllLines(Paths.get(path));
         } catch (IOException e) {
             return null;
         }

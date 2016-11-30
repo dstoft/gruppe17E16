@@ -501,7 +501,7 @@ public class Game {
         }
         this.currentConversation = new Conversation(npc.getConversationId());
         this.currentConversation.setNpcId(npcId);
-        this.currentConversation.createWholeConversation(this.fileHandler.getText(this.currentConversation.getConversationId()));
+        this.currentConversation.createWholeConversation(this.fileHandler.getText("data/alpha_centauri/conversations/" + npc.getConversationId() + ".txt"));
         this.dashboard.print("A connection with " + npc.getName() + " has been established...");
         this.dashboard.print(npc.getName() + " looks like " + npc.getDescription());
         this.dashboard.print(npc.getName() + ": " + this.currentConversation.getQText());
@@ -838,25 +838,16 @@ public class Game {
         int i = 0;
         while(true) {
             if(!this.fileHandler.doesFileExist("data/alpha_centauri/planets/" + i + ".json")) {
-                System.out.println("triggered? at " + i);
                 break;
             }
-            System.out.println("2triggered? at " + i);
             Planet newPlanet = this.fileHandler.getJSON("data/alpha_centauri/planets/" + i + ".json", Planet.class);
-            System.out.println("3triggered? at " + i);
-            if(newPlanet == null) {
-                
-        System.out.println("makes it this far?");
-            }
             this.planets.put(newPlanet.getId(), newPlanet);
             i++;
-            System.out.println("4triggered? at " + i);
+            
             if(newPlanet.getPid() == 0) {
                 returnUuid = newPlanet.getId();
             }
         }
-        
-        System.out.println(this.planets.size());
         
         createMoons();
         
@@ -882,23 +873,24 @@ public class Game {
      * a planet's PID.
      */
     public void createMoons() {
-        /*
+        
         int i = 0;
         while(true) {
-            if(!this.fileHandler.doesFileExist("data/moons/" + i + ".json")) {
+            if(!this.fileHandler.doesFileExist("data/alpha_centauri/moons/" + i + ".json")) {
                 break;
             }
-            Moon newMoon = this.fileHandler.getJSON("data/moons/" + i + ".json", Moon.class);
+            Moon newMoon = this.fileHandler.getJSON("data/alpha_centauri/moons/" + i + ".json", Moon.class);
             this.moons.put(newMoon.getId(), newMoon);
             i++;
         }
-         */
-
+        
+        /*
         Moon newMoon = new Moon("navn", "hej!", 0);
         this.moons.put(newMoon.getId(), newMoon);
 
         newMoon = new Moon("navn", "hej2!", 1);
         this.moons.put(newMoon.getId(), newMoon);
+        */
 
         HashMap<Integer, Planet> planetPids = new HashMap<>();
         for (Planet planet : this.planets.values()) {
@@ -917,18 +909,19 @@ public class Game {
      * Creates the NPCs
      */
     public void createNpcs() {
-        /*
+        
         int i = 0;
         while(true) {
-            if(!this.fileHandler.doesFileExist("data/npcs/" + i + ".json")) {
+            if(!this.fileHandler.doesFileExist("data/alpha_centauri/civilians/" + i + ".json")) {
                 break;
             }
-            NPC newNpc = this.fileHandler.getJSON("data/npcs/" + i + ".json", NPC.class);
+            NPC newNpc = this.fileHandler.getJSON("data/alpha_centauri/civilians/" + i + ".json", NPC.class);
             this.npcs.put(newNpc.getId(), newNpc);
+            this.civilians.put(newNpc.getId(), newNpc);
             i++;
         }
-         */
 
+        /*
         //A method for creating NPCs
         NPC newNpc = new NPC("Planet1NPC", "He be wow!", -1, 0, 1, 0);
         this.npcs.put(newNpc.getId(), newNpc);
@@ -941,11 +934,16 @@ public class Game {
         newNpc = new NPC("Planet2NPC2", "He be not wow!!", 1, 1, 1, 0);
         this.npcs.put(newNpc.getId(), newNpc);
         this.civilians.put(newNpc.getId(), newNpc);
+        */
 
         ArrayList<NPCHolder> npcHolders = new ArrayList<>();
         for (Planet planet : this.planets.values()) {
             npcHolders.add(planet);
         }
+        
+        System.out.println("Civilians:" + this.civilians.size());
+        System.out.println("Moons:" + this.moons.size());
+        
         placeNpcs(this.civilians.values(), npcHolders);
 
         createRebels();
@@ -957,18 +955,19 @@ public class Game {
      * method placeNPCs with the list of rebels and moons.
      */
     private void createRebels() {
-        /*
+        
         int i = 0;
         while(true) {
-            if(!this.fileHandler.doesFileExist("data/npcs/" + i + ".json")) {
+            if(!this.fileHandler.doesFileExist("data/alpha_centauri/rebels/" + i + ".json")) {
                 break;
             }
-            NPC newNpc = this.fileHandler.getJSON("data/npcs/" + i + ".json", NPC.class);
+            NPC newNpc = this.fileHandler.getJSON("data/alpha_centauri/rebels/" + i + ".json", NPC.class);
             this.npcs.put(newNpc.getId(), newNpc);
+            this.rebels.put(newNpc.getId(), newNpc);
             i++;
         }
-         */
-
+        
+        /*
         //A method for creating NPCs
         NPC newNpc = new NPC("Rebel1", "He be wow!", -1, 0, 1, 0);
         this.npcs.put(newNpc.getId(), newNpc);
@@ -981,6 +980,7 @@ public class Game {
         newNpc = new NPC("Rebel3", "He be not wow!!", -1, 1, 1, 10);
         this.npcs.put(newNpc.getId(), newNpc);
         this.rebels.put(newNpc.getId(), newNpc);
+        */
 
         ArrayList<NPCHolder> npcHolders = new ArrayList<>();
         for (Moon moon : this.moons.values()) {
@@ -1026,14 +1026,16 @@ public class Game {
         //Goes through the whole list of NPCs that has to be placed, and places them if they have an PID.
         //If they don't have a PID, the NPC will be added to the list "hasNoPid".
         for (NPC npc : npcList) {
-            if (npc.getPid() == -1) {
+            if (npc.getPid() == -1 || !planetPids.containsKey(npc.getPid())) {
                 hasNoPid.add(npc);
             } else {
+                System.out.println("npcPid:" + planetPids.size());
                 planetPids.get(npc.getPid()).addNpcId(npc.getId());
                 npc.setPlanetId(planetPids.get(npc.getPid()).getId());
                 hasNoNpc.remove(planetPids.get(npc.getPid()));
             }
         }
+        System.out.println("Random?");
 
         //Goes through the NPC list that has no PID and places them on empty planets/moons,
         // stops when there are not empty planets/moons left.
@@ -1145,6 +1147,7 @@ public class Game {
                 break;
             }
         }
+        System.out.println("Items used:" + itemsUsed.size());
 
         //START: Filling the lists and hashmaps for items
         for (Items item : itemsUsed) {
@@ -1222,6 +1225,27 @@ public class Game {
             }
         }
         //END: Adding where the items are going to be picked up
+        /*
+        int count = 0;
+        for(Items item : this.items.values()) {
+            if(item.getNpcId() == null) {
+                continue;
+            }
+            count++;
+            UUID itemDeliveryPlace = this.npcs.get(item.getNpcId()).getPlanetId();
+            //System.out.println("Item: name: " + item.getDescription() + " delivered at: " + this.getNPCHolderFromUuid(itemDeliveryPlace).getName() + " spawned at: " + );
+        }
+        System.out.println("Item used count: " + i);
+        
+        for(NPC npc : this.npcs.values()) {
+            int[] pos = this.getPositionCoordinates(npc.getPlanetId());
+            System.out.println("NPC inventory:" + npc.getInventoryUuids()[0]);
+            System.out.println("NPC inventory size: " + npc.getInventoryUuids().length);
+            Items item = this.items.get(npc.getInventoryUuids()[0]);
+            NPC receiverNpc = this.npcs.get(item.getNpcId());
+            System.out.println("NPC: name:" + npc.getName() + " at " + pos[0] + ";" + pos[1] + " has item: " + item.getDescription() + " which is delivered at: " + receiverNpc.getName());
+        }
+        */
     }
 
     /**

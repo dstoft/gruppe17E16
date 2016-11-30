@@ -21,6 +21,10 @@ public class Moon extends NPCHolder {
         super(name, description, pid);
     }
     
+    public Moon() {
+        
+    }
+    
     // ***** GETTERS *****
     public UUID getParentPlanetUuid() {
         return this.parentPlanetUuid;

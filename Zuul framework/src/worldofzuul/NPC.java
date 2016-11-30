@@ -52,6 +52,15 @@ public class NPC {
         this.referenceNumber = NPC.referenceCounter;
         NPC.referenceCounter++;
     }
+    
+    public NPC() {
+        this.nextConversationId = -1;
+        this.id = UUID.randomUUID();
+        this.inventory = new Inventory();
+        
+        this.referenceNumber = NPC.referenceCounter;
+        NPC.referenceCounter++;
+    }
 
     // ***** GETTERS *****
     public UUID getId() {
