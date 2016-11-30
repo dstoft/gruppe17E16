@@ -126,7 +126,7 @@ public class Game {
             if (planetId == null) {
                 return false;
             }
-            this.travelToPlanet(this._player, planetId);
+            return this.travelToPlanet(this._player, planetId);
 
         } else if (commandWord == CommandWord.DROP) {
             this.dropItem(command.getSecondWord());
@@ -369,9 +369,11 @@ public class Game {
      * Changes the position (planet) of the character refered in the parameter
      *
      * @param characterToTravel which character to move
+     * @param nextPositionUuid
      * @param planetId which planet to move to
+     * @return
      */
-    public void travelToPlanet(Player characterToTravel, UUID nextPositionUuid) {
+    public boolean travelToPlanet(Player characterToTravel, UUID nextPositionUuid) {
         int[] currentPosition = getPositionCoordinates(this._player.getPlanetId());
         int[] nextPosition = getPositionCoordinates(nextPositionUuid);
         NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
@@ -379,27 +381,32 @@ public class Game {
         if (this._movementCalculator.isReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getFuel())) {
             this._dashboard.print("Now traveling to " + nextNpcHolder.getName());
             characterToTravel.setCurrentPlanet(nextPositionUuid);
-
-            tryNpcMovement();
-
-            this._dashboard.print("Refilled fuel tank!");
-            this._player.setFuel(this._player.getMaxFuel());
-
-            int travelTime = 10;
-            incrementTime(this._movementCalculator.calculateDistance(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1]) / travelTime);
-
-            this._dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
         } else {
             this._dashboard.print("Sorry, you're unable to reach the planet you were trying to travel to, try moving to a closer planet and try again.");
         }
-    }
+        if (this._planets.get(nextPositionUuid).getIsWar() == true) {
+            if (this._items.get(nextPositionUuid).getPapers() == true) {
 
-    /**
-     * A method used for processing the "warp" command during runtime. Looks very much like the travelToPlanet method. However this uses the Warp fuel as a limiting factor. As Warp fuel is different from regular fuel it also uses different movement calculations. There is a possibility of not traveling, if you do not have enough warp fuel.
-     *
-     * @param characterToTravel which character that should be moved
-     * @param nextPositionUuid which planet or moon that is the intended target.
-     */
+                tryNpcMovement();
+
+                this._dashboard.print("Refilled fuel tank!");
+                this._player.setFuel(this._player.getMaxFuel());
+
+                int travelTime = 10;
+                incrementTime(this._movementCalculator.calculateDistance(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1]) / travelTime);
+
+                this._dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
+            } else {
+
+                return true;
+            }
+        }
+        /**
+         * A method used for processing the "warp" command during runtime. Looks very much like the travelToPlanet method. However this uses the Warp fuel as a limiting factor. As Warp fuel is different from regular fuel it also uses different movement calculations. There is a possibility of not traveling, if you do not have enough warp fuel.
+         *
+         * @param characterToTravel which character that should be moved
+         * @param nextPositionUuid which planet or moon that is the intended target.
+         */
     public void processWarp(Player characterToTravel, UUID nextPositionUuid) {
         if (canWarp == true) {
             int[] currentPosition = getPositionCoordinates(this._player.getPlanetId());
@@ -414,10 +421,10 @@ public class Game {
                 this._dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
             } else {
                 this._dashboard.print("Sorry, you're unable to reach the planet you were trying to warp to, try moving to a closer planet and try again.");
-         }
+            }
+        } else {
+            System.out.println("You can not warp yet");
         }
-      else {
-       System.out.println("You can not warp yet"); }
     }
 
     /**
@@ -773,7 +780,6 @@ public class Game {
 
         newPlanet = new Planet("Starter!", "starterdesc!", 20, 20, 1);
         this._planets.put(newPlanet.getId(), newPlanet);
-
         createMoons();
 
         return newPlanet.getId();
@@ -1253,6 +1259,11 @@ public class Game {
         return time;
     }
 
+    /**
+     * Methods to set the posibility of warping to true and false
+     *
+     * @return
+     */
     public boolean setCanWarpTrue() { //This method sets the canWarp boolean to true
         return canWarp = true;
     }
@@ -1260,4 +1271,5 @@ public class Game {
     public boolean setCanWarpFalse() {  //This method sets the canWarp boolean to false
         return canWarp = false;
     }
+
 }
