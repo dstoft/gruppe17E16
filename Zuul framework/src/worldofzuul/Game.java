@@ -1253,11 +1253,11 @@ public class Game {
         return time;
     }
 
-    public boolean setCanWarpTrue() {
+    public boolean setCanWarpTrue() { //This method sets the canWarp boolean to true
         return canWarp = true;
     }
 
-    public boolean setCanWarpFalse() {
+    public boolean setCanWarpFalse() {  //This method sets the canWarp boolean to false
         return canWarp = false;
     }
 }
