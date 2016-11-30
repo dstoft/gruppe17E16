@@ -6,14 +6,9 @@ import java.util.HashMap;
 import java.util.UUID;
 
 /**
- * This class controls the flow of the game, it contains the while loop that
- * keeps the game running even after a command has been issued, this recognizes
- * the function each command has, and processes both words.
+ * This class controls the flow of the game, it contains the while loop that keeps the game running even after a command has been issued, this recognizes the function each command has, and processes both words.
  *
- * To use it, simply create an object of the type Game, and call the method
- * .play(). Written by Emil Bøgh Harder, Kasper H. Christensen, Malte Engelsted
- * Rasmussen, Matias Marek, Daniel Anton Jørgensen & Daniel Skjold Toft. Note:
- * Commented by Gruppe 17, E16, Software/IT 1. semester
+ * To use it, simply create an object of the type Game, and call the method .play(). Written by Emil Bøgh Harder, Kasper H. Christensen, Malte Engelsted Rasmussen, Matias Marek, Daniel Anton Jørgensen & Daniel Skjold Toft. Note: Commented by Gruppe 17, E16, Software/IT 1. semester
  *
  *
  * @author Michael Kolling and David J. Barnes
@@ -29,16 +24,7 @@ public class Game {
     private HashMap<UUID, Moon> _moons;
 
     /**
-     * Three maps of NPCs, the first one, npcs, holds all of the npcs, which is
-     * used for starting a conversation, figuring out which npc is adressed,
-     * etc. The difference of civilians and rebels are simply their movement
-     * pattern. Rebels only move to and from moons, where civilians only move to
-     * and from planets. The creation of a list allows methods of handling both
-     * civilians and rebels, when there is no difference, f.ex. creation of a
-     * new conversation. The only thing needed by the NPC is the conversation
-     * id, which is common for both NPC types. The only reason for the
-     * separation into two maps, is purely due to the movement pattern, as that
-     * is the only thing that separates them.
+     * Three maps of NPCs, the first one, npcs, holds all of the npcs, which is used for starting a conversation, figuring out which npc is adressed, etc. The difference of civilians and rebels are simply their movement pattern. Rebels only move to and from moons, where civilians only move to and from planets. The creation of a list allows methods of handling both civilians and rebels, when there is no difference, f.ex. creation of a new conversation. The only thing needed by the NPC is the conversation id, which is common for both NPC types. The only reason for the separation into two maps, is purely due to the movement pattern, as that is the only thing that separates them.
      */
     private HashMap<UUID, NPC> _npcs;
     private HashMap<UUID, NPC> _civilians;
@@ -49,10 +35,10 @@ public class Game {
     private Conversation _currentConversation;
     private int time;
     private UUID _startingPlanet;
+    private boolean canWarp;
 
     /**
-     * Constructor for the class Game, using the method createRooms() it creates
-     * the rooms, sets current room and creates a new parser object
+     * Constructor for the class Game, using the method createRooms() it creates the rooms, sets current room and creates a new parser object
      */
     public Game() {
         this._planets = new HashMap<>();
@@ -78,9 +64,7 @@ public class Game {
     }
 
     /**
-     * This is the function to call if you want to launch the game! It prints
-     * the welcome message, and then it loops, taking your commands, until the
-     * game ends.
+     * This is the function to call if you want to launch the game! It prints the welcome message, and then it loops, taking your commands, until the game ends.
      */
     public void play() {
         printWelcome(); //Prints a welcome message
@@ -91,7 +75,7 @@ public class Game {
 
         //Start conversation or use the greet command for first encounter?
         this.startConversation(this._planets.get(this._player.getPlanetId()).getNpcIds()[0]);
-        
+
         //Note, the while-loop below, is basically a do..while loop, because the value to check is set to false right before the loop itself
         //meaning, no matter what, the loop will run through at least once
         boolean finished = false;
@@ -104,8 +88,7 @@ public class Game {
     }
 
     /**
-     * A simple method to print a small welcome message and the description of
-     * the starting room
+     * A simple method to print a small welcome message and the description of the starting room
      */
     private void printWelcome() {
         this._dashboard.print();
@@ -115,16 +98,10 @@ public class Game {
     }
 
     /**
-     * Processes a command based on the parameter. This function figures out
-     * where to head whenever you send a command, it calls other methods. This
-     * method only processes the first word in the command, and leaves the
-     * processing of the second word to the methods it call
+     * Processes a command based on the parameter. This function figures out where to head whenever you send a command, it calls other methods. This method only processes the first word in the command, and leaves the processing of the second word to the methods it call
      *
-     * @param command is an object of the type Command, it uses the class
-     * CommandWord, an enum, to recognize the command parsed in through the
-     * parameter
-     * @return a boolean telling the program whether to quit or not, return true
-     * when the player wants to quit
+     * @param command is an object of the type Command, it uses the class CommandWord, an enum, to recognize the command parsed in through the parameter
+     * @return a boolean telling the program whether to quit or not, return true when the player wants to quit
      */
     private boolean processCommand(Command command) {
         boolean wantToQuit = false; //Defines a variable, controls whether to quit or not
@@ -177,8 +154,7 @@ public class Game {
     }
 
     /**
-     * Prints a small message regarding the game, and prints all available
-     * commands
+     * Prints a small message regarding the game, and prints all available commands
      */
     private void printHelp() {
         //Prints a few statements regarding the state of the game
@@ -191,11 +167,9 @@ public class Game {
     }
 
     /**
-     * The method that gets called if you type "quit", it only quits if no
-     * second word exists
+     * The method that gets called if you type "quit", it only quits if no second word exists
      *
-     * @param command this command has two words, however, this method only uses
-     * the second, as the first has already been processed
+     * @param command this command has two words, however, this method only uses the second, as the first has already been processed
      * @return true if the user has no second word, and therefore wants to quit
      */
     private boolean quit(Command command) {
@@ -208,9 +182,7 @@ public class Game {
     }
 
     /**
-     * Calculates the planets that a certain position can travel to, based on
-     * the amount of fuel. Uses Game's list of all planets, and
-     * movementcalculator
+     * Calculates the planets that a certain position can travel to, based on the amount of fuel. Uses Game's list of all planets, and movementcalculator
      *
      * @param startX starting position
      * @param startY starting position
@@ -295,9 +267,7 @@ public class Game {
     }
 
     /**
-     * Prints the NPCs that the user can currently talk to, f.ex. when arriving
-     * a planet or moon. This method can be called during runtime using the
-     * command "scan npcs".
+     * Prints the NPCs that the user can currently talk to, f.ex. when arriving a planet or moon. This method can be called during runtime using the command "scan npcs".
      */
     public void printPossibleNpcs() {
         NPCHolder npcHolder = getNPCHolderFromUuid(this._player.getPlanetId());
@@ -359,8 +329,7 @@ public class Game {
     }
 
     /**
-     * Prints information about the inventory, if it is empty, it does not tell
-     * the player how to drop an item
+     * Prints information about the inventory, if it is empty, it does not tell the player how to drop an item
      */
     public void printInventory() {
         for (UUID uuid : this._player.getInventoryUuids()) {
@@ -426,29 +395,29 @@ public class Game {
     }
 
     /**
-     * A method used for processing the "warp" command during runtime. Looks
-     * very much like the travelToPlanet method. However this uses the Warp fuel
-     * as a limiting factor. As Warp fuel is different from regular fuel it also
-     * uses different movement calculations. There is a possibility of not
-     * traveling, if you do not have enough warp fuel.
+     * A method used for processing the "warp" command during runtime. Looks very much like the travelToPlanet method. However this uses the Warp fuel as a limiting factor. As Warp fuel is different from regular fuel it also uses different movement calculations. There is a possibility of not traveling, if you do not have enough warp fuel.
      *
      * @param characterToTravel which character that should be moved
      * @param nextPositionUuid which planet or moon that is the intended target.
      */
     public void processWarp(Player characterToTravel, UUID nextPositionUuid) {
-        int[] currentPosition = getPositionCoordinates(this._player.getPlanetId());
-        int[] nextPosition = getPositionCoordinates(nextPositionUuid);
-        NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
+        if (canWarp == true) {
+            int[] currentPosition = getPositionCoordinates(this._player.getPlanetId());
+            int[] nextPosition = getPositionCoordinates(nextPositionUuid);
+            NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
 
-        if (this._movementCalculator.isWarpReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getWarpfuel())) {
-            this._dashboard.print("Now warping to " + nextNpcHolder.getName());
-            characterToTravel.setCurrentPlanet(nextPositionUuid);
-            characterToTravel.setWarpfuel(characterToTravel.getWarpfuel() - this._movementCalculator.calculateWarpFuelUsage(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1]));
+            if (this._movementCalculator.isWarpReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getWarpfuel())) {
+                this._dashboard.print("Now warping to " + nextNpcHolder.getName());
+                characterToTravel.setCurrentPlanet(nextPositionUuid);
+                characterToTravel.setWarpfuel(characterToTravel.getWarpfuel() - this._movementCalculator.calculateWarpFuelUsage(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1]));
 
-            this._dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
-        } else {
-            this._dashboard.print("Sorry, you're unable to reach the planet you were trying to warp to, try moving to a closer planet and try again.");
+                this._dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
+            } else {
+                this._dashboard.print("Sorry, you're unable to reach the planet you were trying to warp to, try moving to a closer planet and try again.");
+         }
         }
+      else {
+       System.out.println("You can not warp yet"); }
     }
 
     /**
@@ -484,8 +453,7 @@ public class Game {
     }
 
     /**
-     * A method for starting a conversation with the NPC on the planet, that the
-     * player is currently at
+     * A method for starting a conversation with the NPC on the planet, that the player is currently at
      */
     public void startConversation(UUID npcId) {
         //IF the NPC has a nextConversationId (if it is not null) use that!
@@ -506,9 +474,7 @@ public class Game {
     }
 
     /**
-     * Takes in what the user has answered using the say command, and figures
-     * out whether it is recognized It also calls for the execution of the
-     * execution line
+     * Takes in what the user has answered using the say command, and figures out whether it is recognized It also calls for the execution of the execution line
      *
      * @param answer is the second word that the user typed in along with say
      */
@@ -552,13 +518,11 @@ public class Game {
     }
 
     /**
-     * Figures out what should happen according to the parameter executionLine,
-     * and calls the relevant methods
+     * Figures out what should happen according to the parameter executionLine, and calls the relevant methods
      *
      * @param executionLine which commands that are to be executed
      * @param npcId which npc that the conversation is with
-     * @return whether or not the conversation's question was changed during the
-     * execution commands
+     * @return whether or not the conversation's question was changed during the execution commands
      */
     public boolean processExecution(String executionLine, UUID npcId) {
         boolean changedQuestion = false;
@@ -601,10 +565,7 @@ public class Game {
     }
 
     /**
-     * A method used for execution commands from the Conversation. The method
-     * delivers a package according to the package id an NPC has. This method
-     * does not include if the player has the package or not, and should
-     * therefore only be executed after the "checkPackage".
+     * A method used for execution commands from the Conversation. The method delivers a package according to the package id an NPC has. This method does not include if the player has the package or not, and should therefore only be executed after the "checkPackage".
      *
      * @param npcId the npc which has to receive the package
      */
@@ -622,9 +583,7 @@ public class Game {
     }
 
     /**
-     * This method is executed from the execution commands from Conversation.
-     * This method picks up every package the NPC has, if you don't have space
-     * for the package you're trying to pick up, it will print that it failed.
+     * This method is executed from the execution commands from Conversation. This method picks up every package the NPC has, if you don't have space for the package you're trying to pick up, it will print that it failed.
      *
      * @param npcId the npc that the user picks up packages from
      * @return whether you succeeded or not to pick up all the packages
@@ -645,13 +604,10 @@ public class Game {
     }
 
     /**
-     * A method used to execute executionlines from Conversation. It will set
-     * two different next questions, according to whether the player has a
-     * package UUID that is equal to what the NPC wants delivered.
+     * A method used to execute executionlines from Conversation. It will set two different next questions, according to whether the player has a package UUID that is equal to what the NPC wants delivered.
      *
      * @param npcId the npc that the player wants to deliver to
-     * @param executionSplit used to get the two different question numbers that
-     * you have to proceed to
+     * @param executionSplit used to get the two different question numbers that you have to proceed to
      */
     public void checkPackage(UUID npcId, String executionSplit) {
         String[] whichQuestion = executionSplit.split("|");
@@ -676,9 +632,7 @@ public class Game {
     }
 
     /**
-     * This method is used to execute executionlines from Conversation. This
-     * sets two different question numbers according to whether the npc has any
-     * packages to pickup or not.
+     * This method is used to execute executionlines from Conversation. This sets two different question numbers according to whether the npc has any packages to pickup or not.
      *
      * @param npcId the npc to check whether it has items to pickup or not
      * @param executionSplit used to extract which question to head to next
@@ -705,8 +659,7 @@ public class Game {
     }
 
     /**
-     * Changes a planet reference number to the planet's UUID. Can catch an
-     * exception
+     * Changes a planet reference number to the planet's UUID. Can catch an exception
      *
      * @param secondWord the second word that the user typed in
      * @return the UUID of the corresponding planet
@@ -745,8 +698,7 @@ public class Game {
     }
 
     /**
-     * Changes a item reference number to the item's UUID. Can catch an
-     * exception
+     * Changes a item reference number to the item's UUID. Can catch an exception
      *
      * @param secondWord the second word that the user typed in
      * @return the UUID of the corresponding item
@@ -773,8 +725,7 @@ public class Game {
     }
 
     /**
-     * Drops an item according to it's id, if the item id is not recognized, it
-     * will print so
+     * Drops an item according to it's id, if the item id is not recognized, it will print so
      *
      * @param itemName the second word that the user typed in
      */
@@ -830,9 +781,7 @@ public class Game {
     }
 
     /**
-     * This creates the moons from JSON files, and places them according to
-     * their PID. This method assumes that every Moon has a PID that will match
-     * a planet's PID.
+     * This creates the moons from JSON files, and places them according to their PID. This method assumes that every Moon has a PID that will match a planet's PID.
      */
     public void createMoons() {
         /*
@@ -906,8 +855,7 @@ public class Game {
     }
 
     /**
-     * A method used to create the rebels from JSON files. The method calls the
-     * method placeNPCs with the list of rebels and moons.
+     * A method used to create the rebels from JSON files. The method calls the method placeNPCs with the list of rebels and moons.
      */
     private void createRebels() {
         /*
@@ -943,20 +891,10 @@ public class Game {
     }
 
     /**
-     * A method for placing NPCs according to the two parameters. The method
-     * goes through 3 steps when placing NPCs: 1. it tries to match NPCs with
-     * PIDs and planets/moons with PIDs. Which can mean several NPCs at the same
-     * planet. 2. it then adds NPCs (who has no PID) to planets/moons without
-     * NPCs. 3. it then adds NPCs (who has no PID) to random planets/moons.
-     * These steps makes sure, that if there is NPCs without PIDs, these NPCs
-     * will be placed on empty planets/moons, and when there is no more empty
-     * planets/moons, NPCs without PIDs will be placed "randomly".
+     * A method for placing NPCs according to the two parameters. The method goes through 3 steps when placing NPCs: 1. it tries to match NPCs with PIDs and planets/moons with PIDs. Which can mean several NPCs at the same planet. 2. it then adds NPCs (who has no PID) to planets/moons without NPCs. 3. it then adds NPCs (who has no PID) to random planets/moons. These steps makes sure, that if there is NPCs without PIDs, these NPCs will be placed on empty planets/moons, and when there is no more empty planets/moons, NPCs without PIDs will be placed "randomly".
      *
-     * @param npcList the list of NPCs to place (this "list" comes from the
-     * .values() from a HashMap)
-     * @param holdersList of the type NPCHolder, which is the superclass for
-     * Planets and Moons. NPCHolder holds the information and behaviour that
-     * handles NPCs at planets/moons.
+     * @param npcList the list of NPCs to place (this "list" comes from the .values() from a HashMap)
+     * @param holdersList of the type NPCHolder, which is the superclass for Planets and Moons. NPCHolder holds the information and behaviour that handles NPCs at planets/moons.
      */
     public void placeNpcs(Collection<NPC> npcList, ArrayList<NPCHolder> holdersList) {
         //An array list that holds the planets/moons without an NPC.
@@ -1025,14 +963,7 @@ public class Game {
     }
 
     /**
-     * This method is used for creating items from JSON files, determining
-     * receivers and placing the items. This method follows the algorithm (it is
-     * simplified here): 1. Creating the items from JSON files, and filling
-     * necessary lists 2. Making sure that there is as many items used run time
-     * as there is NPCs (and more filling of lists) 3a. Finding and adding
-     * receivers according to the RIDs of both NPCs and items. 3b. Finding and
-     * adding receivers that have no RIDs 4a. Finding and placing items at the
-     * right NPCs based on PIDs 4b. Finding and placing items without PIDs
+     * This method is used for creating items from JSON files, determining receivers and placing the items. This method follows the algorithm (it is simplified here): 1. Creating the items from JSON files, and filling necessary lists 2. Making sure that there is as many items used run time as there is NPCs (and more filling of lists) 3a. Finding and adding receivers according to the RIDs of both NPCs and items. 3b. Finding and adding receivers that have no RIDs 4a. Finding and placing items at the right NPCs based on PIDs 4b. Finding and placing items without PIDs
      */
     public void createItems() {
         //There is more JSON files with items, than there actually has to be used in game.
@@ -1178,8 +1109,7 @@ public class Game {
     }
 
     /**
-     * Gets a NPCHolder object from an UUID, this can either be a planet or moon
-     * UUID.
+     * Gets a NPCHolder object from an UUID, this can either be a planet or moon UUID.
      *
      * @param positionUuid a planet or moon UUID
      * @return the NPCHolder object
@@ -1196,8 +1126,7 @@ public class Game {
      * Gets the coordinates of a position based on a UUID
      *
      * @param positionUuid a planet or moons UUID
-     * @return an integer array of the size 2, with the x on index 0 and y on
-     * index 1
+     * @return an integer array of the size 2, with the x on index 0 and y on index 1
      */
     public int[] getPositionCoordinates(UUID positionUuid) {
         Planet planet;
@@ -1214,8 +1143,7 @@ public class Game {
     }
 
     /**
-     * This method prepares and calls the method that does the actual
-     * calculation for whether the NPC should move or not.
+     * This method prepares and calls the method that does the actual calculation for whether the NPC should move or not.
      */
     public void tryNpcMovement() {
         ArrayList<NPCHolder> npcHolders = new ArrayList<>();
@@ -1232,8 +1160,7 @@ public class Game {
     }
 
     /**
-     * A method that goes through all of the NPCs passed in the parameter and
-     * places them at the planets/moons passed in the parameter.
+     * A method that goes through all of the NPCs passed in the parameter and places them at the planets/moons passed in the parameter.
      *
      * @param npcList The NPCs that has to be placed
      * @param holdersList The places the NPCs can be placed
@@ -1264,8 +1191,7 @@ public class Game {
     }
 
     /**
-     * Prints both the highscore fetched from the highscore file and the current
-     * player's highscore
+     * Prints both the highscore fetched from the highscore file and the current player's highscore
      */
     public void printHighScore() {
         HighScore currentHighScore = this._fileHandler.getJSON("highscore.json", HighScore.class);
@@ -1275,9 +1201,7 @@ public class Game {
     }
 
     /**
-     * Checks the current player's highscore, and if that highscore is better
-     * than the one fetched from the JSON file, save the current player's
-     * highscore as the highest.
+     * Checks the current player's highscore, and if that highscore is better than the one fetched from the JSON file, save the current player's highscore as the highest.
      */
     public void saveHighScore() {
         //Creates a new highsore object based on the current player's stats
@@ -1314,6 +1238,7 @@ public class Game {
 
     /**
      * Methods for chancing the time ingame
+     *
      * @param i the amount to increment the time with
      */
     public void incrementTime(int i) { // This method + to the time
@@ -1326,5 +1251,13 @@ public class Game {
 
     public int checkTimers() { // This method checks the times and returns it        
         return time;
+    }
+
+    public boolean setCanWarpTrue() {
+        return canWarp = true;
+    }
+
+    public boolean setCanWarpFalse() {
+        return canWarp = false;
     }
 }
