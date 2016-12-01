@@ -20,7 +20,7 @@ public class Items {
     private int reputationWorth;
     private String description; // The description of the item
     private int rid;  // The RID for the destination
-    private int pid;
+    private int iid;
     private UUID npcId;
     private int referenceNumber;
     private int deliverytime; // Each item have a delivery time
@@ -34,13 +34,13 @@ public class Items {
      * @param rid identifies which NPC has to recieve the item at the start of the game
      * @param pid identifies where the item should "spawn" at the start of the game
      */
-    public Items(int weight, int reputationWorth, String desciption, int rid, int pid) {
+    public Items(int weight, int reputationWorth, String desciption, int rid, int iid) {
         this.id = UUID.randomUUID();
         this.weight = weight;
         this.reputationWorth = reputationWorth;
         this.description = desciption;
         this.rid = rid;
-        this.pid = pid;
+        this.iid = iid;
         this.referenceNumber = Items.referenceCounter;
         Items.referenceCounter++;
         this.deliverytime = 0;
@@ -67,8 +67,8 @@ public class Items {
         return rid;
     }
     
-    public int getPid() {        //Method for returning  destination RID
-        return pid;
+    public int getIid() {        //Method for returning  destination RID
+        return iid;
     }
     
     public UUID getNpcId() {

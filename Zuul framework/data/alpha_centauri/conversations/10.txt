@@ -21,4 +21,4 @@ I've already loaded the package, all you have to do is check the commands of the
 thanks
 I know the first is over at Yrucrem, at the coordinates of 20;72.
 -1
-pickupPackage, nextConvoId:11
+pickupPackage,nextConvoId:11

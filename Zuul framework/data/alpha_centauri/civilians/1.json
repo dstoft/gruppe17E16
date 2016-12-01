@@ -3,6 +3,7 @@
     "description": "An officer from the Republic of China",
     "rid": 2,
 	"pid" : 1,
+	"iid" : 1,
 	"chanceToMove" : 0,
 	"conversationId" : 12
 }

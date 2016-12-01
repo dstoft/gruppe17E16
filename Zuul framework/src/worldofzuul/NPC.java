@@ -22,6 +22,7 @@ public class NPC {
     private int referenceNumber; //The number used by the user to reference the NPC during runtime
     private int rid; //Identifies which Item the NPC has to receive by the start of the game
     private int pid; //Identifies where the NPC should be placed at the start of the game
+    private int iid;
     private UUID packageId; //Which Item UUID the NPC has to receive
     private UUID planetId; //Which Planet/Moon UUID the NPC is placed at
     private int chanceToMove;
@@ -38,11 +39,12 @@ public class NPC {
      * @param conversationId the first conversation id (which conversation file) the NPC should use at the start of the game
      * @param chanceToMove whether or not the NPC can move. 0 means completely no movement, 10 means certain of moving, in between means x/10 chance to move
      */
-    public NPC(String name, String description, int rid, int pid, int conversationId, int chanceToMove) {
+    public NPC(String name, String description, int rid, int pid, int iid, int conversationId, int chanceToMove) {
         this.name = name;
         this.description = description;
         this.rid = rid;
         this.pid = pid;
+        this.iid = iid;
         this.chanceToMove = chanceToMove;
         this.conversationId = conversationId;
         this.nextConversationId = -1;
@@ -85,6 +87,10 @@ public class NPC {
     
     public int getPid() {
         return this.pid;
+    }
+    
+    public int getIid() {
+        return this.iid;
     }
     
     public UUID getPackageId() {

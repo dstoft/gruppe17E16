@@ -1,7 +1,7 @@
 {
     "rid": -1,
-    "weight": 12,
+    "weight": 11,
     "description": "A 205 inch HDTV",
-	"pid" : -1,
+	"iid" : -1,
 	"reputationWorth" : 2
 }

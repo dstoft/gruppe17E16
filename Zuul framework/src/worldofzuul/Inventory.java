@@ -115,7 +115,7 @@ public class Inventory { // Initializing the class Inventory
         this.sumWeight += weight;
         this.sumItems++;
         
-        if(this.sumItems < this.maxAllowedItems && this.sumWeight < this.maxAllowedWeight) {
+        if(this.sumItems < this.maxAllowedItems && this.sumWeight <= this.maxAllowedWeight) {
             this.inventoryList.add(uuid);
             return true;
         }
