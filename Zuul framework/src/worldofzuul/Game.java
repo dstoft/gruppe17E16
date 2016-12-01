@@ -400,7 +400,9 @@ public class Game {
 
                 return true;
             }
-        }
+        } 
+        return false;
+    }
         /**
          * A method used for processing the "warp" command during runtime. Looks very much like the travelToPlanet method. However this uses the Warp fuel as a limiting factor. As Warp fuel is different from regular fuel it also uses different movement calculations. There is a possibility of not traveling, if you do not have enough warp fuel.
          *

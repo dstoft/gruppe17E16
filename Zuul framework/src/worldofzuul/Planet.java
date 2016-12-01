@@ -13,7 +13,7 @@ public class Planet extends NPCHolder {
     private int _xCoor;          //x-coordinate of the planet
     private int _yCoor;          //y-coordinate of the planet
     private int _referenceNum;   //unique referencenumber for the planet
-    private boolean isWar;
+    private boolean isWar;      //If there is war on the planet
 
     //static counter for creating new referencenumbers, it starts at one, because the moon always has the number 0
     public static int referenceNumCounter = 1;
@@ -68,22 +68,22 @@ public class Planet extends NPCHolder {
     /**
      * Methods for setting and getting the boolean isWar
      */
-    private boolean setIsWarTrue() {
+    private boolean setIsWarTrue() {    // Sets war to true
 
         return isWar = true;
     }
 
-    private boolean setIsWarFalse() {
+    private boolean setIsWarFalse() {       //sets war to false
         return isWar = false;
 
     }
 
-    public boolean getIsWar() {
+    public boolean getIsWar() { // getters to get the variable IsWar
 
         return isWar;
     }
 
-    private void warPossibility() {
+    private void warPossibility() { // The chance of war for the each planet. 
         double number = Math.random();
 
         if (number >= 0.1) {
