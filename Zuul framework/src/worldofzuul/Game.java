@@ -345,7 +345,8 @@ public class Game {
     public void printPlayerStats() {
         this.dashboard.print("Current fuel: " + this.player.getFuel());
         this.dashboard.print("Current reputation: " + this.player.getReputation());
-        this.dashboard.print("You have used" + this.checkTimers() + "time");
+        this.dashboard.print("You have used " + this.checkTimers() + " time");
+        this.dashboard.print("You have " + this.player.getWarpfuel() + " warp fuel");
     }
 
     /**
@@ -582,11 +583,9 @@ public class Game {
                     break;
                     
                 case "nextConvoId":
-                    System.out.println("Tries to set convo id");
                     try {
                         int convoId = Integer.parseInt(executionSplit[1]);
                         this.npcs.get(npcId).setNextConversationId(convoId);
-                        System.out.println("next convo:" + convoId);
                     } catch (NumberFormatException e) {
                         
                     }   
@@ -739,6 +738,10 @@ public class Game {
         for(UUID uuid : this.player.getInventoryUuids()) {
             this.items.get(uuid).setPapersTrue();
         }
+    }
+    
+    public void checkBuyWarpFuel(UUID npcId, String executionSplit) {
+        
     }
     
     /**
@@ -943,9 +946,6 @@ public class Game {
             npcHolders.add(planet);
         }
         
-        System.out.println("Civilians:" + this.civilians.size());
-        System.out.println("Moons:" + this.moons.size());
-        
         placeNpcs(this.civilians.values(), npcHolders);
 
         createRebels();
@@ -1031,13 +1031,13 @@ public class Game {
             if (npc.getPid() == -1 || !planetPids.containsKey(npc.getPid())) {
                 hasNoPid.add(npc);
             } else {
-                System.out.println("npcPid:" + planetPids.size());
                 planetPids.get(npc.getPid()).addNpcId(npc.getId());
                 npc.setPlanetId(planetPids.get(npc.getPid()).getId());
-                hasNoNpc.remove(planetPids.get(npc.getPid()));
+                if(hasNoNpc.contains(planetPids.get(npc.getPid()))) {
+                    hasNoNpc.remove(planetPids.get(npc.getPid()));
+                }
             }
         }
-        System.out.println("Random?");
 
         //Goes through the NPC list that has no PID and places them on empty planets/moons,
         // stops when there are not empty planets/moons left.
@@ -1048,7 +1048,7 @@ public class Game {
                 break;
             }
 
-            if (i > hasNoNpc.size()) {
+            if (i >= hasNoNpc.size()) {
                 break;
             }
 
@@ -1150,7 +1150,6 @@ public class Game {
                 break;
             }
         }
-        System.out.println("Items used:" + itemsUsed.size());
 
         //START: Filling the lists and hashmaps for items
         for (Items item : itemsUsed) {
@@ -1198,8 +1197,6 @@ public class Game {
         //END: Adding receivers to both items and npcs
 
         //START: 3a. Adding where the items are going to be picked up
-        System.out.println("items with iid size " + itemsWithIid.size());
-        System.out.println("npcs with iid size " + npcsWithIid.size());
         for (Items item : itemsWithIid.values()) {
             if (npcsWithIid.containsKey(item.getIid())) {
                 NPC npc = npcsWithIid.get(item.getIid());
@@ -1245,31 +1242,6 @@ public class Game {
             }
         }
         //END: Adding where the items are going to be picked up
-        
-        int count = 0;
-        for(Items item : this.items.values()) {
-            if(item.getNpcId() == null) {
-                continue;
-            }
-            count++;
-            UUID itemDeliveryPlace = this.npcs.get(item.getNpcId()).getPlanetId();
-            //System.out.println("Item: name: " + item.getDescription() + " delivered at: " + this.getNPCHolderFromUuid(itemDeliveryPlace).getName() + " spawned at: " + );
-        }
-        System.out.println("Item used count: " + i);
-        
-        for(NPC npc : npcsWithIid.values()) {
-            System.out.println("Cancer:" + npc.getName());
-        }
-        
-        for(NPC npc : this.npcs.values()) {
-            int[] pos = this.getPositionCoordinates(npc.getPlanetId());
-            System.out.println("NPC inventory size: " + npc.getInventoryUuids().length);
-            System.out.println("NPC inventory:" + npc.getInventoryUuids()[0]);
-            Items item = this.items.get(npc.getInventoryUuids()[0]);
-            NPC receiverNpc = this.npcs.get(item.getNpcId());
-            System.out.println("NPC: name:" + npc.getName() + " at " + pos[0] + ";" + pos[1] + " has item: " + item.getDescription() + " which is delivered at: " + receiverNpc.getName());
-        }
-        
     }
 
     /**
@@ -1413,7 +1385,7 @@ public class Game {
      * @param i the amount to increment the time with
      */
     public void incrementTime(int i) { // This method + to the time
-        time = +i;
+        time += i;
     }
 
     /**
@@ -1421,7 +1393,7 @@ public class Game {
      * @param i 
      */
     public void decrementTime(int i) { // This method  -  to the time
-        time = -i;
+        time -= i;
     }
 
     /**
@@ -1429,6 +1401,6 @@ public class Game {
      * @return 
      */
     public int checkTimers() { // This method checks the times and returns it        
-        return time;
+        return this.time;
     }
 }

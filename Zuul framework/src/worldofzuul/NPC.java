@@ -110,7 +110,7 @@ public class NPC {
     }
     
     public int getNextConversationId() {
-        return this.conversationId;
+        return this.nextConversationId;
     }
     // ***** GETTERS END *****
 

@@ -1,45 +1,45 @@
 *** Standard pickup or deliver conversation ***
-Hey!
+Hello, are you here to pickup or deliver a package?
 2
 
-hi
-Hey back!Check package!
+pickup
+Alright, I'll see if I can find a package for you.
 -1
-checkPackage:1|2
+checkPickup:1|2
 
-lol
-checkingPickup!
+deliver
+Alright, hand me the package infomation.
 -1
-checkPickup:3|4
+checkPackage:3|4
 ____
-You got the package! deliver it!
-1
-
-yes
-Thank you!
--1
-deliverPackage
-_____
-You don't have the package :(
-1
-
-sorry
-Yes, go get it, then come back!
--1
-.
-____
-I got a pack for you!
+I found a package for you to deliver!
 1
 
 thanks
-Deliver it!
+Bye!
 -1
 pickupPackage
+_____
+Sorry, I don't have a package for you.
+1
+
+alright
+Bye!
+-1
+
 ____
-I don't have a package for you!
+Great, this package is for me, I'll just take it from here.
+1
+
+alright
+Bye!
+-1
+deliverPackage
+____
+But, you don't have a package where I'm the destination.
 1
 
 okay
 Come back later!
 -1
-.
+

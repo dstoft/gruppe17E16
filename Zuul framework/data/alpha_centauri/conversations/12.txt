@@ -3,19 +3,19 @@ Hello! I'm Renhrew nov Nuarb from the Republic of China.
 1
 
 hello
-Alright, let's get you signed up!
+
 1
 checkPackage:1|2
 ____ 1:
-I hear from Iegres that you have a package for me.
+I hear from Renhrew that you have a package for me.
 1
 
 yes
 Thank you for the package!
 3
-deliverPackage, nextConvoId:13
+deliverPackage,nextConvoId:13
 _____ 2:
-Iegres told me you would have a package for me, but that you took off before picking it up. So, you should probably go back to him and then get back here, then I can tell you a bit about this star system.
+Renhrew told me you would have a package for me, but that you took off before picking it up. So, you should probably go back to him and then get back here, then I can tell you a bit about this star system.
 1
 
 alright
@@ -71,4 +71,4 @@ That is all for me at the moment, but I'll probably see you around again!
 bye
 Bye bye!
 -1
-nextConvoId:0
+nextConvoId:1

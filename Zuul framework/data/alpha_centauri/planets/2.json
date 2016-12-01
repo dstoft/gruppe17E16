@@ -1,7 +1,7 @@
 {
-    "pid" : -1,
-	"name" : "planet2",
-	"description" : "planet1",
-	"x" : 1,
-	"y" : 1
+    "pid" : 2,
+	"name" : "Sram",
+	"description" : "A small red planet",
+	"x" : 120,
+	"y" : 35
 }
