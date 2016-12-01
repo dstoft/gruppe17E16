@@ -21,6 +21,7 @@ public class Player {
     private int reputation; //How much reputation the player has
     private boolean ITD;
     private int warpFuel;
+    private boolean canWarp;
     
     public Player(UUID currentPlanet, int maxFuel, int startingReputation) {
         this.currentPlanetId = currentPlanet;
@@ -28,6 +29,7 @@ public class Player {
         this.fuel = maxFuel;
         this.warpFuel = 50;
         this.reputation = startingReputation;
+        this.canWarp = false;
         
         this.inventory = new Inventory();
     }
@@ -49,6 +51,10 @@ public class Player {
     }
     public void setITD(boolean itd){
         this.ITD = itd;
+    }
+    
+    public void setCanWarp(boolean canWarp) {
+        this.canWarp = canWarp;
     }
 
     /**
@@ -77,6 +83,9 @@ public class Player {
     }
     public boolean getITD(){
         return ITD;
+    }
+    public boolean canWarp() {
+        return this.canWarp;
     }
     public int getWarpfuel(){
         return warpFuel;

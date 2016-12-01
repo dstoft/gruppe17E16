@@ -165,6 +165,10 @@ public class Game {
         } else if (commandWord == CommandWord.GREET) {
             this.processGreet(command.getSecondWord());
         } else if (commandWord == CommandWord.WARP) {
+            if(!this.player.canWarp()) {
+                this.dashboard.print("Sorry, you don't have the right equipment to warp, which means you cannot use the warp command!");
+                return false;
+            }
             UUID planetId = this.getPlanetIdFromReferenceNumber(command.getSecondWord());
             if (planetId == null) {
                 return false;
@@ -614,6 +618,14 @@ public class Game {
                     this.getPapers();
                     break;
                     
+                case "checkBuyWarpFuel":
+                    this.checkBuyWarpFuel(executionLine);
+                    break;
+                    
+                case "setAllowWarp":
+                    this.player.setCanWarp(true);
+                    break;
+                
                 default:
                     break;
             }
@@ -740,8 +752,27 @@ public class Game {
         }
     }
     
-    public void checkBuyWarpFuel(UUID npcId, String executionSplit) {
+    /**
+     * This method is used to execute executionlines from Conversation.
+     * This checks whether or not the player can buy warp fuel
+     * @param executionSplit which contains the question numbers for the next questions
+     */
+    public void checkBuyWarpFuel(String executionSplit) {
+        String[] whichQuestion = executionSplit.split("|");
+        int[] questionNumbers = new int[2];
+        try {
+            //Note, the split command somehow splits "1|2" into three array indexes: "1", "|" and "2"
+            questionNumbers[0] = Integer.parseInt(whichQuestion[0]);
+            questionNumbers[1] = Integer.parseInt(whichQuestion[2]);
+        } catch (NumberFormatException e) {
+            System.out.println("Runtime error?");
+        }
         
+        if(this.player.canWarp() || this.player.getReputation() > 5) {
+            this.currentConversation.setNextQuestion(questionNumbers[0]);
+            return;
+        }
+        this.currentConversation.setNextQuestion(questionNumbers[1]);
     }
     
     /**
