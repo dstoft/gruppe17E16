@@ -6,7 +6,6 @@
 package zuul.framework;
 
 import worldofzuul.*;
-
 /**
  *
  * @author DanielToft

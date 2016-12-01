@@ -34,6 +34,7 @@ public class Game {
     private FileHandler _fileHandler;
     private Conversation _currentConversation;
     private int time;
+    private int timeCount = 10;
     private UUID _startingPlanet;
     private boolean canWarp;
 
@@ -53,12 +54,10 @@ public class Game {
         this._startingPlanet = this.createPlanets();
         this.createNpcs();
         this.createItems();
-        this.time = 0;
 
         parser = new Parser(); //Creates a new object of the type Parser
         this._player = new Player(this._startingPlanet, 100, 10);
         this._dashboard = new Dashboard(); // Creates a new object of the type Dashboard. 
-
         //createPlanets(); 
         //createNpcs();
     }
@@ -83,6 +82,7 @@ public class Game {
             this._dashboard.print();
             Command command = parser.getCommand(); //Returns a new object, holding the information, regarding the line typed by the user
             finished = processCommand(command); //Saves the boolean, whether the player wants to quit, in finished,
+            this.timeCount();
         }
         this._dashboard.print("Thank you for playing.  Good bye."); //Print an end statement, this only happens when the game stops
     }
@@ -314,7 +314,7 @@ public class Game {
     public void printPlayerStats() {
         this._dashboard.print("Current fuel: " + this._player.getFuel());
         this._dashboard.print("Current reputation: " + this._player.getReputation());
-        this._dashboard.print("You have used" + this.checkTimers() + "time");
+        this._dashboard.print("You have used " + this.checkTimers() + " time.");
     }
 
     /**
@@ -384,8 +384,27 @@ public class Game {
         } else {
             this._dashboard.print("Sorry, you're unable to reach the planet you were trying to travel to, try moving to a closer planet and try again.");
         }
-        if (this._planets.get(nextPositionUuid).getIsWar() == true) {
-            if (this._items.get(nextPositionUuid).getPapers() == true) {
+        if (getNPCHolderFromUuid(nextPositionUuid).getIsWar() == true) {
+            boolean variable = false;
+            for (UUID papersnpc : getNPCHolderFromUuid(nextPositionUuid).getNpcIds()) {
+                NPC npc = this._npcs.get(papersnpc);
+                for (UUID itemUuid : npc.getInventoryUuids()) {
+                    if (this._items.get(itemUuid).getPapers()) {
+                    } else {
+                        variable = true;
+                        break;
+                    }
+
+                }
+                if (variable == true) {
+                    break;
+                }
+            }
+            if (variable == true) {
+
+                return true;
+
+            } else {
 
                 tryNpcMovement();
 
@@ -396,19 +415,17 @@ public class Game {
                 incrementTime(this._movementCalculator.calculateDistance(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1]) / travelTime);
 
                 this._dashboard.print("Use the \"greet [id]\" to start a conversation with an NPC. Use \"scan npcs\" to show which NPCs are on this planet.");
-            } else {
-
-                return true;
             }
-        } 
+        }
         return false;
     }
-        /**
-         * A method used for processing the "warp" command during runtime. Looks very much like the travelToPlanet method. However this uses the Warp fuel as a limiting factor. As Warp fuel is different from regular fuel it also uses different movement calculations. There is a possibility of not traveling, if you do not have enough warp fuel.
-         *
-         * @param characterToTravel which character that should be moved
-         * @param nextPositionUuid which planet or moon that is the intended target.
-         */
+
+    /**
+     * A method used for processing the "warp" command during runtime. Looks very much like the travelToPlanet method. However this uses the Warp fuel as a limiting factor. As Warp fuel is different from regular fuel it also uses different movement calculations. There is a possibility of not traveling, if you do not have enough warp fuel.
+     *
+     * @param characterToTravel which character that should be moved
+     * @param nextPositionUuid which planet or moon that is the intended target.
+     */
     public void processWarp(Player characterToTravel, UUID nextPositionUuid) {
         if (canWarp == true) {
             int[] currentPosition = getPositionCoordinates(this._player.getPlanetId());
@@ -1250,11 +1267,11 @@ public class Game {
      * @param i the amount to increment the time with
      */
     public void incrementTime(int i) { // This method + to the time
-        time = +i;
+        time += i;
     }
 
     public void decrementTime(int i) { // This method  -  to the time
-        time = -i;
+        time -= i;
     }
 
     public int checkTimers() { // This method checks the times and returns it        
@@ -1272,6 +1289,15 @@ public class Game {
 
     public boolean setCanWarpFalse() {  //This method sets the canWarp boolean to false
         return canWarp = false;
+    }
+
+    public void timeCount() { // For each 10'th time call function warPossiblity()
+        if (time >= timeCount) {
+            for (Planet planet : this._planets.values()) {
+                planet.warPossibility();
+                timeCount += 10;
+            }
+        }
     }
 
 }

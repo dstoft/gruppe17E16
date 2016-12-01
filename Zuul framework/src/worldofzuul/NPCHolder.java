@@ -21,6 +21,7 @@ public abstract class NPCHolder {
     private ArrayList<UUID> _npcIds;
     private String _description;
     private String _name;
+    private boolean isWar;      //If there is war on the planet
     
     /**
      * Constructor
@@ -81,4 +82,33 @@ public abstract class NPCHolder {
         this._npcIds.remove(npcId);
     }
     // ***** SETTERS END *****
+    
+        private boolean setIsWarTrue() {    // Sets war to true
+
+        return isWar = true;
+    }
+
+    private boolean setIsWarFalse() {       //sets war to false
+        return isWar = false;
+
+    }
+
+    public boolean getIsWar() { // getters to get the variable IsWar
+
+        return isWar;
+    }
+
+    public void warPossibility() { // The chance of war for the each planet. 
+        double number = Math.random();
+        System.out.println("New wars just started");
+
+        if (number >= 0.1) {
+            setIsWarTrue();
+        } else {
+            setIsWarFalse();
+        }
+
+    }
+
+    
 }
