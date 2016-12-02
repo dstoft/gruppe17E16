@@ -3,6 +3,7 @@ package worldofzuul;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
 
 /**
@@ -27,6 +28,9 @@ public class Game {
     private Player player;
     private HashMap<UUID, Planet> planets;
     private HashMap<UUID, Moon> moons;
+    
+    private HashMap<String,Integer> timerCounts;
+    //private ArrayList<UUID> hasWars;
 
     /**
      * Three maps of NPCs, the first one, npcs, holds all of the npcs, which is
@@ -63,6 +67,10 @@ public class Game {
         this.items = new HashMap<>();
         this.movementCalculator = new MovementCalculator();
         this.fileHandler = new FileHandler();
+        this.timerCounts = new HashMap<>();
+        this.timerCounts.put("warTimer", 50);
+        
+        //this.hasWars = new ArrayList<>();
 
         this.startingPlanet = this.createPlanets();
         this.createNpcs();
@@ -139,7 +147,7 @@ public class Game {
 
         if (commandWord == CommandWord.HELP) { //If the command is help,
             printHelp(); //Call the method printHelp, to prrint help for the user
-            incrementTime(1); // Adds 1 to the time
+            incrementTime(30); // Adds 1 to the time
         } else if (commandWord == CommandWord.QUIT) { //If the command is quit,
             wantToQuit = quit(command); //Use the quit() method to figure out whether the player really wants to quit, save the returned value
             incrementTime(1); // Adds 1 to the time
@@ -149,7 +157,7 @@ public class Game {
             if (planetId == null) {
                 return false;
             }
-            this.travelToPlanet(this.player, planetId);
+            return this.travelToPlanet(this.player, planetId);
 
         } else if (commandWord == CommandWord.DROP) {
             this.dropItem(command.getSecondWord());
@@ -350,7 +358,9 @@ public class Game {
         this.dashboard.print("Current fuel: " + this.player.getFuel());
         this.dashboard.print("Current reputation: " + this.player.getReputation());
         this.dashboard.print("You have used " + this.checkTimers() + " time");
-        this.dashboard.print("You have " + this.player.getWarpfuel() + " warp fuel");
+        if(this.player.canWarp()) {
+            this.dashboard.print("You have " + this.player.getWarpfuel() + " warp fuel");
+        }
     }
 
     /**
@@ -399,7 +409,12 @@ public class Game {
         if (id == null) {
             return false;
         } else {
-            this.planets.get(id).getDescription();
+            NPCHolder npcHolder = this.getNPCHolderFromUuid(id);
+            this.dashboard.print(npcHolder.getName() + ": " + npcHolder.getDescription());
+            //System.out.println("War time: " + npcHolder.getWarTimer() + " and time is: " + this.time);
+            if(npcHolder.getWarTimer() > this.time) {
+                this.dashboard.print("Warning, traveling to this planet is not advised, as there is a war on the planet!");
+            }    
             return true;
         }
     }
@@ -410,10 +425,28 @@ public class Game {
      * @param characterToTravel which character to move
      * @param planetId which planet to move to
      */
-    public void travelToPlanet(Player characterToTravel, UUID nextPositionUuid) {
+    public boolean travelToPlanet(Player characterToTravel, UUID nextPositionUuid) {
         int[] currentPosition = getPositionCoordinates(this.player.getPlanetId());
         int[] nextPosition = getPositionCoordinates(nextPositionUuid);
         NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
+        
+        if(nextNpcHolder.getWarTimer() > this.time) {
+            boolean hasAllPapers = false; //If the player does not have any items, it equals death!
+            for(UUID uuid : this.player.getInventoryUuids()) {
+                hasAllPapers = true; //If the player does not have any items, it will enter the loop, and therefore the default value should be true
+                if(!this.items.get(uuid).getPapers()) {
+                    hasAllPapers = false;
+                    break;
+                }
+            }
+            
+            if(!hasAllPapers) {
+                //Perhaps we should just issue a warning at first, that you need all the papers to enter this planet, because it has war
+                // or you need to wait until the war ends.
+                this.dashboard.print("You died, game is ending!");
+                return true;
+            }
+        }
 
         if (this.movementCalculator.isReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getFuel())) {
             this.dashboard.print("Now traveling to " + nextNpcHolder.getName());
@@ -431,6 +464,7 @@ public class Game {
         } else {
             this.dashboard.print("Sorry, you're unable to reach the planet you were trying to travel to, try moving to a closer planet and try again.");
         }
+        return false;
     }
 
     /**
@@ -438,7 +472,9 @@ public class Game {
      * very much like the travelToPlanet method. However this uses the Warp fuel
      * as a limiting factor. As Warp fuel is different from regular fuel it also
      * uses different movement calculations. There is a possibility of not
-     * traveling, if you do not have enough warp fuel.
+     * traveling, if you do not have enough warp fuel. Note: using warp skips
+     * the checking of whether there is war (meaning you don't need papers for
+     * all of your items when entering a planet with war).
      *
      * @param characterToTravel which character that should be moved
      * @param nextPositionUuid which planet or moon that is the intended target.
@@ -1416,7 +1452,27 @@ public class Game {
      * @param i the amount to increment the time with
      */
     public void incrementTime(int i) { // This method + to the time
-        time += i;
+        this.time += i;
+        
+        //War timer check
+        if(this.timerCounts.get("warTimer") <= this.time) {
+            tryStartWars();
+            this.timerCounts.put("warTimer", this.timerCounts.get("warTimer")+50);
+        }
+        
+        /*
+        Iterator it = this.hasWars.iterator();
+        while(it.hasNext()) {
+            UUID uuid = (UUID) it.next();
+            NPCHolder npcHolder = this.getNPCHolderFromUuid(uuid);
+            if(npcHolder.getWarTimer() <= this.time) {
+                //System.out.println("Makes it here?" + npcHolder.getName());
+                npcHolder.setWarTimer(-1);
+                it.remove();
+            }
+            
+        }
+        */
     }
 
     /**
@@ -1433,5 +1489,25 @@ public class Game {
      */
     public int checkTimers() { // This method checks the times and returns it        
         return this.time;
+    }
+    
+    public void tryStartWars() {
+        //What if the planet already has a war? Fine! It will just extend it!
+        
+        for(Planet planet : this.planets.values()) {
+            if(Math.random() < 0.1) {
+                planet.setWarTimer(this.time + 50);
+                //this.hasWars.add(planet.getId());
+                System.out.println("War started at: " + planet.getName());
+            }
+        }
+        
+        for(Moon moon : this.moons.values()) {
+            if(Math.random() < 0.1) {
+                moon.setWarTimer(this.time + 50);
+                //this.hasWars.add(moon.getId());
+                System.out.println("War started at: " + moon.getName());
+            }
+        }
     }
 }

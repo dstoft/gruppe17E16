@@ -21,6 +21,7 @@ public abstract class NPCHolder {
     private ArrayList<UUID> npcIds;
     private String description;
     private String name;
+    private int warTimer;
     
     /**
      * Constructor
@@ -34,11 +35,13 @@ public abstract class NPCHolder {
         this.npcIds = new ArrayList<>();
         this.id = UUID.randomUUID();
         this.pid = pid;
+        this.warTimer = -1;
     }
     
     public NPCHolder() {
         this.npcIds = new ArrayList<>();
         this.id = UUID.randomUUID();
+        this.warTimer = -1;
     }
     
     // ****** GETTERS ******
@@ -75,6 +78,10 @@ public abstract class NPCHolder {
     public boolean hasNpcId(UUID id) {
         return this.npcIds.contains(id);
     }
+    
+    public int getWarTimer() {
+        return this.warTimer;
+    }
     // ***** GETTERS END *****
     
     // ***** SETTERS *****
@@ -84,6 +91,10 @@ public abstract class NPCHolder {
     
     public void removeNpcId(UUID npcId) {
         this.npcIds.remove(npcId);
+    }
+    
+    public void setWarTimer(int warTimer) {
+        this.warTimer = warTimer;
     }
     // ***** SETTERS END *****
 }
