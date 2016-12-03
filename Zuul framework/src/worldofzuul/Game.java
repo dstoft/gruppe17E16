@@ -655,11 +655,18 @@ public class Game {
                     break;
                     
                 case "checkBuyWarpFuel":
-                    this.checkBuyWarpFuel(executionLine);
+                    this.checkBuyWarpFuel(executionSplit[1]);
+                    changedQuestion = true;
+                    break;
+                    
+                case "buyWarpFuel":
+                    this.player.addWarpfuel(50);
+                    this.player.setReputation(this.player.getReputation()-5);
                     break;
                     
                 case "setAllowWarp":
                     this.player.setCanWarp(true);
+                    this.dashboard.print("Dashboard: wow! I just got some warp equipment that are ready for use, just use \"warp [planet id]\", just like \"go\"!");
                     break;
                 
                 default:
@@ -804,7 +811,7 @@ public class Game {
             System.out.println("Runtime error?");
         }
         
-        if(this.player.canWarp() || this.player.getReputation() > 5) {
+        if(this.player.canWarp() && this.player.getReputation() > 5) {
             this.currentConversation.setNextQuestion(questionNumbers[0]);
             return;
         }
@@ -830,6 +837,10 @@ public class Game {
 
         if (planetNumber == 0) {
             UUID curUuid = this.player.getPlanetId();
+            if(this.moons.containsKey(curUuid)) {
+                //You're already at a moon!
+                return null;
+            }
             Planet curPlanet = this.planets.get(curUuid);
             if (curPlanet.hasMoon()) {
                 return curPlanet.getMoonUuid();
