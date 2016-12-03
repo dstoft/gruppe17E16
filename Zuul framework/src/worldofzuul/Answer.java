@@ -1,24 +1,29 @@
 package worldofzuul;
 
 /**
- * Holds information regarding each answer. This is associated with the Question class,
- * and both are a part of the Conversation "system".
+ * Holds information regarding each answer. This is associated with the Question
+ * class, and both are a part of the Conversation "system".
  */
-public class Answer{
+public class Answer {
+
     //Attributes
     private int nextLineNumber;
-    private String referenceWord;		  
+    private String referenceWord;
     private String reactText;
-    private String executionLine; 
-    
+    private String executionLine;
+
     /**
      * Constructor
-     * @param nextLineNumber the next question to proceed to, if this answer is answered
-     * @param referenceWord what word are used by the user to "answer" this answer
+     *
+     * @param nextLineNumber the next question to proceed to, if this answer is
+     * answered
+     * @param referenceWord what word are used by the user to "answer" this
+     * answer
      * @param reactText what the NPC replies
-     * @param executionLine what methods / affects this answer has, if the answer is answered
+     * @param executionLine what methods / affects this answer has, if the
+     * answer is answered
      */
-    public Answer(int nextLineNumber, String referenceWord, String reactText, String executionLine){
+    public Answer(int nextLineNumber, String referenceWord, String reactText, String executionLine) {
         this.referenceWord = referenceWord;
         this.executionLine = executionLine;
         this.nextLineNumber = nextLineNumber;

@@ -6,22 +6,26 @@
 package worldofzuul;
 
 /**
- * A method used as the place where this whole system communicates with the user.
+ * A method used as the place where this whole system communicates with the
+ * user.
  */
 public class Dashboard {
+
     /**
      * A method used to print something.
+     *
      * @param toPrint what to print
      */
     public void print(String toPrint) {
         System.out.println(toPrint);
     }
-    
+
     /**
-     * An overloaded method, that allows Game to print a newline without writing anything in the parameter list.
+     * An overloaded method, that allows Game to print a newline without writing
+     * anything in the parameter list.
      */
     public void print() {
         System.out.println();
     }
-    
+
 }

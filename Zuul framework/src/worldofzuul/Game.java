@@ -2,6 +2,7 @@ package worldofzuul;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
@@ -28,8 +29,8 @@ public class Game {
     private Player player;
     private HashMap<UUID, Planet> planets;
     private HashMap<UUID, Moon> moons;
-    
-    private HashMap<String,Integer> timerCounts;
+
+    private HashMap<String, Integer> timerCounts;
     //private ArrayList<UUID> hasWars;
 
     /**
@@ -69,9 +70,8 @@ public class Game {
         this.fileHandler = new FileHandler();
         this.timerCounts = new HashMap<>();
         this.timerCounts.put("warTimer", 50);
-        
-        //this.hasWars = new ArrayList<>();
 
+        //this.hasWars = new ArrayList<>();
         this.startingPlanet = this.createPlanets();
         this.createNpcs();
         this.createItems();
@@ -173,7 +173,7 @@ public class Game {
         } else if (commandWord == CommandWord.GREET) {
             this.processGreet(command.getSecondWord());
         } else if (commandWord == CommandWord.WARP) {
-            if(!this.player.canWarp()) {
+            if (!this.player.canWarp()) {
                 this.dashboard.print("Sorry, you don't have the right equipment to warp, which means you cannot use the warp command!");
                 return false;
             }
@@ -275,7 +275,9 @@ public class Game {
     public void printAllPlanets() {
         this.dashboard.print("This is a list of all planets and their ids:");
         String toPrint = "";
-        for (Planet planet : this.planets.values()) {
+        ArrayList<Planet> planets = new ArrayList<>(this.planets.values());
+        Collections.sort(planets);
+        for (Planet planet : planets) {
             toPrint += planet.getReferenceNum() + ": " + planet.getName() + ", ";
         }
         this.dashboard.print(toPrint);
@@ -298,6 +300,7 @@ public class Game {
         }
 
         ArrayList<Planet> planetList = this.getPossiblePlanets(currentPosition[0], currentPosition[0], this.player.getFuel());
+        Collections.sort(planetList);
         for (Planet planet : planetList) {
             if (this.player.getPlanetId() == planet.getId()) {
                 continue;
@@ -320,9 +323,14 @@ public class Game {
             return;
         }
 
-        this.dashboard.print("These are the NPCs you can talk to here: ");
+        ArrayList<NPC> npcList = new ArrayList<>();
         for (UUID npcUuid : npcHolder.getNpcIds()) {
-            NPC npc = this.npcs.get(npcUuid);
+            npcList.add(this.npcs.get(npcUuid));
+        }
+
+        Collections.sort(npcList);
+        this.dashboard.print("These are the NPCs you can talk to here: ");
+        for (NPC npc : npcList) {
             this.dashboard.print(npc.getReferenceNumber() + ": " + npc.getName() + " is described as " + npc.getDescription());
         }
         this.dashboard.print("Use the command \"greet [id]\" to start a conversation with the NPC.");
@@ -358,7 +366,7 @@ public class Game {
         this.dashboard.print("Current fuel: " + this.player.getFuel());
         this.dashboard.print("Current reputation: " + this.player.getReputation());
         this.dashboard.print("You have used " + this.checkTimers() + " time");
-        if(this.player.canWarp()) {
+        if (this.player.canWarp()) {
             this.dashboard.print("You have " + this.player.getWarpfuel() + " warp fuel");
         }
     }
@@ -379,8 +387,14 @@ public class Game {
      * the player how to drop an item
      */
     public void printInventory() {
+        ArrayList<Items> items = new ArrayList<>();
         for (UUID uuid : this.player.getInventoryUuids()) {
-            Items curItems = this.items.get(uuid);
+            items.add(this.items.get(uuid));
+        }
+
+        Collections.sort(items);
+
+        for (Items curItems : items) {
             this.dashboard.print(curItems.getReferenceNumber() + ": " + curItems.getDescription() + " weighting " + curItems.getWeight());
 
             if (this.planets.containsKey(this.npcs.get(curItems.getNpcId()).getPlanetId())) {
@@ -391,7 +405,7 @@ public class Game {
                 Planet parentPlanet = this.planets.get(deliveryMoon.getParentPlanetUuid());
                 this.dashboard.print(" - and it has to be delivered at the moon called " + deliveryMoon.getName() + " of the planet: [" + parentPlanet.getx() + ";" + parentPlanet.gety() + "] " + parentPlanet.getName());
             }
-            
+
             this.dashboard.print("- and it has to be delivered before the time " + curItems.getDeliveryTime() + " is reached");
         }
     }
@@ -412,9 +426,9 @@ public class Game {
             NPCHolder npcHolder = this.getNPCHolderFromUuid(id);
             this.dashboard.print(npcHolder.getName() + ": " + npcHolder.getDescription());
             //System.out.println("War time: " + npcHolder.getWarTimer() + " and time is: " + this.time);
-            if(npcHolder.getWarTimer() > this.time) {
+            if (npcHolder.getWarTimer() > this.time) {
                 this.dashboard.print("Warning, traveling to this planet is not advised, as there is a war on the planet!");
-            }    
+            }
             return true;
         }
     }
@@ -429,18 +443,18 @@ public class Game {
         int[] currentPosition = getPositionCoordinates(this.player.getPlanetId());
         int[] nextPosition = getPositionCoordinates(nextPositionUuid);
         NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
-        
-        if(nextNpcHolder.getWarTimer() > this.time) {
+
+        if (nextNpcHolder.getWarTimer() > this.time) {
             boolean hasAllPapers = false; //If the player does not have any items, it equals death!
-            for(UUID uuid : this.player.getInventoryUuids()) {
+            for (UUID uuid : this.player.getInventoryUuids()) {
                 hasAllPapers = true; //If the player does not have any items, it will enter the loop, and therefore the default value should be true
-                if(!this.items.get(uuid).getPapers()) {
+                if (!this.items.get(uuid).getPapers()) {
                     hasAllPapers = false;
                     break;
                 }
             }
-            
-            if(!hasAllPapers) {
+
+            if (!hasAllPapers) {
                 //Perhaps we should just issue a warning at first, that you need all the papers to enter this planet, because it has war
                 // or you need to wait until the war ends.
                 this.dashboard.print("You died, game is ending!");
@@ -619,56 +633,56 @@ public class Game {
                     if (!this.pickupPackage(npcId)) {
                         //You were unable to pick up all the items the NPC has, so what should happen now? Terminate conversation? Head to another question?
                         //"checkPickup" will only check for one item, should this too?
-                    }   
+                    }
                     break;
-                    
+
                 case "nextConvoId":
                     try {
                         int convoId = Integer.parseInt(executionSplit[1]);
                         this.npcs.get(npcId).setNextConversationId(convoId);
                     } catch (NumberFormatException e) {
-                        
-                    }   
+
+                    }
                     break;
-                    
+
                 case "checkPackage":
                     this.checkPackage(npcId, executionSplit[1]);
                     changedQuestion = true;
                     break;
-                    
+
                 case "checkPickup":
                     this.checkPickup(npcId, executionSplit[1]);
                     changedQuestion = true;
                     break;
-                    
+
                 case "removeReputation":
                     try {
                         int reputationAmount = Integer.parseInt(executionSplit[1]);
                         this.player.setReputation((this.player.getReputation() - reputationAmount));
                     } catch (NumberFormatException e) {
-                        
-                    }   
+
+                    }
                     break;
-                    
+
                 case "getPapers":
                     this.getPapers();
                     break;
-                    
+
                 case "checkBuyWarpFuel":
                     this.checkBuyWarpFuel(executionSplit[1]);
                     changedQuestion = true;
                     break;
-                    
+
                 case "buyWarpFuel":
                     this.player.addWarpfuel(50);
-                    this.player.setReputation(this.player.getReputation()-5);
+                    this.player.setReputation(this.player.getReputation() - 5);
                     break;
-                    
+
                 case "setAllowWarp":
                     this.player.setCanWarp(true);
                     this.dashboard.print("Dashboard: wow! I just got some warp equipment that are ready for use, just use \"warp [planet id]\", just like \"go\"!");
                     break;
-                
+
                 default:
                     break;
             }
@@ -698,7 +712,7 @@ public class Game {
         }
         if (!item.getPapers()) {
             this.dashboard.print("Since you did not have the papers for " + item.getDescription() + " you lost some reputation. Go see the Headquarter for papers on your packages!");
-            this.player.setReputation(this.player.getReputation() - (item.getReputationWorth()*3));
+            this.player.setReputation(this.player.getReputation() - (item.getReputationWorth() * 3));
         }
     }
 
@@ -784,21 +798,23 @@ public class Game {
 
         this.currentConversation.setNextQuestion(questionNumbers[1]);
     }
-    
+
     /**
-     * This method is used to execute executionlines from Conversation.
-     * This takes all of the players items and adds papers to them.
+     * This method is used to execute executionlines from Conversation. This
+     * takes all of the players items and adds papers to them.
      */
     public void getPapers() {
-        for(UUID uuid : this.player.getInventoryUuids()) {
+        for (UUID uuid : this.player.getInventoryUuids()) {
             this.items.get(uuid).setPapersTrue();
         }
     }
-    
+
     /**
-     * This method is used to execute executionlines from Conversation.
-     * This checks whether or not the player can buy warp fuel
-     * @param executionSplit which contains the question numbers for the next questions
+     * This method is used to execute executionlines from Conversation. This
+     * checks whether or not the player can buy warp fuel
+     *
+     * @param executionSplit which contains the question numbers for the next
+     * questions
      */
     public void checkBuyWarpFuel(String executionSplit) {
         String[] whichQuestion = executionSplit.split("|");
@@ -810,14 +826,14 @@ public class Game {
         } catch (NumberFormatException e) {
             System.out.println("Runtime error?");
         }
-        
-        if(this.player.canWarp() && this.player.getReputation() > 5) {
+
+        if (this.player.canWarp() && this.player.getReputation() > 5) {
             this.currentConversation.setNextQuestion(questionNumbers[0]);
             return;
         }
         this.currentConversation.setNextQuestion(questionNumbers[1]);
     }
-    
+
     /**
      * Changes a planet reference number to the planet's UUID. Can catch an
      * exception
@@ -837,7 +853,7 @@ public class Game {
 
         if (planetNumber == 0) {
             UUID curUuid = this.player.getPlanetId();
-            if(this.moons.containsKey(curUuid)) {
+            if (this.moons.containsKey(curUuid)) {
                 //You're already at a moon!
                 return null;
             }
@@ -915,28 +931,27 @@ public class Game {
      * @return what UUID the player should be starting on
      */
     public UUID createPlanets() {
-        
+
         UUID returnUuid = null;
         //Creating the items list
         int i = 0;
-        while(true) {
-            if(!this.fileHandler.doesFileExist("data/alpha_centauri/planets/" + i + ".json")) {
+        while (true) {
+            if (!this.fileHandler.doesFileExist("data/alpha_centauri/planets/" + i + ".json")) {
                 break;
             }
             Planet newPlanet = this.fileHandler.getJSON("data/alpha_centauri/planets/" + i + ".json", Planet.class);
             this.planets.put(newPlanet.getId(), newPlanet);
             i++;
-            
-            if(newPlanet.getPid() == 0) {
+
+            if (newPlanet.getPid() == 0) {
                 returnUuid = newPlanet.getId();
             }
         }
-        
+
         createMoons();
-        
+
         return returnUuid;
-        
-        
+
         /*
         Planet newPlanet = new Planet("hej", "wow!", 1, 1, 0);
         this.planets.put(newPlanet.getId(), newPlanet);
@@ -947,7 +962,7 @@ public class Game {
         createMoons();
 
         return newPlanet.getId();
-        */
+         */
     }
 
     /**
@@ -956,25 +971,24 @@ public class Game {
      * a planet's PID.
      */
     public void createMoons() {
-        
+
         int i = 0;
-        while(true) {
-            if(!this.fileHandler.doesFileExist("data/alpha_centauri/moons/" + i + ".json")) {
+        while (true) {
+            if (!this.fileHandler.doesFileExist("data/alpha_centauri/moons/" + i + ".json")) {
                 break;
             }
             Moon newMoon = this.fileHandler.getJSON("data/alpha_centauri/moons/" + i + ".json", Moon.class);
             this.moons.put(newMoon.getId(), newMoon);
             i++;
         }
-        
+
         /*
         Moon newMoon = new Moon("navn", "hej!", 0);
         this.moons.put(newMoon.getId(), newMoon);
 
         newMoon = new Moon("navn", "hej2!", 1);
         this.moons.put(newMoon.getId(), newMoon);
-        */
-
+         */
         HashMap<Integer, Planet> planetPids = new HashMap<>();
         for (Planet planet : this.planets.values()) {
             planetPids.put(planet.getPid(), planet);
@@ -992,10 +1006,10 @@ public class Game {
      * Creates the NPCs
      */
     public void createNpcs() {
-        
+
         int i = 0;
-        while(true) {
-            if(!this.fileHandler.doesFileExist("data/alpha_centauri/civilians/" + i + ".json")) {
+        while (true) {
+            if (!this.fileHandler.doesFileExist("data/alpha_centauri/civilians/" + i + ".json")) {
                 break;
             }
             NPC newNpc = this.fileHandler.getJSON("data/alpha_centauri/civilians/" + i + ".json", NPC.class);
@@ -1017,13 +1031,12 @@ public class Game {
         newNpc = new NPC("Planet2NPC2", "He be not wow!!", 1, 1, 1, 0);
         this.npcs.put(newNpc.getId(), newNpc);
         this.civilians.put(newNpc.getId(), newNpc);
-        */
-
+         */
         ArrayList<NPCHolder> npcHolders = new ArrayList<>();
         for (Planet planet : this.planets.values()) {
             npcHolders.add(planet);
         }
-        
+
         placeNpcs(this.civilians.values(), npcHolders);
 
         createRebels();
@@ -1035,10 +1048,10 @@ public class Game {
      * method placeNPCs with the list of rebels and moons.
      */
     private void createRebels() {
-        
+
         int i = 0;
-        while(true) {
-            if(!this.fileHandler.doesFileExist("data/alpha_centauri/rebels/" + i + ".json")) {
+        while (true) {
+            if (!this.fileHandler.doesFileExist("data/alpha_centauri/rebels/" + i + ".json")) {
                 break;
             }
             NPC newNpc = this.fileHandler.getJSON("data/alpha_centauri/rebels/" + i + ".json", NPC.class);
@@ -1046,7 +1059,7 @@ public class Game {
             this.rebels.put(newNpc.getId(), newNpc);
             i++;
         }
-        
+
         /*
         //A method for creating NPCs
         NPC newNpc = new NPC("Rebel1", "He be wow!", -1, 0, 1, 0);
@@ -1060,8 +1073,7 @@ public class Game {
         newNpc = new NPC("Rebel3", "He be not wow!!", -1, 1, 1, 10);
         this.npcs.put(newNpc.getId(), newNpc);
         this.rebels.put(newNpc.getId(), newNpc);
-        */
-
+         */
         ArrayList<NPCHolder> npcHolders = new ArrayList<>();
         for (Moon moon : this.moons.values()) {
             npcHolders.add(moon);
@@ -1111,7 +1123,7 @@ public class Game {
             } else {
                 planetPids.get(npc.getPid()).addNpcId(npc.getId());
                 npc.setPlanetId(planetPids.get(npc.getPid()).getId());
-                if(hasNoNpc.contains(planetPids.get(npc.getPid()))) {
+                if (hasNoNpc.contains(planetPids.get(npc.getPid()))) {
                     hasNoNpc.remove(planetPids.get(npc.getPid()));
                 }
             }
@@ -1286,13 +1298,13 @@ public class Game {
         }
 
         //3b. Adding where items without and PID are going to be picked up
-        for(NPC npc : npcsHaveNoPickup) {
-            if(itemsHaveNoPickup.size() <= 0) {
+        for (NPC npc : npcsHaveNoPickup) {
+            if (itemsHaveNoPickup.size() <= 0) {
                 System.out.println("Something went wrong");
                 break;
             }
-            if(itemsHaveNoPickup.size() == 2) {
-                if(itemsHaveNoPickup.get(0).getId() == npc.getPackageId()) {
+            if (itemsHaveNoPickup.size() == 2) {
+                if (itemsHaveNoPickup.get(0).getId() == npc.getPackageId()) {
                     itemsHaveNoPickup.get(1).setNpcId(npc.getId());
                     npc.addItem(itemsHaveNoPickup.get(1).getId(), itemsHaveNoPickup.get(1).getWeight());
                     itemsHaveNoPickup.remove(1);
@@ -1303,16 +1315,16 @@ public class Game {
                 }
                 continue;
             }
-            while(true) {
+            while (true) {
                 int randomItemIndex = (int) (Math.random() * itemsHaveNoPickup.size());
                 Items item = itemsHaveNoPickup.get(randomItemIndex);
-                
-                if(npc.getPackageId() == item.getId()) {
-                    
+
+                if (npc.getPackageId() == item.getId()) {
+
                     //System.out.println("infinte?");
                     continue;
                 }
-                
+
                 item.setNpcId(npc.getId());
                 npc.addItem(item.getId(), item.getWeight());
                 itemsHaveNoPickup.remove(item);
@@ -1464,13 +1476,13 @@ public class Game {
      */
     public void incrementTime(int i) { // This method + to the time
         this.time += i;
-        
+
         //War timer check
-        if(this.timerCounts.get("warTimer") <= this.time) {
-            tryStartWars();
-            this.timerCounts.put("warTimer", this.timerCounts.get("warTimer")+50);
+        if (this.timerCounts.get("warTimer") <= this.time) {
+            tryStartWars(0.1, 20);
+            this.timerCounts.put("warTimer", this.timerCounts.get("warTimer") + 50);
         }
-        
+
         /*
         Iterator it = this.hasWars.iterator();
         while(it.hasNext()) {
@@ -1483,12 +1495,13 @@ public class Game {
             }
             
         }
-        */
+         */
     }
 
     /**
      * Method for decrementing the time ingame
-     * @param i 
+     *
+     * @param i
      */
     public void decrementTime(int i) { // This method  -  to the time
         time -= i;
@@ -1496,26 +1509,34 @@ public class Game {
 
     /**
      * Purpose of this?
-     * @return 
+     *
+     * @return
      */
     public int checkTimers() { // This method checks the times and returns it        
         return this.time;
     }
-    
-    public void tryStartWars() {
+
+    /**
+     * For each planet and moon, it attempts to start a war.
+     *
+     * @param chance between 0 and 1, determines how big of a chance there is,
+     * the closer to 1, then bigger the chance
+     * @param length the length in the time unit
+     */
+    public void tryStartWars(double chance, int length) {
         //What if the planet already has a war? Fine! It will just extend it!
-        
-        for(Planet planet : this.planets.values()) {
-            if(Math.random() < 0.1) {
-                planet.setWarTimer(this.time + 50);
+
+        for (Planet planet : this.planets.values()) {
+            if (Math.random() < chance) {
+                planet.setWarTimer(this.time + length);
                 //this.hasWars.add(planet.getId());
                 System.out.println("War started at: " + planet.getName());
             }
         }
-        
-        for(Moon moon : this.moons.values()) {
-            if(Math.random() < 0.1) {
-                moon.setWarTimer(this.time + 50);
+
+        for (Moon moon : this.moons.values()) {
+            if (Math.random() < chance) {
+                moon.setWarTimer(this.time + length);
                 //this.hasWars.add(moon.getId());
                 System.out.println("War started at: " + moon.getName());
             }

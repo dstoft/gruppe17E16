@@ -114,17 +114,17 @@ public class Inventory { // Initializing the class Inventory
     public boolean addItem(UUID uuid, int weight) {
         this.sumWeight += weight;
         this.sumItems++;
-        
-        if(this.sumItems < this.maxAllowedItems && this.sumWeight <= this.maxAllowedWeight) {
+
+        if (this.sumItems < this.maxAllowedItems && this.sumWeight <= this.maxAllowedWeight) {
             this.inventoryList.add(uuid);
             return true;
         }
-        
+
         this.sumWeight -= weight;
         this.sumItems--;
         return false;
     }
-    
+
     /**
      * remItem removes a given item from the inventory, based upon the unique ID
      * returned from the addItem method.
@@ -136,26 +136,26 @@ public class Inventory { // Initializing the class Inventory
      *
      */
     public void remItem(UUID uuid, int weight) {
-        if(this.inventoryList.contains(uuid)) {
+        if (this.inventoryList.contains(uuid)) {
             this.inventoryList.remove(uuid);
             this.sumWeight -= weight;
             this.sumItems--; //Decreases by one, to keep keeping track of the amount of items.
         }
-        
+
     }
-    
+
     public UUID[] getInventoryUuids() {
         UUID[] returnArray = new UUID[this.inventoryList.size()];
         int count = 0;
-        for(UUID uuid : this.inventoryList) {
+        for (UUID uuid : this.inventoryList) {
             returnArray[count] = uuid;
             count++;
         }
         return returnArray;
     }
-    
+
     public boolean hasSpaceFor(int weight) {
-        if(maxAllowedItems > sumItems && maxAllowedWeight > (sumWeight+weight)) {
+        if (maxAllowedItems > sumItems && maxAllowedWeight > (sumWeight + weight)) {
             return true;
         }
         return false;

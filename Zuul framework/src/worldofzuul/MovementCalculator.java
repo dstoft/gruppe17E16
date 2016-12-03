@@ -11,9 +11,10 @@ import java.util.ArrayList;
  * A class that holds the calculations methods for moving around the world.
  */
 public class MovementCalculator {
-    
+
     /**
      * Used for calculating the distance between two coordinates.
+     *
      * @param startX a coordinate in the first coordinate set
      * @param startY a coordinate in the first coordinate set
      * @param toX a coordinate in the last coordinate set
@@ -22,15 +23,17 @@ public class MovementCalculator {
      */
     public int calculateDistance(int startX, int startY, int toX, int toY) {
         int distance = 0;
-        distance = (int)Math.sqrt(
-            Math.pow(Math.abs(startX-toX),2) 
-            + Math.pow(Math.abs(startY-toY), 2)
+        distance = (int) Math.sqrt(
+                Math.pow(Math.abs(startX - toX), 2)
+                + Math.pow(Math.abs(startY - toY), 2)
         );
         return distance;
     }
-    
+
     /**
-     * A method that will tell whether it is possible to reach a certain coordinate from a coordinate.
+     * A method that will tell whether it is possible to reach a certain
+     * coordinate from a coordinate.
+     *
      * @param startX a coordinate in the first coordinate set
      * @param startY a coordinate in the first coordinate set
      * @param toX a coordinate in the last coordinate set
@@ -39,21 +42,24 @@ public class MovementCalculator {
      * @return whether it is possible or not to reach the coordinate
      */
     public boolean isReachable(int startX, int startY, int toX, int toY, int currentFuel) {
-        if(currentFuel >= this.calculateDistance(startX, startY, toX, toY)) {
+        if (currentFuel >= this.calculateDistance(startX, startY, toX, toY)) {
             return true;
         } else {
             return false;
         }
     }
-    
+
     /**
-     * Returns all of the reachable planets from a coordinate and a fuel amount from a list of planets.
+     * Returns all of the reachable planets from a coordinate and a fuel amount
+     * from a list of planets.
+     *
      * @param startX a coordinate in the first coordinate set
      * @param startY a coordinate in the first coordinate set
      * @param currentFuel the amount of fuel to calculate with
      * @param allPlanets the list of planets to try
      * @return the arraylist of planets that are reachable
      */
+    /*
     public ArrayList<Planet> getPossiblePlanets(int startX, int startY, int currentFuel, ArrayList<Planet> allPlanets) {
         ArrayList<Planet> reachablePlanets = new ArrayList<>();
         for(Planet planet : allPlanets) {
@@ -63,9 +69,11 @@ public class MovementCalculator {
         }
         return reachablePlanets;
     }
-    
+     */
     /**
-     * Is it possible to reach a coordinate set from a coordinate set using the warp.
+     * Is it possible to reach a coordinate set from a coordinate set using the
+     * warp.
+     *
      * @param startX a coordinate in the first coordinate set
      * @param startY a coordinate in the first coordinate set
      * @param toX a coordinate in the last coordinate set
@@ -74,15 +82,17 @@ public class MovementCalculator {
      * @return whether it is possible to reach the coordinate or not
      */
     public boolean isWarpReachable(int startX, int startY, int toX, int toY, int currentFuel) {
-        if(currentFuel >= (this.calculateDistance(startX, startY, toX, toY)/10)) {
+        if (currentFuel >= (this.calculateDistance(startX, startY, toX, toY) / 10)) {
             return true;
         } else {
             return false;
         }
     }
-    
+
     /**
-     * Calculate the amount of warp fuel used from a coordinate to another coordinate.
+     * Calculate the amount of warp fuel used from a coordinate to another
+     * coordinate.
+     *
      * @param startX a coordinate in the first coordinate set
      * @param startY a coordinate in the first coordinate set
      * @param toX a coordinate in the last coordinate set
@@ -90,6 +100,6 @@ public class MovementCalculator {
      * @return the amount of warp fuel used
      */
     public int calculateWarpFuelUsage(int startX, int startY, int toX, int toY) {
-        return this.calculateDistance(startX, startY, toX, toY)/10;
+        return this.calculateDistance(startX, startY, toX, toY) / 10;
     }
 }

@@ -3,21 +3,23 @@ package worldofzuul;
 import java.util.ArrayList;
 
 /**
- * Used to hold information for each question in a conversation.
- * It holds information about it self (the text that should be printed),
- * and the possible answers that the user can answer to this player.
+ * Used to hold information for each question in a conversation. It holds
+ * information about it self (the text that should be printed), and the possible
+ * answers that the user can answer to this player.
  */
-public class Question{
+public class Question {
+
     //Attributter
     private String qText;
     private int numOfAns;
     private ArrayList<Answer> answers;
     private Answer currentAnswer;
 
-
     /**
      * Constructor
-     * @param qText the text that should be printed when the played "gets" to this question
+     *
+     * @param qText the text that should be printed when the played "gets" to
+     * this question
      * @param numOfAns the amount of possible answers this question has
      */
     public Question(String qText, int numOfAns) {
@@ -26,9 +28,11 @@ public class Question{
         this.answers = new ArrayList<>();
         this.currentAnswer = null;
     }
-    
+
     /**
-     * Finds the answer based on the answer reference that the player has typed in.
+     * Finds the answer based on the answer reference that the player has typed
+     * in.
+     *
      * @param answerRef the string of what the player has typed in
      */
     public void findAnswer(String answerRef) { //Method for finding an answer
@@ -44,6 +48,7 @@ public class Question{
 
     /**
      * Gets a string with the possible answers.
+     *
      * @return a string that contains the possible answers formatted correctly
      */
     public String getPossibleAnswers() {
@@ -62,7 +67,7 @@ public class Question{
     public int getNumOfAns() {
         return this.numOfAns;
     }
-    
+
     public boolean hasCurrentAnswer() {
         return this.currentAnswer != null;
     }
@@ -79,13 +84,15 @@ public class Question{
         return this.currentAnswer.getNextLineNumber();
     }
     // ***** GETTERS END *****
-    
+
     /**
-     * Adds a answer with the parameters. See Answers class for description of these parameters.
+     * Adds a answer with the parameters. See Answers class for description of
+     * these parameters.
+     *
      * @param nextLineNumber
      * @param referenceWord
      * @param reactText
-     * @param exeLine 
+     * @param exeLine
      */
     public void addAnswer(int nextLineNumber, String referenceWord, String reactText, String exeLine) {
         this.answers.add(new Answer(nextLineNumber, referenceWord, reactText, exeLine));
