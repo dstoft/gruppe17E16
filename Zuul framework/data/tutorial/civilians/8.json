@@ -1,0 +1,9 @@
+{
+    "name": "Mother Teresa",
+    "description": "A world-renowned Catholic nun",
+    "rid": -1,
+	"pid" : -1,
+	"iid" : -1,
+	"chanceToMove" : 0,
+	"conversationId" : 1
+}

@@ -117,9 +117,10 @@ public class Game {
      */
     private void printWelcome() {
         this.dashboard.print();
-        this.dashboard.print("Welcome to the World of Zuul!");
-        this.dashboard.print("World of Zuul is a new, incredibly boring adventure game.");
-        this.dashboard.print("Type '" + CommandWord.HELP + "' if you need help."); //Command.HELP is found in the enum CommandWord, this returns the string corresponding to it
+        this.dashboard.print("Welcome to F.U.T.U.R.A.M.A!");
+        this.dashboard.print("F.U.T.U.R.A.M.A is a new, incredibly awesome adventure strategy game.");
+        this.dashboard.print("If you are lost, just type '" + CommandWord.HELP + "' and Queen Margrethe will help you!"); //Command.HELP is found in the enum CommandWord, this returns the string corresponding to it
+        this.dashboard.print();
     }
 
     /**
@@ -194,8 +195,8 @@ public class Game {
      */
     private void printHelp() {
         //Prints a few statements regarding the state of the game
-        this.dashboard.print("You are lost. You are alone. You wander");
-        this.dashboard.print("around at the university.");
+        this.dashboard.print("Are you lost? Margrethe is here!");
+        this.dashboard.print("You can use different command words");
         this.dashboard.print();
         this.dashboard.print("Your command words are:");
 
@@ -556,7 +557,7 @@ public class Game {
         }
         this.currentConversation = new Conversation(npc.getConversationId());
         this.currentConversation.setNpcId(npcId);
-        this.currentConversation.createWholeConversation(this.fileHandler.getText("data/alpha_centauri/conversations/" + npc.getConversationId() + ".txt"));
+        this.currentConversation.createWholeConversation(this.fileHandler.getText("data/tutorial/conversations/" + npc.getConversationId() + ".txt"));
         this.dashboard.print("A connection with " + npc.getName() + " has been established...");
         this.dashboard.print(npc.getName() + " looks like " + npc.getDescription());
         this.dashboard.print(npc.getName() + ": " + this.currentConversation.getQText());
@@ -936,10 +937,10 @@ public class Game {
         //Creating the items list
         int i = 0;
         while (true) {
-            if (!this.fileHandler.doesFileExist("data/alpha_centauri/planets/" + i + ".json")) {
+            if (!this.fileHandler.doesFileExist("data/tutorial/planets/" + i + ".json")) {
                 break;
             }
-            Planet newPlanet = this.fileHandler.getJSON("data/alpha_centauri/planets/" + i + ".json", Planet.class);
+            Planet newPlanet = this.fileHandler.getJSON("data/tutorial/planets/" + i + ".json", Planet.class);
             this.planets.put(newPlanet.getId(), newPlanet);
             i++;
 
@@ -974,10 +975,10 @@ public class Game {
 
         int i = 0;
         while (true) {
-            if (!this.fileHandler.doesFileExist("data/alpha_centauri/moons/" + i + ".json")) {
+            if (!this.fileHandler.doesFileExist("data/tutorial/moons/" + i + ".json")) {
                 break;
             }
-            Moon newMoon = this.fileHandler.getJSON("data/alpha_centauri/moons/" + i + ".json", Moon.class);
+            Moon newMoon = this.fileHandler.getJSON("data/tutorial/moons/" + i + ".json", Moon.class);
             this.moons.put(newMoon.getId(), newMoon);
             i++;
         }
@@ -1009,10 +1010,10 @@ public class Game {
 
         int i = 0;
         while (true) {
-            if (!this.fileHandler.doesFileExist("data/alpha_centauri/civilians/" + i + ".json")) {
+            if (!this.fileHandler.doesFileExist("data/tutorial/civilians/" + i + ".json")) {
                 break;
             }
-            NPC newNpc = this.fileHandler.getJSON("data/alpha_centauri/civilians/" + i + ".json", NPC.class);
+            NPC newNpc = this.fileHandler.getJSON("data/tutorial/civilians/" + i + ".json", NPC.class);
             this.npcs.put(newNpc.getId(), newNpc);
             this.civilians.put(newNpc.getId(), newNpc);
             i++;
@@ -1051,10 +1052,10 @@ public class Game {
 
         int i = 0;
         while (true) {
-            if (!this.fileHandler.doesFileExist("data/alpha_centauri/rebels/" + i + ".json")) {
+            if (!this.fileHandler.doesFileExist("data/tutorial/rebels/" + i + ".json")) {
                 break;
             }
-            NPC newNpc = this.fileHandler.getJSON("data/alpha_centauri/rebels/" + i + ".json", NPC.class);
+            NPC newNpc = this.fileHandler.getJSON("data/tutorial/rebels/" + i + ".json", NPC.class);
             this.npcs.put(newNpc.getId(), newNpc);
             this.rebels.put(newNpc.getId(), newNpc);
             i++;
@@ -1211,10 +1212,10 @@ public class Game {
         //1. Creating the items from JSON
         int i = 0;
         while (true) {
-            if (!this.fileHandler.doesFileExist("data/alpha_centauri/items/" + i + ".json")) {
+            if (!this.fileHandler.doesFileExist("data/tutorial/items/" + i + ".json")) {
                 break;
             }
-            Items newItem = this.fileHandler.getJSON("data/alpha_centauri/items/" + i + ".json", Items.class);
+            Items newItem = this.fileHandler.getJSON("data/tutorial/items/" + i + ".json", Items.class);
             this.items.put(newItem.getId(), newItem);
             i++;
             if (npcsWithIid.containsKey(newItem.getIid()) || npcsWithRid.containsKey(newItem.getRid())) {
@@ -1427,8 +1428,12 @@ public class Game {
     public void printHighScore() {
         HighScore currentHighScore = this.fileHandler.getJSON("highscore.json", HighScore.class);
         HighScore playerScore = new HighScore(this.player.getReputation(), 2, "matias");
+        this.dashboard.print("This is the current highscore!");
         this.dashboard.print(currentHighScore.toString());
+        this.dashboard.print();
+        this.dashboard.print("This is your highscore!");
         this.dashboard.print(playerScore.toString());
+        this.dashboard.print();
     }
 
     /**

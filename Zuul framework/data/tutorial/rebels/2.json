@@ -1,0 +1,9 @@
+{
+    "name": "Kasper H. Christensen",
+    "description": "The master of beerpong!",
+    "rid": -1,
+	"pid" : -1,
+	"iid" : -1,
+	"chanceToMove" : 0,
+	"conversationId" : 1
+}

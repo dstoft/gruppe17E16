@@ -1,0 +1,9 @@
+{
+    "name": "Albert Einstein",
+    "description": "A German theoretical physicist with a comprehensive and groundbreaking scientific production",
+    "rid": -1,
+	"pid" : -1,
+	"iid" : -1,
+	"chanceToMove" : 0,
+	"conversationId" : 1
+}

@@ -1,9 +1,0 @@
-{
-    "name": "npc8",
-    "description": "npc1",
-    "rid": -1,
-	"pid" : -1,
-	"iid" : -1,
-	"chanceToMove" : 0,
-	"conversationId" : 1
-}

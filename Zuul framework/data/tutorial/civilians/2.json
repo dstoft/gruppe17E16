@@ -1,0 +1,9 @@
+{
+    "name": "Adolf Hitler",
+    "description": "Germany's savior",
+    "rid": 1,
+	"pid" : 2,
+	"iid" : 3,
+	"chanceToMove" : 0,
+	"conversationId" : 15
+}
