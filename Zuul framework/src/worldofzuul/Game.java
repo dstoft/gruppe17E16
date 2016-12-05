@@ -286,7 +286,7 @@ public class Game {
     }
 
     /**
-     * Print the possible planets that the player can travel to
+     * Print the possible planets that the player can travel to.
      */
     public void printPossiblePlanets() {
         String toPrint = "";

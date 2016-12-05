@@ -27,7 +27,7 @@ Do you know everyone of the commands you can use? no? Let me tell you!
 1
 
 cool
-The commands are: "Drop" is for when you wanna drop an item...   "help" is when you are fucked and need help...   "print" is for printing inventory, stats and position...
+The commands are: "Drop" is for when you wanna drop an item...   "help" is when you are fucked and need help...   "print" is for printing inventory, stats and position...   "greet" is for talking to people...
 4
 
 _____ 4:
