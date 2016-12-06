@@ -25,6 +25,9 @@ import java.util.UUID;
 public class Game {
 
     //Defines instance variables
+    private Scenario scenario;
+    private HashMap<String,Scenario> possibleScenarios;
+    
     private Parser parser;
     private Dashboard dashboard;
     private Player player;
@@ -32,7 +35,6 @@ public class Game {
     private HashMap<UUID, Moon> moons;
 
     private HashMap<String, Integer> timerCounts;
-    //private ArrayList<UUID> hasWars;
 
     /**
      * Three maps of NPCs, the first one, npcs, holds all of the npcs, which is
@@ -49,6 +51,7 @@ public class Game {
     private HashMap<UUID, NPC> npcs;
     private HashMap<UUID, NPC> civilians;
     private HashMap<UUID, NPC> rebels;
+    
     private HashMap<UUID, Items> items;
     private MovementCalculator movementCalculator;
     private FileHandler fileHandler;
@@ -61,6 +64,8 @@ public class Game {
      * the rooms, sets current room and creates a new parser object
      */
     public Game() {
+        this.possibleScenarios = new HashMap<>();
+        
         this.planets = new HashMap<>();
         this.moons = new HashMap<>();
         this.npcs = new HashMap<>();
@@ -73,13 +78,8 @@ public class Game {
         this.timerCounts.put("warTimer", 50);
 
         //this.hasWars = new ArrayList<>();
-        this.startingPlanet = this.createPlanets();
-        this.createNpcs();
-        this.createItems();
-        this.time = 0;
 
         parser = new Parser(); //Creates a new object of the type Parser
-        this.player = new Player(this.startingPlanet, 10000, 10);
         this.dashboard = new Dashboard(); // Creates a new object of the type Dashboard. 
 
         //createPlanets(); 
@@ -94,12 +94,55 @@ public class Game {
     public void play() {
         printWelcome(); //Prints a welcome message
 
+        System.out.println("Please enter your name using the syntax \"name [your name]\":");
+        while(true) {
+            this.dashboard.print();
+            Command command = parser.getCommand(); //Returns a new object, holding the information, regarding the line typed by the user
+            if(command.getCommandWord() == CommandWord.NAME) {
+                this.player = new Player(command.getSecondWord(), 10000, 10);
+                break;
+            } else {
+                System.out.println("Please only use the syntax \"name [your name]\"");
+            }
+        }
+        
+        this.createScenarios();
+        
+        System.out.println("Please select a scenario to play using the syntax \"scenario [scenario name]\":");
+        for(Scenario scenario : this.possibleScenarios.values()) {
+            System.out.println("To play " + scenario.getName() + " write: " + scenario.getPath());
+            System.out.println(" - is described as " + scenario.getDescription());
+        }
+        
+        while(true) {
+            this.dashboard.print();
+            Command command = parser.getCommand(); //Returns a new object, holding the information, regarding the line typed by the user
+            if(command.getCommandWord() == CommandWord.SCENARIO) {
+                if(this.possibleScenarios.containsKey(command.getSecondWord())) {
+                    this.scenario = this.possibleScenarios.get(command.getSecondWord());
+                    break;
+                } 
+            }
+            
+            System.out.println("Please only use the syntax \"scenario [scenario name]\":");
+            for(Scenario scenario : this.possibleScenarios.values()) {
+                System.out.println("To play " + scenario.getName() + " write: " + scenario.getPath());
+                System.out.println(" - is described as " + scenario.getDescription());
+            }
+        }
+        
+        this.startingPlanet = this.createPlanets();
+        this.createNpcs();
+        this.createItems();
+        this.time = 0;
+        
+        
         this.printHighScore();
 
         this.player.setCurrentPlanet(this.startingPlanet);
 
         //Start conversation or use the greet command for first encounter?
-        this.startConversation(this.planets.get(this.player.getPlanetId()).getNpcIds()[0]);
+        this.processGreet("0");
 
         //Note, the while-loop below, is basically a do..while loop, because the value to check is set to false right before the loop itself
         //meaning, no matter what, the loop will run through at least once
@@ -556,9 +599,15 @@ public class Game {
             npc.setConversationId(npc.getNextConversationId());
             npc.setNextConversationId(-1);
         }
+        
+        if(!this.fileHandler.doesFileExist("data/" + this.scenario.getPath() + "/conversations/" + npc.getConversationId() + ".txt")) {
+            System.out.println("The file you tried to start a conversation with does not exist!");
+            return;
+        }
+        
         this.currentConversation = new Conversation(npc.getConversationId());
         this.currentConversation.setNpcId(npcId);
-        this.currentConversation.createWholeConversation(this.fileHandler.getText("data/tutorial/conversations/" + npc.getConversationId() + ".txt"));
+        this.currentConversation.createWholeConversation(this.fileHandler.getText("data/" + this.scenario.getPath() + "/conversations/" + npc.getConversationId() + ".txt"));
         this.dashboard.print("A connection with " + npc.getName() + " has been established...");
         this.dashboard.print(npc.getName() + " looks like " + npc.getDescription());
         this.dashboard.print(npc.getName() + ": " + this.currentConversation.getQText());
@@ -938,10 +987,10 @@ public class Game {
         //Creating the items list
         int i = 0;
         while (true) {
-            if (!this.fileHandler.doesFileExist("data/tutorial/planets/" + i + ".json")) {
+            if (!this.fileHandler.doesFileExist("data/" + this.scenario.getPath() + "/planets/" + i + ".json")) {
                 break;
             }
-            Planet newPlanet = this.fileHandler.getJSON("data/tutorial/planets/" + i + ".json", Planet.class);
+            Planet newPlanet = this.fileHandler.getJSON("data/" + this.scenario.getPath() + "/planets/" + i + ".json", Planet.class);
             this.planets.put(newPlanet.getId(), newPlanet);
             i++;
 
@@ -976,10 +1025,10 @@ public class Game {
 
         int i = 0;
         while (true) {
-            if (!this.fileHandler.doesFileExist("data/tutorial/moons/" + i + ".json")) {
+            if (!this.fileHandler.doesFileExist("data/" + this.scenario.getPath() + "/moons/" + i + ".json")) {
                 break;
             }
-            Moon newMoon = this.fileHandler.getJSON("data/tutorial/moons/" + i + ".json", Moon.class);
+            Moon newMoon = this.fileHandler.getJSON("data/" + this.scenario.getPath() + "/moons/" + i + ".json", Moon.class);
             this.moons.put(newMoon.getId(), newMoon);
             i++;
         }
@@ -1011,10 +1060,10 @@ public class Game {
 
         int i = 0;
         while (true) {
-            if (!this.fileHandler.doesFileExist("data/tutorial/civilians/" + i + ".json")) {
+            if (!this.fileHandler.doesFileExist("data/" + this.scenario.getPath() + "/civilians/" + i + ".json")) {
                 break;
             }
-            NPC newNpc = this.fileHandler.getJSON("data/tutorial/civilians/" + i + ".json", NPC.class);
+            NPC newNpc = this.fileHandler.getJSON("data/" + this.scenario.getPath() + "/civilians/" + i + ".json", NPC.class);
             this.npcs.put(newNpc.getId(), newNpc);
             this.civilians.put(newNpc.getId(), newNpc);
             i++;
@@ -1053,10 +1102,10 @@ public class Game {
 
         int i = 0;
         while (true) {
-            if (!this.fileHandler.doesFileExist("data/tutorial/rebels/" + i + ".json")) {
+            if (!this.fileHandler.doesFileExist("data/" + this.scenario.getPath() + "/rebels/" + i + ".json")) {
                 break;
             }
-            NPC newNpc = this.fileHandler.getJSON("data/tutorial/rebels/" + i + ".json", NPC.class);
+            NPC newNpc = this.fileHandler.getJSON("data/" + this.scenario.getPath() + "/rebels/" + i + ".json", NPC.class);
             this.npcs.put(newNpc.getId(), newNpc);
             this.rebels.put(newNpc.getId(), newNpc);
             i++;
@@ -1213,10 +1262,10 @@ public class Game {
         //1. Creating the items from JSON
         int i = 0;
         while (true) {
-            if (!this.fileHandler.doesFileExist("data/tutorial/items/" + i + ".json")) {
+            if (!this.fileHandler.doesFileExist("data/" + this.scenario.getPath() + "/items/" + i + ".json")) {
                 break;
             }
-            Items newItem = this.fileHandler.getJSON("data/tutorial/items/" + i + ".json", Items.class);
+            Items newItem = this.fileHandler.getJSON("data/" + this.scenario.getPath() + "/items/" + i + ".json", Items.class);
             this.items.put(newItem.getId(), newItem);
             i++;
             if (npcsWithIid.containsKey(newItem.getIid()) || npcsWithRid.containsKey(newItem.getRid())) {
@@ -1428,7 +1477,7 @@ public class Game {
      */
     public void printHighScore() {
         HighScore currentHighScore = this.fileHandler.getJSON("highscore.json", HighScore.class);
-        HighScore playerScore = new HighScore(this.player.getReputation(), 2, "matias");
+        HighScore playerScore = new HighScore(this.player.getReputation(), this.time, this.player.getName());
         this.dashboard.print("This is the current highscore!");
         this.dashboard.print(currentHighScore.toString());
         this.dashboard.print();
@@ -1444,7 +1493,7 @@ public class Game {
      */
     public void saveHighScore() {
         //Creates a new highsore object based on the current player's stats
-        HighScore playerScore = new HighScore(this.player.getReputation(), 2, "matias");  // tid : 2 og name :  matias er blot place holders. 
+        HighScore playerScore = new HighScore(this.player.getReputation(), this.time, this.player.getName());  // tid : 2 og name :  matias er blot place holders. 
 
         //Read the highscore JSON file, if it exists!
         if (!this.fileHandler.doesFileExist("highscore.json")) {
@@ -1546,6 +1595,19 @@ public class Game {
                 //this.hasWars.add(moon.getId());
                 System.out.println("War started at: " + moon.getName());
             }
+        }
+    }
+    
+    public void createScenarios() {
+        if(!this.fileHandler.doesFileExist("data/scenarios.txt")) {
+            System.out.println("The scenarios file is broken!");
+        }
+        
+        for(String scenarioLine : this.fileHandler.getText("data/scenarios.txt")) {
+            String[] splittedScenarioLine = scenarioLine.split(";");
+            Scenario scenario = new Scenario(splittedScenarioLine[0], splittedScenarioLine[2], splittedScenarioLine[1]);
+            
+            this.possibleScenarios.put(scenario.getPath(), scenario);
         }
     }
     

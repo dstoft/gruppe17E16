@@ -24,9 +24,10 @@ public class Player {
     private boolean ITD;
     private int warpFuel;
     private boolean canWarp;
+    private String name;
 
-    public Player(UUID currentPlanet, int maxFuel, int startingReputation) {
-        this.currentPlanetId = currentPlanet;
+    public Player(String name, int maxFuel, int startingReputation) {
+        this.name = name;
         this.maxFuel = maxFuel;
         this.fuel = maxFuel;
         this.warpFuel = 50;
@@ -73,6 +74,10 @@ public class Player {
     // ***** SETTERS END *****
 
     // ***** GETTERS *****
+    public String getName() {
+        return this.name;
+    }
+    
     public UUID getPlanetId() {
         return this.currentPlanetId;
     }
