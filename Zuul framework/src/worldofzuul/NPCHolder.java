@@ -15,7 +15,7 @@ import java.util.UUID;
  *
  * @author DanielToft
  */
-public abstract class NPCHolder {
+public abstract class NPCHolder implements PrintAble {
 
     private UUID id;
     private int pid;
@@ -56,10 +56,12 @@ public abstract class NPCHolder {
         return this.pid;
     }
 
+    @Override
     public String getName() {
         return this.name;
     }
 
+    @Override
     public String getDescription() {
         return this.description;
     }

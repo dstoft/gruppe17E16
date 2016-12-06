@@ -1554,11 +1554,29 @@ public class Game {
     }
     
     public String getName(UUID uuid) {
-        return "matias";
+        PrintAble printAble;
+        if(this.npcs.containsKey(uuid)) {
+            printAble = this.npcs.get(uuid);
+        } else if(this.items.containsKey(uuid)) {
+            printAble = this.items.get(uuid);
+        } else {
+            printAble = this.getNPCHolderFromUuid(uuid);
+        }
+        
+        return printAble.getName();
     }
     
     public String getDescription(UUID uuid) {
-        return "matias";
+        PrintAble printAble;
+        if(this.npcs.containsKey(uuid)) {
+            printAble = this.npcs.get(uuid);
+        } else if(this.items.containsKey(uuid)) {
+            printAble = this.items.get(uuid);
+        } else {
+            printAble = this.getNPCHolderFromUuid(uuid);
+        }
+        
+        return printAble.getDescription();
     }
     
     public int getPid(UUID uuid) {

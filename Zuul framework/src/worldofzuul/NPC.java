@@ -13,7 +13,7 @@ import java.util.UUID;
  *
  * @author emildaniel
  */
-public class NPC implements Comparable<NPC> {
+public class NPC implements Comparable<NPC>, PrintAble {
 
     //The number used by the user to reference the NPC during runtime
     public static int referenceCounter = 0;
@@ -105,10 +105,12 @@ public class NPC implements Comparable<NPC> {
         return this.packageId;
     }
 
+    @Override
     public String getName() {
         return this.name;
     }
 
+    @Override
     public String getDescription() {
         return this.description;
     }

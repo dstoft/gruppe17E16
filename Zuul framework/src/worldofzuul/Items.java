@@ -10,7 +10,7 @@ import java.util.UUID;
  * can have. The paperwork on each item can have an effect of the difficulty to
  * deliver the pakage.
  */
-public class Items implements Comparable<Items> {
+public class Items implements Comparable<Items>, PrintAble {
 
     //The number which the user references this item during runtime
     public static int referenceCounter = 0;
@@ -63,16 +63,22 @@ public class Items implements Comparable<Items> {
     }
 
     // ***** GETTERS *****
+    @Override
+    public String getName() {
+        return this.description;
+    }
+    
+    @Override
     public String getDescription() {        //Method for getting the description of the item.
-        return description;
+        return this.description;
     }
 
     public int getRid() {        //Method for returning  destination RID
-        return rid;
+        return this.rid;
     }
 
     public int getIid() {        //Method for returning  destination RID
-        return iid;
+        return this.iid;
     }
 
     public UUID getNpcId() {
@@ -80,7 +86,7 @@ public class Items implements Comparable<Items> {
     }
 
     public int getWeight() {         //Method for getting the weight of the item.
-        return weight;
+        return this.weight;
     }
 
     public int getReputationWorth() {
@@ -88,7 +94,7 @@ public class Items implements Comparable<Items> {
     }
 
     public UUID getId() {        // //Method for getting the ID of the item.
-        return id;
+        return this.id;
     }
 
     public int getReferenceNumber() {       //Method for getting the Referencenumber
@@ -101,7 +107,7 @@ public class Items implements Comparable<Items> {
     }
 
     public boolean getPapers() {            // Method for getting the papers
-        return papers;
+        return this.papers;
     }
     // ***** GETTERS END *****
 
@@ -115,11 +121,11 @@ public class Items implements Comparable<Items> {
     }
 
     public boolean setPapersFalse() {           //method for setting the papers to false
-        return papers = false;
+        return this.papers = false;
     }
 
     public boolean setPapersTrue() {            //method for setting the papers to true
-        return papers = true;
+        return this.papers = true;
     }
     // ***** SETTERS END *****
 
