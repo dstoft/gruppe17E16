@@ -11,13 +11,16 @@ package worldofzuul;
  */
 public class Dashboard {
 
+    private String savedString = "";
+    
     /**
      * A method used to print something.
      *
      * @param toPrint what to print
      */
     public void print(String toPrint) {
-        System.out.println(toPrint);
+        this.savedString += toPrint + "\n";
+        //System.out.print(this.getSavedString());
     }
 
     /**
@@ -25,7 +28,13 @@ public class Dashboard {
      * anything in the parameter list.
      */
     public void print() {
-        System.out.println();
+        this.savedString += "\n";
+        //System.out.print(this.getSavedString());
     }
 
+    public String getSavedString() {
+        String tempString = this.savedString;
+        this.savedString = "";
+        return tempString;
+    }
 }

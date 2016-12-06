@@ -1,5 +1,6 @@
 package worldofzuul;
 
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1547,4 +1548,50 @@ public class Game {
             }
         }
     }
+    
+    public ArrayList<UUID> getListOfPlanets() {
+        return new ArrayList<>(this.planets.keySet());
+    }
+    
+    public String getName(UUID uuid) {
+        return "matias";
+    }
+    
+    public String getDescription(UUID uuid) {
+        return "matias";
+    }
+    
+    public int getPid(UUID uuid) {
+        return this.getNPCHolderFromUuid(uuid).getPid();
+    }
+    
+    public Image getItemImage(UUID uuid) {
+        return null;
+    }
+    
+    public int getFuel() {
+        return this.player.getFuel();
+    }
+    
+    public int getWarpFuel() {
+        return this.player.getWarpfuel();
+    }
+    
+    public boolean canWarp() {
+        return this.player.canWarp();
+    }
+    
+    public int getReputation() {
+        return this.player.getReputation();
+    }
+    
+    public int getInGameTime() {
+        return this.time;
+    }
+    
+    public String getDashboardUpdate() {
+        return this.dashboard.getSavedString();
+    }
+    
+    
 }
