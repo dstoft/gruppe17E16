@@ -1024,6 +1024,13 @@ public class Game implements iGame {
                 returnUuid = newPlanet.getId();
             }
         }
+        
+        ArrayList<Planet> tempPlanetList = new ArrayList<>(this.planets.values());
+        Collections.sort(tempPlanetList, Planet.distanceToStarComparator);
+        for(i = 0; i < tempPlanetList.size(); i++) {
+            tempPlanetList.get(i).setPlacementFromStart(i);
+            System.out.println(tempPlanetList.get(i).getName() + " at placement: " + i);
+        }
 
         createMoons();
 
@@ -1792,7 +1799,7 @@ public class Game implements iGame {
         NPCHolder npcHolder = this.getNPCHolderFromUuid(uuid);
         ArrayList<UUID> returnArray = new ArrayList<>();
         for(UUID npcUuid : npcHolder.getNpcIds()) {
-            returnArray.add(uuid);
+            returnArray.add(npcUuid);
         }
         return returnArray;
     }
@@ -1813,5 +1820,11 @@ public class Game implements iGame {
         return this.currentConversation.getPossibleAnswers();
     }
     
-    
+    public int getPlacementFromSun(UUID planetUuid) {
+        if(this.planets.containsKey(planetUuid)) {
+            return this.planets.get(planetUuid).getPlacementFromStar();
+        } else {
+            return -1;
+        }
+    }
 }

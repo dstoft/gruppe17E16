@@ -1,6 +1,7 @@
 package worldofzuul;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.UUID;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -15,6 +16,7 @@ public class Planet extends NPCHolder implements Comparable<Planet> {
     private int x;          //x-coordinate of the planet
     private int y;          //y-coordinate of the planet
     private int referenceNum;   //unique referencenumber for the planet
+    private int placementFromSun;
 
     //static counter for creating new referencenumbers, it starts at one, because the moon always has the number 0
     public static int referenceNumCounter = 1;
@@ -62,11 +64,19 @@ public class Planet extends NPCHolder implements Comparable<Planet> {
     public int getReferenceNum() {
         return this.referenceNum;
     }
+    
+    public int getPlacementFromStar() {
+        return this.placementFromSun;
+    }
     // ***** GETTERS END *****
 
     // ***** SETTERS *****
     public void setMoonUuid(UUID moonId) {
         this.moonUuid = moonId;
+    }
+    
+    public void setPlacementFromStart(int placement) {
+        this.placementFromSun = placement;
     }
     // ***** SETTERS END *****
 
@@ -74,4 +84,23 @@ public class Planet extends NPCHolder implements Comparable<Planet> {
     public int compareTo(Planet t) {
         return (this.referenceNum - t.referenceNum);
     }
+
+    public static Comparator<Planet> distanceToStarComparator = new Comparator<Planet>() {
+
+        @Override
+        public int compare(Planet planet1, Planet planet2) {
+            int planet1DistanceToStar = (int) Math.sqrt(
+                    Math.pow(Math.abs(planet1.x - 500), 2)
+                    + Math.pow(Math.abs(planet1.y - 500), 2)
+                );
+            
+            int planet2DistanceToStar = (int) Math.sqrt(
+                    Math.pow(Math.abs(planet2.x - 500), 2)
+                    + Math.pow(Math.abs(planet2.y - 500), 2)
+                );
+            
+            return planet1DistanceToStar - planet2DistanceToStar;
+        }
+
+    };
 }
