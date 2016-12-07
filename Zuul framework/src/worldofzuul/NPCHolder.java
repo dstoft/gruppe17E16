@@ -15,13 +15,14 @@ import java.util.UUID;
  *
  * @author DanielToft
  */
-public abstract class NPCHolder implements PrintAble {
+public abstract class NPCHolder implements PrintAble, PicturizeAble {
 
     private UUID id;
     private int pid;
     private ArrayList<UUID> npcIds;
     private String description;
     private String name;
+    private String imagePath;
     private int warTimer;
 
     /**
@@ -66,6 +67,10 @@ public abstract class NPCHolder implements PrintAble {
         return this.description;
     }
 
+    @Override
+    public String getImagePath() {
+        return this.imagePath;
+    }
     /**
      * Gets all of the NPC ids that is currently at the planet / moon.
      *

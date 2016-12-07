@@ -10,7 +10,7 @@ import java.util.UUID;
  * can have. The paperwork on each item can have an effect of the difficulty to
  * deliver the pakage.
  */
-public class Items implements Comparable<Items>, PrintAble {
+public class Items implements Comparable<Items>, PrintAble, PicturizeAble {
 
     //The number which the user references this item during runtime
     public static int referenceCounter = 0;
@@ -20,6 +20,7 @@ public class Items implements Comparable<Items>, PrintAble {
     private int weight; // The weight of the item
     private int reputationWorth;
     private String description; // The description of the item
+    private String imagePath;
     private int rid;  // The RID for the destination
     private int iid;
     private UUID npcId;
@@ -71,6 +72,11 @@ public class Items implements Comparable<Items>, PrintAble {
     @Override
     public String getDescription() {        //Method for getting the description of the item.
         return this.description;
+    }
+
+    @Override
+    public String getImagePath() {
+        return this.imagePath;
     }
 
     public int getRid() {        //Method for returning  destination RID

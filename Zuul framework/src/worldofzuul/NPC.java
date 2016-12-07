@@ -13,13 +13,14 @@ import java.util.UUID;
  *
  * @author emildaniel
  */
-public class NPC implements Comparable<NPC>, PrintAble {
+public class NPC implements Comparable<NPC>, PrintAble, PicturizeAble {
 
     //The number used by the user to reference the NPC during runtime
     public static int referenceCounter = 0;
 
     private String name;
     private String description;
+    private String imagePath;
     private UUID id;
     private int referenceNumber; //The number used by the user to reference the NPC during runtime
     private int rid; //Identifies which Item the NPC has to receive by the start of the game
@@ -113,6 +114,11 @@ public class NPC implements Comparable<NPC>, PrintAble {
     @Override
     public String getDescription() {
         return this.description;
+    }
+    
+    @Override
+    public String getImagePath() {
+        return this.imagePath;
     }
 
     public int getConversationId() {

@@ -724,6 +724,10 @@ public class Game {
                     this.getPapers();
                     break;
 
+                case "getExtraDeliveryTime":
+                    this.getExtraDeliveryTime();
+                    break;
+                    
                 case "checkBuyWarpFuel":
                     this.checkBuyWarpFuel(executionSplit[1]);
                     changedQuestion = true;
@@ -862,6 +866,17 @@ public class Game {
     public void getPapers() {
         for (UUID uuid : this.player.getInventoryUuids()) {
             this.items.get(uuid).setPapersTrue();
+        }
+    }
+    
+    /**
+     * This method is used to execute executionlines from Conversation. This
+     * takes all of the players items and adds extra time to their delivery time to the items.
+     */
+    public void getExtraDeliveryTime() {
+        for(UUID uuid : this.player.getInventoryUuids()) {
+            Items item = this.items.get(uuid);
+            item.setDeliveryTime(item.getDeliveryTime() + 50);
         }
     }
 
@@ -1639,8 +1654,10 @@ public class Game {
             printAble = this.npcs.get(uuid);
         } else if(this.items.containsKey(uuid)) {
             printAble = this.items.get(uuid);
-        } else {
+        } else if(this.planets.containsKey(uuid) || this.moons.containsKey(uuid)) {
             printAble = this.getNPCHolderFromUuid(uuid);
+        } else {
+            return null;
         }
         
         return printAble.getName();
@@ -1657,8 +1674,10 @@ public class Game {
             printAble = this.npcs.get(uuid);
         } else if(this.items.containsKey(uuid)) {
             printAble = this.items.get(uuid);
-        } else {
+        } else if(this.planets.containsKey(uuid) || this.moons.containsKey(uuid)) {
             printAble = this.getNPCHolderFromUuid(uuid);
+        } else {
+            return null;
         }
         
         return printAble.getDescription();
@@ -1674,12 +1693,24 @@ public class Game {
     }
     
     /**
-     * A getter method for items' image
-     * @param uuid the item UUID
+     * A getter method for items' image's path, so the GUI can get the image by itself.
+     * @param uuid the UUID
      * @return an image
      */
-    public Image getItemImage(UUID uuid) {
-        return null;
+    public String getImgPath(UUID uuid) {
+        PicturizeAble picturizeAble;
+        if(this.npcs.containsKey(uuid)) {
+            picturizeAble = this.npcs.get(uuid);
+        } else if(this.items.containsKey(uuid)) {
+            picturizeAble = this.items.get(uuid);
+        } else if(this.planets.containsKey(uuid) || this.moons.containsKey(uuid)) {
+            picturizeAble = this.getNPCHolderFromUuid(uuid);
+        } else {
+            return null;
+        }
+        
+        String returnString = "data/" + this.scenario.getPath() + "/images/" + picturizeAble.getImagePath();
+        return returnString;
     }
     
     /**
