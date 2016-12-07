@@ -16,7 +16,6 @@ public class Planet extends NPCHolder implements Comparable<Planet> {
     private int x;          //x-coordinate of the planet
     private int y;          //y-coordinate of the planet
     private int referenceNum;   //unique referencenumber for the planet
-    private int placementFromSun;
 
     //static counter for creating new referencenumbers, it starts at one, because the moon always has the number 0
     public static int referenceNumCounter = 1;
@@ -64,19 +63,11 @@ public class Planet extends NPCHolder implements Comparable<Planet> {
     public int getReferenceNum() {
         return this.referenceNum;
     }
-    
-    public int getPlacementFromStar() {
-        return this.placementFromSun;
-    }
     // ***** GETTERS END *****
 
     // ***** SETTERS *****
     public void setMoonUuid(UUID moonId) {
         this.moonUuid = moonId;
-    }
-    
-    public void setPlacementFromStart(int placement) {
-        this.placementFromSun = placement;
     }
     // ***** SETTERS END *****
 

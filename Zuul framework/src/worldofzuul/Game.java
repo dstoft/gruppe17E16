@@ -26,7 +26,7 @@ public class Game implements iGame {
 
     //Defines instance variables
     private Scenario scenario;
-    private HashMap<String,Scenario> possibleScenarios;
+    private HashMap<UUID,Scenario> possibleScenarios;
     
     private Parser parser;
     private Dashboard dashboard;
@@ -119,10 +119,16 @@ public class Game implements iGame {
             this.dashboard.print();
             Command command = parser.getCommand(); //Returns a new object, holding the information, regarding the line typed by the user
             if(command.getCommandWord() == CommandWord.SCENARIO) {
-                if(this.possibleScenarios.containsKey(command.getSecondWord())) {
-                    this.scenario = this.possibleScenarios.get(command.getSecondWord());
-                    break;
-                } 
+                this.scenario = null;
+                for(Scenario posScenario : this.possibleScenarios.values()) {
+                    if(posScenario.getPath().equals(command.getSecondWord())) {
+                        this.scenario = posScenario;
+                        break;
+                    }
+                }
+                if(this.scenario != null) {
+                     break;
+                }
             }
             
             System.out.println("Please only use the syntax \"scenario [scenario name]\":");
@@ -1024,13 +1030,6 @@ public class Game implements iGame {
                 returnUuid = newPlanet.getId();
             }
         }
-        
-        ArrayList<Planet> tempPlanetList = new ArrayList<>(this.planets.values());
-        Collections.sort(tempPlanetList, Planet.distanceToStarComparator);
-        for(i = 0; i < tempPlanetList.size(); i++) {
-            tempPlanetList.get(i).setPlacementFromStart(i);
-            System.out.println(tempPlanetList.get(i).getName() + " at placement: " + i);
-        }
 
         createMoons();
 
@@ -1644,7 +1643,7 @@ public class Game implements iGame {
             String[] splittedScenarioLine = scenarioLine.split(";");
             Scenario scenario = new Scenario(splittedScenarioLine[0], splittedScenarioLine[2], splittedScenarioLine[1]);
             
-            this.possibleScenarios.put(scenario.getPath(), scenario);
+            this.possibleScenarios.put(scenario.getId(), scenario);
         }
     }
     
@@ -1671,6 +1670,8 @@ public class Game implements iGame {
             printAble = this.items.get(uuid);
         } else if(this.planets.containsKey(uuid) || this.moons.containsKey(uuid)) {
             printAble = this.getNPCHolderFromUuid(uuid);
+        } else if(this.possibleScenarios.containsKey(uuid)) {
+            printAble = this.possibleScenarios.get(uuid);
         } else {
             return null;
         }
@@ -1692,6 +1693,8 @@ public class Game implements iGame {
             printAble = this.items.get(uuid);
         } else if(this.planets.containsKey(uuid) || this.moons.containsKey(uuid)) {
             printAble = this.getNPCHolderFromUuid(uuid);
+        } else if(this.possibleScenarios.containsKey(uuid)) {
+            printAble = this.possibleScenarios.get(uuid);
         } else {
             return null;
         }
@@ -1820,11 +1823,29 @@ public class Game implements iGame {
         return this.currentConversation.getPossibleAnswers();
     }
     
-    public int getPlacementFromSun(UUID planetUuid) {
-        if(this.planets.containsKey(planetUuid)) {
-            return this.planets.get(planetUuid).getPlacementFromStar();
-        } else {
-            return -1;
+    public ArrayList<UUID> getPlacementsFromStar() {
+        ArrayList<UUID> returnArray = new ArrayList<>();
+        ArrayList<Planet> tempPlanetList = new ArrayList<>(this.planets.values());
+        Collections.sort(tempPlanetList, Planet.distanceToStarComparator);
+        for(Planet planet : tempPlanetList) {
+            returnArray.add(planet.getId());
         }
+        return returnArray;
     }
+
+    @Override
+    public ArrayList<UUID> getPossibleScenarios() {
+        ArrayList<UUID> returnArray = new ArrayList<>();
+        for(Scenario posScenario : this.possibleScenarios.values()) {
+            returnArray.add(posScenario.getId());
+        }
+        return returnArray;
+    }
+
+    @Override
+    public void setScenario(UUID uuid) {
+        this.scenario = this.possibleScenarios.get(uuid);
+    }
+    
+    
 }
