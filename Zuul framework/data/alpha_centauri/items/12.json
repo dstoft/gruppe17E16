@@ -3,5 +3,6 @@
     "weight": 6,
     "description": "Lukes lightsaber",
 	"iid" : -1,
-	"reputationWorth" : 2
+	"reputationWorth" : 2,
+	"imagePath" : "items/acer.png"
 }

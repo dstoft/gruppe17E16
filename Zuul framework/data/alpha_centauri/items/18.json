@@ -3,5 +3,6 @@
     "weight": 2,
     "description": "Maltes Wok",
 	"iid" : -1,
-	"reputationWorth" : 2
+	"reputationWorth" : 2,
+	"imagePath" : "items/acer.png"
 }

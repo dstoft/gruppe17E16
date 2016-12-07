@@ -3,5 +3,6 @@
     "weight": 3,
     "description": "Kaspers Xbox",
 	"iid" : -1,
-	"reputationWorth" : 2
+	"reputationWorth" : 2,
+	"imagePath" : "items/acer.png"
 }

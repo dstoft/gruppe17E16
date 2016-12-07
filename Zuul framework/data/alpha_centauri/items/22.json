@@ -3,5 +3,6 @@
     "weight": 1,
     "description": "Emils glasses",
 	"iid" : -1,
-	"reputationWorth" : 2
+	"reputationWorth" : 2,
+	"imagePath" : "items/acer.png"
 }

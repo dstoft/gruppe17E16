@@ -51,12 +51,18 @@ public class Question {
      *
      * @return a string that contains the possible answers formatted correctly
      */
-    public String getPossibleAnswers() {
+    public String[] getPossibleAnswers() {
+        String[] returnStrings = new String[this.answers.size()];
+        for(int i = 0; i < this.answers.size(); i++) {
+            returnStrings[i] = this.answers.get(i).getReferenceWord();
+        }
+        /*
         String returnString = "";
         for (Answer answer : this.answers) {
             returnString += answer.getReferenceWord() + ", ";
         }
-        return returnString;
+        */
+        return returnStrings;
     }
 
     // ***** GETTERS *****

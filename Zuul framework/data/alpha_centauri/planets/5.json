@@ -3,5 +3,6 @@
 	"name" : "planet5",
 	"description" : "planet1",
 	"x" : 1,
-	"y" : 1
+	"y" : 1,
+	"imagePath" : "planets/moon1.png"
 }

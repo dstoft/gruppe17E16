@@ -22,7 +22,7 @@ import java.util.UUID;
  * @author Michael Kolling and David J. Barnes
  * @version 2006.03.30
  */
-public class Game {
+public class Game implements iGame {
 
     //Defines instance variables
     private Scenario scenario;
@@ -136,6 +136,8 @@ public class Game {
         this.createNpcs();
         this.createItems();
         this.time = 0;
+        
+        System.out.println(this.getImgPath(this.startingPlanet));
         
         
         this.printHighScore();
@@ -594,7 +596,9 @@ public class Game {
     /**
      * A method for starting a conversation with the NPC on the planet, that the
      * player is currently at
+     * @param npcId
      */
+    @Override
     public void startConversation(UUID npcId) {
         //IF the NPC has a nextConversationId (if it is not null) use that!
         // Starting conversation!
@@ -626,6 +630,7 @@ public class Game {
      *
      * @param answer is the second word that the user typed in along with say
      */
+    @Override
     public void processAnswer(String answer) {
         if (answer == null) {
             this.dashboard.print("You have to say something!");
@@ -981,6 +986,7 @@ public class Game {
      * Drops an item according to it's id, if the item id is not recognized, it
      * will print so
      *
+     * @param itemReferenceNumber
      * @param itemName the second word that the user typed in
      */
     public void dropItem(String itemReferenceNumber) {
@@ -1639,6 +1645,7 @@ public class Game {
      * A getter method for GUI, to get all of the planets' UUID.
      * @return an arraylist of UUIDs
      */
+    @Override
     public ArrayList<UUID> getListOfPlanets() {
         return new ArrayList<>(this.planets.keySet());
     }
@@ -1648,6 +1655,7 @@ public class Game {
      * @param uuid the UUID that you want to get the name for
      * @return a string that holds the name
      */
+    @Override
     public String getName(UUID uuid) {
         PrintAble printAble;
         if(this.npcs.containsKey(uuid)) {
@@ -1668,6 +1676,7 @@ public class Game {
      * @param uuid the UUID that you want to get the name for
      * @return a string that holds the name
      */
+    @Override
     public String getDescription(UUID uuid) {
         PrintAble printAble;
         if(this.npcs.containsKey(uuid)) {
@@ -1688,6 +1697,7 @@ public class Game {
      * @param uuid the UUID you want to get the PID for
      * @return a int that is the PID
      */
+    @Override
     public int getPid(UUID uuid) {
         return this.getNPCHolderFromUuid(uuid).getPid();
     }
@@ -1697,6 +1707,7 @@ public class Game {
      * @param uuid the UUID
      * @return an image
      */
+    @Override
     public String getImgPath(UUID uuid) {
         PicturizeAble picturizeAble;
         if(this.npcs.containsKey(uuid)) {
@@ -1717,6 +1728,7 @@ public class Game {
      * Returns the player's fuel amount.
      * @return an integer
      */
+    @Override
     public int getFuel() {
         return this.player.getFuel();
     }
@@ -1725,6 +1737,7 @@ public class Game {
      * Returns the player's warp fuel amount
      * @return an integer
      */
+    @Override
     public int getWarpFuel() {
         return this.player.getWarpfuel();
     }
@@ -1733,6 +1746,7 @@ public class Game {
      * Returns whether the player can warp or not.
      * @return a boolean
      */
+    @Override
     public boolean canWarp() {
         return this.player.canWarp();
     }
@@ -1741,6 +1755,7 @@ public class Game {
      * Returns the amount of reputation that a player has.
      * @return an integer
      */
+    @Override
     public int getReputation() {
         return this.player.getReputation();
     }
@@ -1749,6 +1764,7 @@ public class Game {
      * Returns the ingame time (NOT the real time)
      * @return an integer
      */
+    @Override
     public int getInGameTime() {
         return this.time;
     }
@@ -1757,8 +1773,44 @@ public class Game {
      * Returns the saved string in the dashboard, that are used from every place where something wants to print something.
      * @return a string, that can contain multiple line breaks.
      */
+    @Override
     public String getDashboardUpdate() {
         return this.dashboard.getSavedString();
+    }
+
+    @Override
+    public ArrayList<UUID> getInventory() {
+        ArrayList<UUID> returnArray = new ArrayList<>();
+        for(UUID uuid : this.player.getInventoryUuids()) {
+            returnArray.add(uuid);
+        }
+        return returnArray;
+    }
+
+    @Override
+    public ArrayList<UUID> getAvailableNpcs(UUID uuid) {
+        NPCHolder npcHolder = this.getNPCHolderFromUuid(uuid);
+        ArrayList<UUID> returnArray = new ArrayList<>();
+        for(UUID npcUuid : npcHolder.getNpcIds()) {
+            returnArray.add(uuid);
+        }
+        return returnArray;
+    }
+
+    @Override
+    public ArrayList<UUID> getPossiblePlanets() {
+        int[] currentPosition = this.getPositionCoordinates(this.player.getPlanetId());
+        return this.getPossiblePlanets(currentPosition[0], currentPosition[1], this.player.getFuel());
+    }
+
+    @Override
+    public void travelToPlanet(UUID planet) {
+        this.travelToPlanet(this.player, planet);
+    }
+
+    @Override
+    public String[] getAnswers() {
+        return this.currentConversation.getPossibleAnswers();
     }
     
     

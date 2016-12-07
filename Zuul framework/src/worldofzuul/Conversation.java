@@ -72,7 +72,7 @@ public class Conversation {
      *
      * @return a string
      */
-    public String getPossibleAnswers() {
+    public String[] getPossibleAnswers() {
         return this.currentQuestion.getPossibleAnswers();
     }
 

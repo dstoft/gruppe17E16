@@ -3,5 +3,6 @@
 	"name" : "Sram",
 	"description" : "A small red planet",
 	"x" : 120,
-	"y" : 35
+	"y" : 35,
+	"imagePath" : "planets/moon1.png"
 }
