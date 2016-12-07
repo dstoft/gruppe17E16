@@ -1,5 +1,11 @@
-package worldofzuul;
+    package worldofzuul;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,6 +60,7 @@ public class Game {
     private Conversation currentConversation;
     private int time;
     private UUID startingPlanet;
+    private AudioPlayer audioplayer;
 
     /**
      * Constructor for the class Game, using the method createRooms() it creates
@@ -70,6 +77,7 @@ public class Game {
         this.fileHandler = new FileHandler();
         this.timerCounts = new HashMap<>();
         this.timerCounts.put("warTimer", 50);
+        this.audioplayer = new AudioPlayer();
 
         //this.hasWars = new ArrayList<>();
         this.startingPlanet = this.createPlanets();
@@ -90,16 +98,15 @@ public class Game {
      * the welcome message, and then it loops, taking your commands, until the
      * game ends.
      */
-    public void play() {
+    public void play() throws Exception {
         printWelcome(); //Prints a welcome message
-
         this.printHighScore();
-
         this.player.setCurrentPlanet(this.startingPlanet);
-
+        System.out.println("Now loading this awesome game!");
+        this.audioplayer.playMusic();
+        
         //Start conversation or use the greet command for first encounter?
         this.startConversation(this.planets.get(this.player.getPlanetId()).getNpcIds()[0]);
-
         //Note, the while-loop below, is basically a do..while loop, because the value to check is set to false right before the loop itself
         //meaning, no matter what, the loop will run through at least once
         boolean finished = false;
@@ -135,7 +142,7 @@ public class Game {
      * @return a boolean telling the program whether to quit or not, return true
      * when the player wants to quit
      */
-    private boolean processCommand(Command command) {
+    private boolean processCommand(Command command) throws Exception {
         boolean wantToQuit = false; //Defines a variable, controls whether to quit or not
 
         CommandWord commandWord = command.getCommandWord(); //Returns an object held by the command object
@@ -440,7 +447,7 @@ public class Game {
      * @param characterToTravel which character to move
      * @param planetId which planet to move to
      */
-    public boolean travelToPlanet(Player characterToTravel, UUID nextPositionUuid) {
+    public boolean travelToPlanet(Player characterToTravel, UUID nextPositionUuid) throws Exception {
         int[] currentPosition = getPositionCoordinates(this.player.getPlanetId());
         int[] nextPosition = getPositionCoordinates(nextPositionUuid);
         NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
@@ -465,6 +472,7 @@ public class Game {
 
         if (this.movementCalculator.isReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getFuel())) {
             this.dashboard.print("Now traveling to " + nextNpcHolder.getName());
+            this.audioplayer.playFly();
             characterToTravel.setCurrentPlanet(nextPositionUuid);
 
             tryNpcMovement();
@@ -494,13 +502,14 @@ public class Game {
      * @param characterToTravel which character that should be moved
      * @param nextPositionUuid which planet or moon that is the intended target.
      */
-    public void processWarp(Player characterToTravel, UUID nextPositionUuid) {
+    public void processWarp(Player characterToTravel, UUID nextPositionUuid) throws Exception {
         int[] currentPosition = getPositionCoordinates(this.player.getPlanetId());
         int[] nextPosition = getPositionCoordinates(nextPositionUuid);
         NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
 
         if (this.movementCalculator.isWarpReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getWarpfuel())) {
             this.dashboard.print("Now warping to " + nextNpcHolder.getName());
+            this.audioplayer.playWarp();
             characterToTravel.setCurrentPlanet(nextPositionUuid);
             characterToTravel.setWarpfuel(characterToTravel.getWarpfuel() - this.movementCalculator.calculateWarpFuelUsage(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1]));
 
@@ -1547,4 +1556,8 @@ public class Game {
             }
         }
     }
+
 }
+        
+
+
