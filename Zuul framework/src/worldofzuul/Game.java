@@ -82,6 +82,8 @@ public class Game {
         parser = new Parser(); //Creates a new object of the type Parser
         this.dashboard = new Dashboard(); // Creates a new object of the type Dashboard. 
 
+        
+        this.createScenarios();
         //createPlanets(); 
         //createNpcs();
     }
@@ -106,7 +108,6 @@ public class Game {
             }
         }
         
-        this.createScenarios();
         
         System.out.println("Please select a scenario to play using the syntax \"scenario [scenario name]\":");
         for(Scenario scenario : this.possibleScenarios.values()) {
@@ -275,11 +276,11 @@ public class Game {
      * @param currentFuel the amount of fuel that can be expended
      * @return a list of planets that are possible to travel to
      */
-    public ArrayList<Planet> getPossiblePlanets(int startX, int startY, int currentFuel) {
-        ArrayList<Planet> reachablePlanets = new ArrayList<>();
+    public ArrayList<UUID> getPossiblePlanets(int startX, int startY, int currentFuel) {
+        ArrayList<UUID> reachablePlanets = new ArrayList<>();
         for (Planet planet : this.planets.values()) {
             if (this.movementCalculator.isReachable(startX, startY, planet.getx(), planet.gety(), currentFuel)) {
-                reachablePlanets.add(planet);
+                reachablePlanets.add(planet.getId());
             }
         }
         return reachablePlanets;
@@ -344,7 +345,11 @@ public class Game {
             }
         }
 
-        ArrayList<Planet> planetList = this.getPossiblePlanets(currentPosition[0], currentPosition[0], this.player.getFuel());
+        ArrayList<UUID> planetUuidList = this.getPossiblePlanets(currentPosition[0], currentPosition[0], this.player.getFuel());
+        ArrayList<Planet> planetList = new ArrayList<>();
+        for(UUID uuid : planetUuidList) {
+            planetList.add(this.planets.get(uuid));
+        }
         Collections.sort(planetList);
         for (Planet planet : planetList) {
             if (this.player.getPlanetId() == planet.getId()) {
@@ -1598,6 +1603,10 @@ public class Game {
         }
     }
     
+    /**
+     * A method used to create the possible scenarios based on the file, that is located in the root of the data folder.
+     * It saves these possible scenarios in the hashmap.
+     */
     public void createScenarios() {
         if(!this.fileHandler.doesFileExist("data/scenarios.txt")) {
             System.out.println("The scenarios file is broken!");
@@ -1611,10 +1620,19 @@ public class Game {
         }
     }
     
+    /**
+     * A getter method for GUI, to get all of the planets' UUID.
+     * @return an arraylist of UUIDs
+     */
     public ArrayList<UUID> getListOfPlanets() {
         return new ArrayList<>(this.planets.keySet());
     }
     
+    /**
+     * Returns the name that belongs to the UUID passed in through the parameter.
+     * @param uuid the UUID that you want to get the name for
+     * @return a string that holds the name
+     */
     public String getName(UUID uuid) {
         PrintAble printAble;
         if(this.npcs.containsKey(uuid)) {
@@ -1628,6 +1646,11 @@ public class Game {
         return printAble.getName();
     }
     
+    /**
+     * Returns the name that belongs to the UUID passed in through the parameter.
+     * @param uuid the UUID that you want to get the name for
+     * @return a string that holds the name
+     */
     public String getDescription(UUID uuid) {
         PrintAble printAble;
         if(this.npcs.containsKey(uuid)) {
@@ -1641,34 +1664,68 @@ public class Game {
         return printAble.getDescription();
     }
     
+    /**
+     * Gets the PID for the UUID passed in through the parameter.
+     * @param uuid the UUID you want to get the PID for
+     * @return a int that is the PID
+     */
     public int getPid(UUID uuid) {
         return this.getNPCHolderFromUuid(uuid).getPid();
     }
     
+    /**
+     * A getter method for items' image
+     * @param uuid the item UUID
+     * @return an image
+     */
     public Image getItemImage(UUID uuid) {
         return null;
     }
     
+    /**
+     * Returns the player's fuel amount.
+     * @return an integer
+     */
     public int getFuel() {
         return this.player.getFuel();
     }
     
+    /**
+     * Returns the player's warp fuel amount
+     * @return an integer
+     */
     public int getWarpFuel() {
         return this.player.getWarpfuel();
     }
     
+    /**
+     * Returns whether the player can warp or not.
+     * @return a boolean
+     */
     public boolean canWarp() {
         return this.player.canWarp();
     }
     
+    /**
+     * Returns the amount of reputation that a player has.
+     * @return an integer
+     */
     public int getReputation() {
         return this.player.getReputation();
     }
     
+    /**
+     * Returns the ingame time (NOT the real time)
+     * @return an integer
+     */
     public int getInGameTime() {
         return this.time;
     }
     
+    /**
+     * Returns the saved string in the dashboard, that are used from every place where something wants to print something.
+     * @return a string, that can contain multiple line breaks.
+     */
     public String getDashboardUpdate() {
         return this.dashboard.getSavedString();
     }
