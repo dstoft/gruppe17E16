@@ -1,16 +1,10 @@
     package worldofzuul;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.UUID;
 
 /**
@@ -98,11 +92,10 @@ public class Game {
      * the welcome message, and then it loops, taking your commands, until the
      * game ends.
      */
-    public void play() throws Exception {
+    public void play(){
         printWelcome(); //Prints a welcome message
         this.printHighScore();
         this.player.setCurrentPlanet(this.startingPlanet);
-        System.out.println("Now loading this awesome game!");
         this.audioplayer.playMusic();
         
         //Start conversation or use the greet command for first encounter?
@@ -114,7 +107,8 @@ public class Game {
             this.dashboard.print();
             Command command = parser.getCommand(); //Returns a new object, holding the information, regarding the line typed by the user
             finished = processCommand(command); //Saves the boolean, whether the player wants to quit, in finished,
-        }
+        } 
+        this.audioplayer.playThanks();
         this.dashboard.print("Thank you for playing.  Good bye."); //Print an end statement, this only happens when the game stops
     }
 
@@ -142,7 +136,7 @@ public class Game {
      * @return a boolean telling the program whether to quit or not, return true
      * when the player wants to quit
      */
-    private boolean processCommand(Command command) throws Exception {
+    private boolean processCommand(Command command) {
         boolean wantToQuit = false; //Defines a variable, controls whether to quit or not
 
         CommandWord commandWord = command.getCommandWord(); //Returns an object held by the command object
@@ -447,7 +441,7 @@ public class Game {
      * @param characterToTravel which character to move
      * @param planetId which planet to move to
      */
-    public boolean travelToPlanet(Player characterToTravel, UUID nextPositionUuid) throws Exception {
+    public boolean travelToPlanet(Player characterToTravel, UUID nextPositionUuid) {
         int[] currentPosition = getPositionCoordinates(this.player.getPlanetId());
         int[] nextPosition = getPositionCoordinates(nextPositionUuid);
         NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
@@ -502,7 +496,7 @@ public class Game {
      * @param characterToTravel which character that should be moved
      * @param nextPositionUuid which planet or moon that is the intended target.
      */
-    public void processWarp(Player characterToTravel, UUID nextPositionUuid) throws Exception {
+    public void processWarp(Player characterToTravel, UUID nextPositionUuid)  {
         int[] currentPosition = getPositionCoordinates(this.player.getPlanetId());
         int[] nextPosition = getPositionCoordinates(nextPositionUuid);
         NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
