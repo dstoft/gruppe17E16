@@ -35,7 +35,7 @@ public interface iGame {
     void processAnswer(String userAns); //
     String[] getAnswers(); //
     
-    public ArrayList<UUID> getPlacementsFromStar();
+    public int[] getPositionCoordinates(UUID uuid);
     
     public ArrayList<UUID> getPossibleScenarios();
     public void setScenario(UUID uuid);

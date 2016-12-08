@@ -75,23 +75,4 @@ public class Planet extends NPCHolder implements Comparable<Planet> {
     public int compareTo(Planet t) {
         return (this.referenceNum - t.referenceNum);
     }
-
-    public static Comparator<Planet> distanceToStarComparator = new Comparator<Planet>() {
-
-        @Override
-        public int compare(Planet planet1, Planet planet2) {
-            int planet1DistanceToStar = (int) Math.sqrt(
-                    Math.pow(Math.abs(planet1.x - 500), 2)
-                    + Math.pow(Math.abs(planet1.y - 500), 2)
-                );
-            
-            int planet2DistanceToStar = (int) Math.sqrt(
-                    Math.pow(Math.abs(planet2.x - 500), 2)
-                    + Math.pow(Math.abs(planet2.y - 500), 2)
-                );
-            
-            return planet1DistanceToStar - planet2DistanceToStar;
-        }
-
-    };
 }

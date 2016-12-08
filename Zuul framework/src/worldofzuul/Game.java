@@ -1439,6 +1439,7 @@ public class Game implements iGame {
      * @return an integer array of the size 2, with the x on index 0 and y on
      * index 1
      */
+    @Override
     public int[] getPositionCoordinates(UUID positionUuid) {
         Planet planet;
         if (this.planets.containsKey(positionUuid)) {
@@ -1821,16 +1822,6 @@ public class Game implements iGame {
     @Override
     public String[] getAnswers() {
         return this.currentConversation.getPossibleAnswers();
-    }
-    
-    public ArrayList<UUID> getPlacementsFromStar() {
-        ArrayList<UUID> returnArray = new ArrayList<>();
-        ArrayList<Planet> tempPlanetList = new ArrayList<>(this.planets.values());
-        Collections.sort(tempPlanetList, Planet.distanceToStarComparator);
-        for(Planet planet : tempPlanetList) {
-            returnArray.add(planet.getId());
-        }
-        return returnArray;
     }
 
     @Override
