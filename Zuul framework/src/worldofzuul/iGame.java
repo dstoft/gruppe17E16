@@ -39,4 +39,6 @@ public interface iGame {
     
     public ArrayList<UUID> getPossibleScenarios();
     public void setScenario(UUID uuid);
+    
+    public long getPlayedMillis();
 }

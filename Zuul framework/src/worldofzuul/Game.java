@@ -2,8 +2,10 @@ package worldofzuul;
 
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
@@ -27,6 +29,7 @@ public class Game implements iGame {
     //Defines instance variables
     private Scenario scenario;
     private HashMap<UUID,Scenario> possibleScenarios;
+    private Calendar startTime; 
     
     private Parser parser;
     private Dashboard dashboard;
@@ -68,6 +71,9 @@ public class Game implements iGame {
      */
     public Game() {
         this.possibleScenarios = new HashMap<>();
+        
+        this.startTime = new GregorianCalendar();
+        this.startTime.setTimeInMillis(System.currentTimeMillis());
         
         this.planets = new HashMap<>();
         this.moons = new HashMap<>();
@@ -1232,10 +1238,10 @@ public class Game implements iGame {
             if (i >= hasNoNpc.size()) {
                 break;
             }
-
+            
             hasNoNpc.get(i).addNpcId(npc.getId());
             npc.setPlanetId(hasNoNpc.get(i).getId());
-            hasNoNpc.remove(i);
+            //hasNoNpc.remove(i);
             i++;
         }
 
@@ -1869,5 +1875,8 @@ public class Game implements iGame {
         this.scenario = this.possibleScenarios.get(uuid);
     }
     
-    
+    @Override
+    public long getPlayedMillis() {
+        return (this.startTime.getTimeInMillis() - System.currentTimeMillis());
+    }
 }
