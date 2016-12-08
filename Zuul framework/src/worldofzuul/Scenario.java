@@ -8,7 +8,7 @@ package worldofzuul;
 import java.util.UUID;
 
 /**
- *
+ * A class to hold the basic information about the scenarios.
  * @author DanielToft
  */
 class Scenario implements PrintAble {
@@ -16,6 +16,12 @@ class Scenario implements PrintAble {
     private String name, description, path;
     private UUID id;
 
+    /**
+     * Constructor
+     * @param name
+     * @param description
+     * @param path 
+     */
     public Scenario(String name, String description, String path) {
         this.name = name;
         this.description = description;

@@ -1786,6 +1786,10 @@ public class Game implements iGame {
         return this.dashboard.getSavedString();
     }
 
+    /**
+     * Returns the UUIDs for the items that the player has in their inventory.
+     * @return an arraylist of UUIDs
+     */
     @Override
     public ArrayList<UUID> getInventory() {
         ArrayList<UUID> returnArray = new ArrayList<>();
@@ -1795,6 +1799,11 @@ public class Game implements iGame {
         return returnArray;
     }
 
+    /**
+     * Returns the NPCs on a position uuid.
+     * @param uuid the position that you want to get the NPC list for
+     * @return an arraylist of the NPCs' UUIDs
+     */
     @Override
     public ArrayList<UUID> getAvailableNpcs(UUID uuid) {
         NPCHolder npcHolder = this.getNPCHolderFromUuid(uuid);
@@ -1805,22 +1814,43 @@ public class Game implements iGame {
         return returnArray;
     }
 
+    /**
+     * Returns the possible planets to travel to for the player.
+     * @return an arraylist of UUIDs that the player can travel to
+     */
     @Override
     public ArrayList<UUID> getPossiblePlanets() {
         int[] currentPosition = this.getPositionCoordinates(this.player.getPlanetId());
         return this.getPossiblePlanets(currentPosition[0], currentPosition[1], this.player.getFuel());
     }
 
+    /**
+     * Makes the player travel to a planet.
+     * @param planet 
+     */
     @Override
     public void travelToPlanet(UUID planet) {
         this.travelToPlanet(this.player, planet);
     }
 
+    /**
+     * Gets the answers available to the current conversation. If the 
+     * conversation is nonexisting, this method returns null to avoid a 
+     * nullpointer exception.
+     * @return an array of strings, or null
+     */
     @Override
     public String[] getAnswers() {
+        if(this.currentConversation == null) {
+            return null;
+        }
         return this.currentConversation.getPossibleAnswers();
     }
 
+    /**
+     * Gets the possible scenarios for the game as a list of UUIDs.
+     * @return an arraylist of UUIDs
+     */
     @Override
     public ArrayList<UUID> getPossibleScenarios() {
         ArrayList<UUID> returnArray = new ArrayList<>();
@@ -1830,6 +1860,10 @@ public class Game implements iGame {
         return returnArray;
     }
 
+    /**
+     * Sets the game scenario to the UUID passed in through the parameter.
+     * @param uuid the UUID corresponding to the scenario.
+     */
     @Override
     public void setScenario(UUID uuid) {
         this.scenario = this.possibleScenarios.get(uuid);

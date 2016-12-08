@@ -6,7 +6,8 @@
 package worldofzuul;
 
 /**
- *
+ * An interface that makes sure that classes that needs to have their names 
+ * and/or description printed, is capable of doing so. Used by the GUI.
  * @author DanielToft
  */
 public interface PrintAble {

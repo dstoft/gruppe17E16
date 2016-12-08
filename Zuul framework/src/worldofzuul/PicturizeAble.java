@@ -6,7 +6,7 @@
 package worldofzuul;
 
 /**
- *
+ * Ensures that the classes that have an image, knows a source path to this image.
  * @author DanielToft
  */
 public interface PicturizeAble {

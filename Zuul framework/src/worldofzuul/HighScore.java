@@ -83,6 +83,13 @@ public class HighScore implements Comparable<HighScore> {
     }
     // ***** SETTERS END *****
     
+    /**
+     * A interface method, that allows us to compare HighScores and use the 
+     * Collections.sort method.
+     * @param t the highscore object to compare this object to
+     * @return an integer based on whether the compared object should be before 
+     * or after the current object
+     */
     @Override
     public int compareTo(HighScore t) {
         if(this.rep > t.getRep()) {
