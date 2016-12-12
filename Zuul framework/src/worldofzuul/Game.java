@@ -1422,7 +1422,7 @@ public class Game implements iGame {
                     continue;
                 }
 
-                item.setNpcId(npc.getId());
+                //item.setNpcId(npc.getId());
                 npc.addItem(item.getId(), item.getWeight());
                 itemsHaveNoPickup.remove(item);
                 break;
