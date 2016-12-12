@@ -5,6 +5,8 @@
  */
 package worldofzuul;
 
+import java.util.ArrayList;
+
 /**
  * A method used as the place where this whole system communicates with the
  * user.
@@ -20,7 +22,7 @@ public class Dashboard {
      */
     public void print(String toPrint) {
         this.savedString += toPrint + "\n";
-        //System.out.print(this.getSavedString());
+        System.out.print(this.getSavedString());
     }
 
     /**
@@ -29,12 +31,16 @@ public class Dashboard {
      */
     public void print() {
         this.savedString += "\n";
-        //System.out.print(this.getSavedString());
+        System.out.print(this.getSavedString());
     }
 
     public String getSavedString() {
         String tempString = this.savedString;
         this.savedString = "";
         return tempString;
+    }
+
+    void print(ArrayList<HighScore> highScoreList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

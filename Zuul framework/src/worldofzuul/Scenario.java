@@ -34,4 +34,7 @@ class Scenario implements PrintAble {
         return this.path;
     }
     // ***** GETTERS END *****
+    
+    //**** Setters****
+    
 }

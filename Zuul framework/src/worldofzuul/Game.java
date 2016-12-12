@@ -23,6 +23,7 @@ import java.util.UUID;
  * @version 2006.03.30
  */
 public class Game {
+    
 
     //Defines instance variables
     private Scenario scenario;
@@ -35,6 +36,9 @@ public class Game {
     private HashMap<UUID, Moon> moons;
 
     private HashMap<String, Integer> timerCounts;
+    private HighScore currentPlayerScore;  // Attribute of current player as a HighScore object. 
+    private  ArrayList<HighScore> highScoreList;
+    
 
     /**
      * Three maps of NPCs, the first one, npcs, holds all of the npcs, which is
@@ -76,6 +80,7 @@ public class Game {
         this.fileHandler = new FileHandler();
         this.timerCounts = new HashMap<>();
         this.timerCounts.put("warTimer", 50);
+        this.highScoreList = new ArrayList<>(); 
 
         //this.hasWars = new ArrayList<>();
 
@@ -87,6 +92,7 @@ public class Game {
         //createPlanets(); 
         //createNpcs();
     }
+    
 
     /**
      * This is the function to call if you want to launch the game! It prints
@@ -95,13 +101,19 @@ public class Game {
      */
     public void play() {
         printWelcome(); //Prints a welcome message
+        
+        
+        
+        
+        
+         
 
         System.out.println("Please enter your name using the syntax \"name [your name]\":");
         while(true) {
             this.dashboard.print();
             Command command = parser.getCommand(); //Returns a new object, holding the information, regarding the line typed by the user
             if(command.getCommandWord() == CommandWord.NAME) {
-                this.player = new Player(command.getSecondWord(), 10000, 10);
+                this.player = new Player(command.getSecondWord(), 100000, 4);
                 break;
             } else {
                 System.out.println("Please only use the syntax \"name [your name]\"");
@@ -137,8 +149,10 @@ public class Game {
         this.createItems();
         this.time = 0;
         
-        
+        this.createHighScores();
         this.printHighScore();
+       this.saveHighScore();
+        
 
         this.player.setCurrentPlanet(this.startingPlanet);
 
@@ -329,6 +343,7 @@ public class Game {
         this.dashboard.print(toPrint);
 
     }
+    
 
     /**
      * Print the possible planets that the player can travel to.
@@ -1007,6 +1022,9 @@ public class Game {
         createMoons();
 
         return returnUuid;
+        
+        
+        
 
         /*
         Planet newPlanet = new Planet("hej", "wow!", 1, 1, 0);
@@ -1481,14 +1499,40 @@ public class Game {
      * player's highscore
      */
     public void printHighScore() {
-        HighScore currentHighScore = this.fileHandler.getJSON("highscore.json", HighScore.class);
+        int i = 0;
+        System.out.println("WOW");
+        HighScore currentHighScore = this.fileHandler.getJSON("highscores/0.json", HighScore.class);
         HighScore playerScore = new HighScore(this.player.getReputation(), this.time, this.player.getName());
-        this.dashboard.print("This is the current highscore!");
-        this.dashboard.print(currentHighScore.toString());
-        this.dashboard.print();
-        this.dashboard.print("This is your highscore!");
-        this.dashboard.print(playerScore.toString());
-        this.dashboard.print();
+        
+        Collections.sort(this.highScoreList);
+        for(HighScore highscore : highScoreList){
+            this.dashboard.print(highscore.toString());
+        }
+        
+      
+    }
+    // a method that creates highscores.
+    public void createHighScores(){
+        int i = 0; 
+        while(true){
+            if(!this.fileHandler.doesFileExist("highscores/" + i + ".json")){
+                break;
+            }
+            
+            if(i >= 10) {
+                break;
+            }
+            
+            HighScore newHighScore = this.fileHandler.getJSON("highscores/" + i +".json", HighScore.class);
+            this.highScoreList.add(newHighScore);
+            i++;
+            
+        }
+        this.currentPlayerScore = new HighScore(this.player.getReputation(), this.time, this.player.getName());
+        this.highScoreList.add(this.currentPlayerScore);
+        Collections.sort(this.highScoreList);
+        
+        
     }
 
     /**
@@ -1498,35 +1542,22 @@ public class Game {
      */
     public void saveHighScore() {
         //Creates a new highsore object based on the current player's stats
-        HighScore playerScore = new HighScore(this.player.getReputation(), this.time, this.player.getName());  // tid : 2 og name :  matias er blot place holders. 
-
-        //Read the highscore JSON file, if it exists!
-        if (!this.fileHandler.doesFileExist("highscore.json")) {
-            this.fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
-        } else {
-            HighScore currentHighScore = this.fileHandler.getJSON("highscore.json", HighScore.class);
-            if (playerScore.getRep() == currentHighScore.getRep()) {
-                if (playerScore.getTime() > currentHighScore.getTime()) {
-                    //Save the highscore!
-                    this.fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
-                } else if (playerScore.getTime() < currentHighScore.getTime()) {
-                    this.dashboard.print("Sorry, the current highscore managed to get the same score, with a better time");
-                    this.dashboard.print("Your score was: " + playerScore.getRep());
-                } else if (playerScore.getTime() == playerScore.getTime()) { //Trolling, should possibly be removed.
-                    this.dashboard.print("You managed to get exactly the same score and time, as the previous highscore player");
-                    this.dashboard.print("As programmers we didnt think this was possible, therefor we have no other option, to declare Matias Marek as the ruler and all time HighScore champion");
-
-                }
-
-            } else if (playerScore.getRep() > currentHighScore.getRep()) {
-                //Save high score!
-                this.fileHandler.writeToFile("highscore.json", playerScore.toJsonString());
-            } else {
-                this.dashboard.print("Sorry, you didn't beat the highscore! Cunt");
-                this.dashboard.print("Your score was: " + playerScore.getRep());
+        int i = 0;
+        currentPlayerScore.setRep(this.player.getReputation());
+        currentPlayerScore.setTime(time);
+        Collections.sort(highScoreList);
+        
+        for(HighScore highScore : highScoreList ){
+            if(i >= 10) {
+                break;
             }
-
-        }
+            this.fileHandler.writeToFile("highscores/" + i + ".json", highScore.toJsonString());
+            i++;
+         }
+        
+        
+        
+   
     }
 
     /**
@@ -1729,6 +1760,7 @@ public class Game {
     public String getDashboardUpdate() {
         return this.dashboard.getSavedString();
     }
+ 
     
     
 }
