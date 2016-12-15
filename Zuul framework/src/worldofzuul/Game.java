@@ -23,6 +23,7 @@ public class Game implements iGame {
     private HashMap<UUID, Scenario> possibleScenarios;
     private Calendar startTime;
     private boolean isDead;
+    private AudioPlayer audioPlayer;
 
     private HighScore currentPlayerScore;
     private ArrayList<HighScore> highScores;
@@ -77,6 +78,7 @@ public class Game implements iGame {
         this.timerCounts.put("extraDeliveryTime", 0);
         this.highScores = new ArrayList<>();
         this.dashboard = new Dashboard(); // Creates a new object of the type Dashboard. 
+        this.audioPlayer = new AudioPlayer();
 
         this.createScenarios();
     }
@@ -96,6 +98,8 @@ public class Game implements iGame {
         this.createHighscores();
 
         this.player.setCurrentPlanet(this.startingPlanet);
+        
+        this.audioPlayer.playMusic();
     }
 
     /**
@@ -149,6 +153,7 @@ public class Game implements iGame {
 
         if (this.movementCalculator.isReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getFuel())) {
             characterToTravel.setCurrentPlanet(nextPositionUuid);
+            this.audioPlayer.playFly();
 
             this.player.setFuel(this.player.getMaxFuel());
 
@@ -177,6 +182,7 @@ public class Game implements iGame {
 
         if (this.movementCalculator.isWarpReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getWarpfuel())) {
             characterToTravel.setCurrentPlanet(nextPositionUuid);
+            this.audioPlayer.playWarp();
             characterToTravel.setWarpfuel(characterToTravel.getWarpfuel() - this.movementCalculator.calculateWarpFuelUsage(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1]));
         }
     }
@@ -1419,7 +1425,7 @@ public class Game implements iGame {
     @Override
     public void startGame(UUID scenario, String playerName) {
         this.scenario = this.possibleScenarios.get(scenario);
-        this.player = new Player(playerName, 10000, 100);
+        this.player = new Player(playerName, 600, 1);
         this.play();
     }
 
@@ -1477,6 +1483,7 @@ public class Game implements iGame {
     @Override
     public ArrayList<String> quitGame() {
         this.saveHighScore();
+        this.audioPlayer.playThanks();
         ArrayList<String> returnArray = new ArrayList();
         for (HighScore hs : this.highScores) {
             returnArray.add(hs.toString());
