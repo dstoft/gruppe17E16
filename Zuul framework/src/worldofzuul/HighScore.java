@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package worldofzuul;
 
 /**
@@ -12,8 +7,8 @@ public class HighScore implements Comparable<HighScore> {
 
     //Attributes
     private String name;   // the name from the player
-    private int rep;   //the reputation from this current game, when the game is over
-    private int time; // the time taken to for the player to finish the game
+    private int rep;   // the reputation from this current game
+    private int time; // the time used
 
     /**
      * Empty constructor for JSON reading.
@@ -23,7 +18,7 @@ public class HighScore implements Comparable<HighScore> {
     }
 
     /**
-     * "Normal" constructor.
+     * Constructor.
      *
      * @param rep the reputation amount
      * @param time the time done in the game
@@ -36,7 +31,7 @@ public class HighScore implements Comparable<HighScore> {
     }
 
     /**
-     * Returns a string reputation of the informationer in the highscore.
+     * Returns a string of the information stored in this object.
      *
      * @return a string with the highscore information
      */
@@ -49,8 +44,8 @@ public class HighScore implements Comparable<HighScore> {
     }
 
     /**
-     * Creates a string that can be saved in a JSON file, and with syntax that
-     * can be read.
+     * Returns a string that can be saved in a JSON file, and with syntax that
+     * can be read by JSON.
      *
      * @return a string
      */
@@ -77,33 +72,34 @@ public class HighScore implements Comparable<HighScore> {
     public void setRep(int rep) {
         this.rep = rep;
     }
-    
+
     public void setTime(int time) {
         this.time = time;
     }
     // ***** SETTERS END *****
-    
+
     /**
-     * A interface method, that allows us to compare HighScores and use the 
-     * Collections.sort method.
-     * @param t the highscore object to compare this object to
-     * @return an integer based on whether the compared object should be before 
-     * or after the current object
+     * Used for comparing two highscores. Implemented by the interface called
+     * Comparable.
+     *
+     * @param h the HighScore object to compare to
+     * @return an integer that describes whether the compared HighScore should
+     * be above or below the current object
      */
     @Override
-    public int compareTo(HighScore t) {
-        if(this.rep > t.getRep()) {
+    public int compareTo(HighScore h) {
+        //First compare the reputation
+        if (this.rep > h.getRep()) {
             return -1;
-        } else if(this.rep < t.getRep()) {
+        } else if (this.rep < h.getRep()) {
             return 1;
-        } else {
-            if(this.time > t.getTime()) {
+        } else { //If the reputation is equal to eachother, compare the time instead!
+            if (this.time > h.getTime()) {
                 return -1;
-            } else if(this.time < t.getTime()) {
+            } else if (this.time < h.getTime()) {
                 return 1;
             }
             return 0;
         }
     }
-    
 }
