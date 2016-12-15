@@ -2,6 +2,7 @@
     "pid" : 1,
 	"name" : "Yareach",
 	"description" : "A red planet fill with dust, no one likes it really...",
-	"x" : 20,
-	"y" : 70
+	"x" : 200,
+	"y" : 200,
+	"imagePath":"planets/planet2.png"
 }

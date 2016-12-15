@@ -1,44 +1,83 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package worldofzuul;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- *
- * @author DanielToft
+ * An interface that holds all of the methods that GUI will use to fetch
+ * information from the Game class.
  */
 public interface iGame {
-    ArrayList<UUID> getListOfPlanets(); //
-    String getName(UUID uuid); //
-    String getDescription(UUID uuid); //
-    int getPid(UUID uuid); //
-    String getImgPath(UUID uuid); //
-    ArrayList<UUID> getInventory(); //
-    void startConversation(UUID uuid); //
-    ArrayList<UUID> getAvailableNpcs(UUID uuid); //
 
-    ArrayList<UUID> getPossiblePlanets(); //
-    void travelToPlanet(UUID planet); //
-    int getFuel(); //
-    int getWarpFuel(); //
-    boolean canWarp(); //
-    int getReputation(); //
-    int getInGameTime(); //
+    public abstract ArrayList<UUID> getListOfPlanets();
 
-    String getDashboardUpdate(); //
+    public abstract String getName(UUID uuid);
 
-    void processAnswer(String userAns); //
-    String[] getAnswers(); //
+    public abstract String getDescription(UUID uuid);
+
+    public abstract int getPid(UUID uuid);
+
+    public abstract String getImgPath(UUID uuid);
+
+    public abstract String getImgPath(UUID uuid, boolean bool);
+
+    public abstract ArrayList<UUID> getInventory();
+
+    public abstract void startConversation(UUID uuid);
+
+    public abstract ArrayList<UUID> getAvailableNpcs(UUID uuid);
+
+    public abstract UUID getPlayerPosition();
+
+    public abstract ArrayList<UUID> getPossiblePlanets();
+
+    public abstract void travelToPlanet(UUID planet);
+
+    public abstract int getFuel();
+
+    public abstract int getWarpFuel();
+
+    public abstract boolean canWarp();
+
+    public abstract int getReputation();
+
+    public abstract int getInGameTime();
+
+    public abstract UUID getMoonId(UUID uuid);
+
+    public abstract String getDashboardUpdate();
+
+    public abstract void dropItem(UUID uuid);
+
+    public abstract void processWarp(UUID nextPosition);
+
+    public abstract void processAnswer(String userAns);
+
+    public abstract String[] getAnswers();
+
+    public abstract int[] getPositionCoordinates(UUID uuid);
+
+    public abstract ArrayList<UUID> getPossibleScenarios();
+
+    public abstract void setScenario(UUID uuid);
+
+    public abstract long getPlayedMillis();
+
+    public abstract void startGame(UUID scenario, String playerName);
+
+    public abstract String getDeliveryPlanet(UUID uuid);
+
+    public abstract String getDeliveryNpc(UUID uuid);
+
+    public abstract boolean isWar(UUID uuid);
+
+    public abstract ArrayList<String> quitGame();
     
-    public int[] getPositionCoordinates(UUID uuid);
+    public abstract boolean isDead();
     
-    public ArrayList<UUID> getPossibleScenarios();
-    public void setScenario(UUID uuid);
+    public abstract int getItemDeliveryTime(UUID itemUuid);
     
-    public long getPlayedMillis();
+    public abstract boolean getItemPapers(UUID itemUuid);
+    
+    public abstract UUID getStartNpc();
 }

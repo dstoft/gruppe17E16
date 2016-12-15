@@ -5,5 +5,6 @@
 	"pid" : -1,
 	"iid" : -1,
 	"chanceToMove" : 0,
-	"conversationId" : 1
+	"conversationId" : 1,
+	"imagePath":"npcs/NPC5.png"
 }

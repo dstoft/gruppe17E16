@@ -1,32 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package worldofzuul;
 
 import java.util.UUID;
 
 /**
- * A class to hold the basic information about the scenarios.
- * @author DanielToft
+ * A class that holds the information about each scenario.
  */
 class Scenario implements PrintAble {
 
     private String name, description, path;
     private UUID id;
 
-    /**
-     * Constructor
-     * @param name
-     * @param description
-     * @param path 
-     */
     public Scenario(String name, String description, String path) {
+        this.id = UUID.randomUUID();
         this.name = name;
         this.description = description;
         this.path = path;
-        this.id = UUID.randomUUID();
     }
 
     // ***** GETTERS *****
@@ -43,7 +31,7 @@ class Scenario implements PrintAble {
     public String getPath() {
         return this.path;
     }
-    
+
     public UUID getId() {
         return this.id;
     }

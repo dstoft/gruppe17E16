@@ -3,5 +3,6 @@
     "weight": 8,
     "description": "R2D2",
 	"iid" : -1,
-	"reputationWorth" : 2
+	"reputationWorth" : 2,
+	"imagePath":"items/orbWind.png"
 }

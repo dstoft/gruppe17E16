@@ -5,7 +5,7 @@ Hello! I'm Adolf Hitler.
 hello
 
 1
-checkPackage:1|2
+checkPackage:1;2
 ____ 1:
 I hear from Chuck Norris that you have a package for me.
 1
@@ -13,7 +13,7 @@ I hear from Chuck Norris that you have a package for me.
 yes
 Thank you for the gift!
 3
-deliverPackage,nextConvoId:1
+deliverPackage
 _____ 2:
 Chuck Norris told me you would have a package for me, but that you took off before picking it up. So, you should probably go back to him and then get back here.
 1
@@ -45,13 +45,13 @@ No worries. We are cool! You just started your job and Chuck is one of my dear f
 good
 I've got a package, do you wanna help me out mate?
 6
-checkPickup:6|7
+checkPickup:6;7
 _____ 6:
 ofc you do! I have a package for one of these Pokemon Go loving creatures at the moon of this planet, it's called Sobohp, he is called Peter Tank Nellemann. Do you want to deliver it for me?
 2
 
 yes
-Great! Here you go! You can travel to him bye using: "Scan possible". *HINT!* Moons are always 0.
+Great! Here you go! You can travel to him by clicking the "To the moon!" buttom!  Cheers!
 7
 pickupPackage
 
@@ -66,4 +66,4 @@ That is all for me now.
 bye
 Bye bye!
 -1
-
+nextConvoId:1

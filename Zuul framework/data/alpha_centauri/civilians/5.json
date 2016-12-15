@@ -1,10 +1,10 @@
 {
-    "name": "npc5",
-    "description": "npc1",
-    "rid": -1,
+    "name": "An old man",
+    "description": "His face is hidden, he looks shady, yet friendly",
+    "rid": 13,
 	"pid" : -1,
-	"iid" : -1,
-	"chanceToMove" : 0,
-	"conversationId" : 1,
-	"imagePath" : "npcs/npc1.png"
+	"iid" : 13,
+	"chanceToMove" : 5,
+	"conversationId" : 5,
+	"imagePath" : "npcs/NPC2.png"
 }
