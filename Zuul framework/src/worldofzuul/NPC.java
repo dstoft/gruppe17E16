@@ -16,7 +16,7 @@ public class NPC implements PrintAble, PicturizeAble {
     private int pid; //Identifies where the NPC should be placed at the start of the game
     private int iid;
     private UUID packageId; //Which Item UUID the NPC has to receive
-    private UUID planetId; //Which Planet/Moon UUID the NPC is placed at
+    private UUID positionUuid; //Which Planet/Moon UUID the NPC is placed at
     private int chanceToMove;
     private int conversationId;
     private int nextConversationId;
@@ -64,8 +64,8 @@ public class NPC implements PrintAble, PicturizeAble {
         return this.id;
     }
 
-    public UUID getPlanetId() {
-        return this.planetId;
+    public UUID getPositionUuid() {
+        return this.positionUuid;
     }
 
     public int getChanceToMove() {
@@ -121,8 +121,8 @@ public class NPC implements PrintAble, PicturizeAble {
         this.rid = rid;
     }
 
-    public void setPlanetId(UUID planetId) {
-        this.planetId = planetId;
+    public void setPositionUuid(UUID planetId) {
+        this.positionUuid = planetId;
     }
 
     public void setConversationId(int id) {

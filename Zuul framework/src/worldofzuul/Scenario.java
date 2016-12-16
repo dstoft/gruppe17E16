@@ -10,6 +10,13 @@ class Scenario implements PrintAble {
     private String name, description, path;
     private UUID id;
 
+    /**
+     * Constructor.
+     *
+     * @param name the name of the scenario
+     * @param description the description of the scenario
+     * @param path the name of the folder holding the scenario's data files
+     */
     public Scenario(String name, String description, String path) {
         this.id = UUID.randomUUID();
         this.name = name;

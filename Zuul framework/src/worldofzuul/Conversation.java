@@ -83,7 +83,7 @@ public class Conversation {
      */
     public void setNextQuestion(int questionNumber) {
         this.currentQuestionNumber = questionNumber;
-        if(questionNumber < 1) {
+        if (questionNumber < 1) {
             return;
         }
         this.currentQuestion = this.questionList.get(this.currentQuestionNumber);
@@ -101,7 +101,7 @@ public class Conversation {
     public String getQText() {
         return this.currentQuestion.getQText();
     }
-    
+
     public int getQuestionNumber() {
         return this.currentQuestionNumber;
     }

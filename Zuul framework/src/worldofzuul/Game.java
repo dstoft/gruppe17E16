@@ -98,8 +98,8 @@ public class Game implements iGame {
 
         this.createHighscores();
 
-        this.player.setCurrentPlanet(this.startingPlanet);
-        
+        this.player.setPositionUuid(this.startingPlanet);
+
         this.audioPlayer.playMusic();
     }
 
@@ -120,9 +120,9 @@ public class Game implements iGame {
                 reachablePlanets.add(planet.getId());
             }
         }
-        if(this.planets.containsKey(this.player.getPlanetId())) {
-            if(this.planets.get(this.player.getPlanetId()).hasMoon()) {
-                reachablePlanets.add(this.planets.get(this.player.getPlanetId()).getMoonUuid());
+        if (this.planets.containsKey(this.player.getPositionUuid())) {
+            if (this.planets.get(this.player.getPositionUuid()).hasMoon()) {
+                reachablePlanets.add(this.planets.get(this.player.getPositionUuid()).getMoonUuid());
             }
         }
         return reachablePlanets;
@@ -135,7 +135,7 @@ public class Game implements iGame {
      * @param planetId which planet to move to
      */
     private boolean travelToPlanet(Player characterToTravel, UUID nextPositionUuid) {
-        int[] currentPosition = getPositionCoordinates(this.player.getPlanetId());
+        int[] currentPosition = getPositionCoordinates(this.player.getPositionUuid());
         int[] nextPosition = getPositionCoordinates(nextPositionUuid);
         NPCHolder nextNpcHolder = getNPCHolderFromUuid(nextPositionUuid);
 
@@ -158,7 +158,7 @@ public class Game implements iGame {
         }
 
         if (this.movementCalculator.isReachable(currentPosition[0], currentPosition[1], nextPosition[0], nextPosition[1], characterToTravel.getFuel())) {
-            characterToTravel.setCurrentPlanet(nextPositionUuid);
+            characterToTravel.setPositionUuid(nextPositionUuid);
             this.audioPlayer.playFly();
 
             this.player.setFuel(this.player.getMaxFuel());
@@ -186,7 +186,7 @@ public class Game implements iGame {
     private void processWarp(Player characterToTravel, UUID nextPositionUuid) {
 
         if (characterToTravel.getWarpfuel() > 9) {
-            characterToTravel.setCurrentPlanet(nextPositionUuid);
+            characterToTravel.setPositionUuid(nextPositionUuid);
             this.audioPlayer.playWarp();
             characterToTravel.setWarpfuel(characterToTravel.getWarpfuel() - 10);
             this.incrementTime(1);
@@ -239,7 +239,7 @@ public class Game implements iGame {
             return;
         }
 
-        NPCHolder npcHolder = getNPCHolderFromUuid(this.player.getPlanetId());
+        NPCHolder npcHolder = getNPCHolderFromUuid(this.player.getPositionUuid());
 
         if (!npcHolder.hasNpcId(this.currentConversation.getNpcId())) {
             this.dashboard.print("Sorry, you're no longer at the same position as the NPC and can therefore not talk with him!");
@@ -258,7 +258,7 @@ public class Game implements iGame {
                 }
                 this.currentConversation.setNextQuestion(this.currentConversation.getNextLineNumber());
             }
-            if(this.currentConversation.getQuestionNumber() < 1) {
+            if (this.currentConversation.getQuestionNumber() < 1) {
                 this.currentConversation = null;
                 this.dashboard.print("Conversation has been terminated");
                 return;
@@ -320,7 +320,7 @@ public class Game implements iGame {
                     } catch (NumberFormatException e) {
 
                     }
-                    if(this.player.getReputation() < 1) {
+                    if (this.player.getReputation() < 1) {
                         this.isDead = true;
                     }
                     break;
@@ -333,7 +333,7 @@ public class Game implements iGame {
                     this.checkExtraDeliveryTime(executionSplit[1]);
                     changedQuestion = true;
                     break;
-                    
+
                 case "getExtraDeliveryTime":
                     this.getExtraDeliveryTime();
                     break;
@@ -384,7 +384,7 @@ public class Game implements iGame {
             this.dashboard.print("Since you did not have the papers for " + item.getDescription() + " you lost some reputation. Go see the Headquarter for papers on your packages!");
             this.player.setReputation(this.player.getReputation() - (item.getReputationWorth() * 3));
         }
-        if(this.player.getReputation() < 1) {
+        if (this.player.getReputation() < 1) {
             this.isDead = true;
         }
     }
@@ -480,8 +480,9 @@ public class Game implements iGame {
     }
 
     /**
-     * Check whether or not it is possible to get more time for delivering the player's items.
-     * 
+     * Check whether or not it is possible to get more time for delivering the
+     * player's items.
+     *
      * @param executionSplit the string that contains the next question numbers
      */
     private void checkExtraDeliveryTime(String executionSplit) {
@@ -494,7 +495,7 @@ public class Game implements iGame {
             System.out.println("Something is wrong with the conversation files, please contact the developers!");
         }
 
-        if(this.time > this.timerCounts.get("extraDeliveryTime")) {
+        if (this.time > this.timerCounts.get("extraDeliveryTime")) {
             this.currentConversation.setNextQuestion(questionNumbers[0]);
             this.timerCounts.put("extraDeliveryTime", this.time + 500);
             return;
@@ -502,7 +503,7 @@ public class Game implements iGame {
 
         this.currentConversation.setNextQuestion(questionNumbers[1]);
     }
-    
+
     /**
      * This method is used to execute executionlines from Conversation. This
      * takes all of the players items and adds extra time to their delivery time
@@ -614,8 +615,8 @@ public class Game implements iGame {
             NPC newNpc = this.fileHandler.getJSON("data/" + this.scenario.getPath() + "/civilians/" + i + ".json", NPC.class);
             this.npcs.put(newNpc.getId(), newNpc);
             this.civilians.put(newNpc.getId(), newNpc);
-            
-            if(i == 0) {
+
+            if (i == 0) {
                 this.startNpc = newNpc.getId();
             }
             i++;
@@ -696,7 +697,7 @@ public class Game implements iGame {
                 hasNoPid.add(npc);
             } else {
                 planetPids.get(npc.getPid()).addNpcId(npc.getId());
-                npc.setPlanetId(planetPids.get(npc.getPid()).getId());
+                npc.setPositionUuid(planetPids.get(npc.getPid()).getId());
                 if (hasNoNpc.contains(planetPids.get(npc.getPid()))) {
                     hasNoNpc.remove(planetPids.get(npc.getPid()));
                 }
@@ -717,7 +718,7 @@ public class Game implements iGame {
             }
 
             hasNoNpc.get(i).addNpcId(npc.getId());
-            npc.setPlanetId(hasNoNpc.get(i).getId());
+            npc.setPositionUuid(hasNoNpc.get(i).getId());
             hasNoNpc.remove(i);
             i++;
         }
@@ -727,7 +728,7 @@ public class Game implements iGame {
         holdersList.toArray(planets);
         for (NPC npc : hasNoPid) {
             //If the NPC already has a planet, skip placing them. (Should hopefully not be needed)
-            if (npc.getPlanetId() != null) {
+            if (npc.getPositionUuid() != null) {
                 continue;
             }
 
@@ -735,7 +736,7 @@ public class Game implements iGame {
             i = (int) (Math.random() * holdersList.size());
 
             planets[i].addNpcId(npc.getId());
-            npc.setPlanetId(planets[i].getId());
+            npc.setPositionUuid(planets[i].getId());
         }
     }
 
@@ -826,13 +827,10 @@ public class Game implements iGame {
             if (item.getIid() != -1) {
                 itemsWithIid.put(item.getIid(), item);
                 item.setPapersTrue();
+            } else if (Math.random() > 0.5) {
+                item.setPapersFalse();
             } else {
-                if(Math.random() > 0.5) {
-                    item.setPapersFalse();
-                } else {
-                    item.setPapersTrue();
-                }
-                
+                item.setPapersTrue();
             }
         }
         //END: Filling the lists and hashmaps for items
@@ -899,14 +897,14 @@ public class Game implements iGame {
                 Item item = itemsHaveNoPickup.get(randomItemIndex);
 
                 if (npc.getPackageId().equals(item.getId())) {
-                    if(itemsHaveNoPickup.size() == 1) {
+                    if (itemsHaveNoPickup.size() == 1) {
                         UUID tempItemUuid = itemsHaveNoPickup.get(0).getId();
                         UUID tempNpcUuid = this.items.get(tempItemUuid).getNpcId();
                         System.out.println("Deleted NPC: " + this.npcs.get(tempNpcUuid));
                         this.npcs.remove(tempNpcUuid);
-                        if(this.civilians.containsKey(tempNpcUuid)) {
+                        if (this.civilians.containsKey(tempNpcUuid)) {
                             this.civilians.remove(tempNpcUuid);
-                        } else if(this.rebels.containsKey(tempNpcUuid)) {
+                        } else if (this.rebels.containsKey(tempNpcUuid)) {
                             this.rebels.remove(tempNpcUuid);
                         }
                         break;
@@ -986,12 +984,12 @@ public class Game implements iGame {
      */
     private void tryNpcMovementCalculations(Collection<NPC> npcList, ArrayList<NPCHolder> holdersList) {
         for (NPC npc : npcList) {
-            if(this.currentConversation != null) {
-                if(this.currentConversation.getNpcId().equals(npc.getId())) {
+            if (this.currentConversation != null) {
+                if (this.currentConversation.getNpcId().equals(npc.getId())) {
                     continue;
                 }
             }
-            
+
             NPCHolder[] npcHolders = new NPCHolder[holdersList.size()];
             holdersList.toArray(npcHolders);
 
@@ -1002,13 +1000,13 @@ public class Game implements iGame {
 
                     //Make sure that the random generated new position, 
                     // is not already the NPC's position.
-                    while (npcHolders[randomPlanet].getId() == npc.getPlanetId()) {
+                    while (npcHolders[randomPlanet].getId() == npc.getPositionUuid()) {
                         randomPlanet = (int) (Math.random() * npcHolders.length);
                     }
 
                     //Move the NPC
-                    getNPCHolderFromUuid(npc.getPlanetId()).removeNpcId(npc.getId());
-                    npc.setPlanetId(npcHolders[randomPlanet].getId());
+                    getNPCHolderFromUuid(npc.getPositionUuid()).removeNpcId(npc.getId());
+                    npc.setPositionUuid(npcHolders[randomPlanet].getId());
                     npcHolders[randomPlanet].addNpcId(npc.getId());
                 }
             }
@@ -1059,7 +1057,7 @@ public class Game implements iGame {
             tryStartWars(0.1, 100);
             this.timerCounts.put("warTimer", this.timerCounts.get("warTimer") + 150);
         }
-        
+
         //Try NPC movement timer check
         if (this.timerCounts.get("tryNpcMovement") <= this.time) {
             tryNpcMovement();
@@ -1317,7 +1315,7 @@ public class Game implements iGame {
      */
     @Override
     public ArrayList<UUID> getPossiblePlanets() {
-        int[] currentPosition = this.getPositionCoordinates(this.player.getPlanetId());
+        int[] currentPosition = this.getPositionCoordinates(this.player.getPositionUuid());
         return this.getPossiblePlanets(currentPosition[0], currentPosition[1], this.player.getFuel());
     }
 
@@ -1356,7 +1354,7 @@ public class Game implements iGame {
             if (itemId == uuid) {
                 this.player.removeItem(itemId, this.items.get(itemId).getWeight());
                 this.player.setReputation(this.player.getReputation() - this.items.get(itemId).getReputationWorth());
-                if(this.player.getReputation() < 1) {
+                if (this.player.getReputation() < 1) {
                     this.isDead = true;
                 }
                 return;
@@ -1381,7 +1379,7 @@ public class Game implements iGame {
      */
     @Override
     public UUID getPlayerPosition() {
-        return this.player.getPlanetId();
+        return this.player.getPositionUuid();
     }
 
     /**
@@ -1469,7 +1467,7 @@ public class Game implements iGame {
     public String getDeliveryPlanet(UUID itemUuid) {
         Item item = this.items.get(itemUuid);
         NPC deliveryNpc = this.npcs.get(item.getNpcId());
-        UUID deliveryNpcHolderUuid = deliveryNpc.getPlanetId();
+        UUID deliveryNpcHolderUuid = deliveryNpc.getPositionUuid();
         if (this.planets.containsKey(deliveryNpcHolderUuid)) {
             return "Location: " + this.planets.get(deliveryNpcHolderUuid).getName();
         } else {
@@ -1518,9 +1516,10 @@ public class Game implements iGame {
         }
         return returnArray;
     }
-    
+
     /**
      * A getter method for whether the player is dead.
+     *
      * @return a boolean, true if dead
      */
     @Override
@@ -1537,7 +1536,7 @@ public class Game implements iGame {
     public boolean getItemPapers(UUID itemUuid) {
         return this.items.get(itemUuid).getPapers();
     }
-    
+
     @Override
     public UUID getStartNpc() {
         return this.startNpc;

@@ -9,17 +9,16 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
- * This class is an AudioPlayer.
- * The class takes wav files and plays it.
+ * This class is an AudioPlayer. The class takes wav files and plays it.
  * Exceptions is catched
  */
 public class AudioPlayer {
 
     /**
-     * This method is for playing bagground sound. The sound is free and has no copyright.
-     * It takes the sound and loops it when the file is done. 
+     * This method is for playing bagground sound. The sound is free and has no
+     * copyright. It takes the sound and loops it when the file is done.
      */
-    public void playMusic() { 
+    public void playMusic() {
         try {
             AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File("data/music/music.wav"));
             Clip clip = AudioSystem.getClip();
@@ -29,9 +28,10 @@ public class AudioPlayer {
             System.out.println("Something went wrong");
         }
     }
-    
+
     /**
-     * This method is for playing sound when you fly in the game. The sound is free and has no copyright. 
+     * This method is for playing sound when you fly in the game. The sound is
+     * free and has no copyright.
      */
     public void playFly() {
         try {
@@ -45,7 +45,8 @@ public class AudioPlayer {
     }
 
     /**
-     * This method is for playing sound when you warp in the game. The sound is free and has no copyright. 
+     * This method is for playing sound when you warp in the game. The sound is
+     * free and has no copyright.
      */
     public void playWarp() {
         try {
@@ -59,7 +60,8 @@ public class AudioPlayer {
     }
 
     /**
-     * This method is for playing sound when you end in the game. The sound is free and has no copyright. 
+     * This method is for playing sound when you end in the game. The sound is
+     * free and has no copyright.
      */
     public void playThanks() {
         try {
@@ -68,8 +70,8 @@ public class AudioPlayer {
             clip.open(inputStream);
             clip.start();
             Thread.sleep(1500);
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException |  InterruptedException ex) {
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException | InterruptedException ex) {
             System.out.println("Something went wrong");
-        } 
+        }
     }
 }

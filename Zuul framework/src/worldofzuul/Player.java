@@ -9,7 +9,7 @@ import java.util.UUID;
 public class Player {
 
     //Defines variables
-    private UUID currentPlanetId; //The planet the player is currently at
+    private UUID positionUuid; //The planet the player is currently at
     private Inventory inventory; //The players inventory
     private int maxFuel; //How much fuel the player can hold
     private int fuel; //How much fuel the player currently has
@@ -38,8 +38,8 @@ public class Player {
     }
 
     // ***** SETTERS *****
-    public void setCurrentPlanet(UUID planetId) {
-        this.currentPlanetId = planetId;
+    public void setPositionUuid(UUID planetId) {
+        this.positionUuid = planetId;
         this.setFuel(this.maxFuel);
     }
 
@@ -78,8 +78,8 @@ public class Player {
         return this.name;
     }
 
-    public UUID getPlanetId() {
-        return this.currentPlanetId;
+    public UUID getPositionUuid() {
+        return this.positionUuid;
     }
 
     public int getMaxFuel() {
