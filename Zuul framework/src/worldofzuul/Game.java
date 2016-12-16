@@ -125,6 +125,8 @@ public class Game implements iGame {
                 reachablePlanets.add(this.planets.get(this.player.getPositionUuid()).getMoonUuid());
             }
         }
+        reachablePlanets.add(this.player.getPositionUuid());
+        
         return reachablePlanets;
     }
 

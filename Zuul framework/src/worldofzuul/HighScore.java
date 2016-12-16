@@ -39,7 +39,7 @@ public class HighScore implements Comparable<HighScore> {
     public String toString() {
         String stringTime = "" + this.time;
         String stringRep = "" + this.rep;
-        String theHighScore = this.name + ":" + stringRep + ":" + stringTime;
+        String theHighScore = this.name + " with a reputation of " + stringRep + " used " + stringTime + " time";
         return theHighScore;
     }
 

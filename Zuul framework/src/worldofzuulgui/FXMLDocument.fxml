@@ -29,19 +29,19 @@
       </AnchorPane>
       <AnchorPane fx:id="hsAnchor" layoutX="170.0" layoutY="50.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0">
          <children>
-            <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="400.0" prefWidth="500.0">
+            <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="400.0" prefWidth="539.0">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="302.31744384765625" minWidth="10.0" prefWidth="302.31744384765625" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="244.8958740234375" minWidth="10.0" prefWidth="197.68255615234375" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="302.31744384765625" minWidth="10.0" prefWidth="251.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="249.0" minWidth="10.0" prefWidth="249.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="128.0" minHeight="10.0" prefHeight="126.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="39.0" minHeight="10.0" prefHeight="39.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ListView fx:id="hsList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" GridPane.rowSpan="3" />
-                  <TextArea fx:id="hsTA" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowSpan="3" />
+                  <ListView fx:id="hsList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" GridPane.rowSpan="2" />
+                  <TextArea fx:id="hsTA" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="362.0" prefWidth="233.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowSpan="2" />
                   <Button fx:id="qqButton" mnemonicParsing="false" onAction="#qqButtonAction" text="Goodbye!" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                      <GridPane.margin>
                         <Insets bottom="10.0" />
@@ -218,20 +218,23 @@
             </GridPane>
          </children>
       </AnchorPane>
-      <SplitPane fx:id="startSP" dividerPositions="0.5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="482.0" prefWidth="832.0">
+      <SplitPane fx:id="startSP" dividerPositions="0.3" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="482.0" prefWidth="832.0">
         <items>
-          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" minWidth="0.0" prefHeight="119.0" prefWidth="830.0">
                <children>
-                  <TextArea fx:id="titleTA" editable="false" layoutX="-3.0" layoutY="-51.0" onMouseClicked="#titleHandle" prefHeight="153.0" prefWidth="841.0" text="F.U.T.U.R.A.M.A.">
+                  <TextArea fx:id="titleTA" editable="false" layoutX="-3.0" onMouseClicked="#titleHandle" prefHeight="162.0" prefWidth="991.0" text="F.U.T.U.R.A.M.A.">
                      <font>
                         <Font name="Papyrus" size="86.0" />
                      </font>
+                     <padding>
+                        <Insets left="-25.0" top="-60.0" />
+                     </padding>
                   </TextArea>
                </children>
             </AnchorPane>
-          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" minWidth="0.0" prefHeight="388.0" prefWidth="830.0">
+          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" minWidth="0.0" prefHeight="355.0" prefWidth="830.0">
                <children>
-                  <GridPane prefHeight="388.0" prefWidth="830.0">
+                  <GridPane prefHeight="355.0" prefWidth="830.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="226.0" minWidth="10.0" prefWidth="226.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="501.0" minWidth="10.0" prefWidth="383.0" />

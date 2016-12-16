@@ -31,9 +31,9 @@ You need to go rescue her from prison on Caoutchouc!
 I can't
 You have to! You need this to succeed.
 -1
-pickupPackage
+pickupPackage,nextConvoId:90000
 
 I will do what i can.
 You have to! You need this to succeed.
 -1
-pickupPackage
+pickupPackage,nextConvoId:90000

@@ -26,4 +26,4 @@ Go ahead and pickup "Leelas WMD - Weapons of Mass Distraction ;-)"
 Sure
 Be careful, Handsome.
 -1
-pickupPackage
+pickupPackage,nextConvoId:90000

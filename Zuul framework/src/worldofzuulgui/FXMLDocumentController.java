@@ -147,7 +147,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private ListView<String> hsList; //Shows the highscores in the end
     @FXML
-    private TextArea hsTA;
+    private TextArea hsTA; //HighScore text area
     @FXML
     private Button qqButton; //Closes everything
     @FXML
@@ -300,7 +300,7 @@ public class FXMLDocumentController implements Initializable {
      */
     public void planetHandle(UUID planetUuid) {
         //First check if planet is reachable
-        if (this.game.getPossiblePlanets().contains(planetUuid)) {
+        if (this.game.getPossiblePlanets().contains(planetUuid) || warpRB.isSelected()) {
             Image planetImg = new Image(this.game.getImgPath(planetUuid));
             sceneImage.setImage(planetImg);
             this.sceneClear(); //Clears all nodes in front of the background
@@ -447,6 +447,7 @@ public class FXMLDocumentController implements Initializable {
         repTA.setText("Rep: " + this.game.getReputation());
         inGameTimeTA.setText("Time: " + this.game.getInGameTime()); //InGameTime
         this.updateItemInfo();
+        this.canWarp();
     }
 
     /**
@@ -566,7 +567,8 @@ public class FXMLDocumentController implements Initializable {
      */
     public void canWarp() {
         if (this.game.canWarp()) {
-            warpRB.setDisable(false);
+            this.warpRB.setDisable(false);
+            this.warpRB.setText("Warp available");
         }
     }
 
@@ -653,6 +655,23 @@ public class FXMLDocumentController implements Initializable {
         hsAnchor.toFront();
         this.hs.addAll(this.game.quitGame());
         this.hsList.setItems(hs);
+        if(this.game.isDead() && this.game.getReputation() < 1) {
+            this.hsTA.setText("You were killed by running out of reputation!\n"
+                    + "Avoid late deliveries and you won't lose reputaion!\n\n"
+                    + "Thank you for playing!");
+        } else if(this.game.isDead()) {
+            this.hsTA.setText("You were killed by traveling to a planet or moon with war!\n"
+                    + "Next time be careful of where you travel or have your papers in order! "
+                    + "(You're also killed by war if you have no items at all, because then you have no business on a planet that has war!)"
+                    + "\nGet your papers in order by visiting your starting planet or by using the traveling capital ship!"
+                    + "\nWhen hovering over a planet, it's information will tell you whether there is war or not."
+                    + "\nYou have no way of telling whether there is war on moons, so be careful when traveling to those!\n"
+                    + "Using warp will always avoid wars, meaning you cannot die from wars while using wars.\n\n"
+                    + "Thank you for playing!");
+        } else {
+            this.hsTA.setText("The game ended because you pressed the quit button!\n\n"
+                    + "Thank you for playing!");
+        }
     }
 
     /**

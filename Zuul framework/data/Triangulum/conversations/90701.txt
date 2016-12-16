@@ -47,4 +47,4 @@ I have a task for you. You need to deliver this package to President Préservati
 Cool, i will get the job done.
 I know you will.
 -1
-pickupPackage
+pickupPackage,nextConvoId:90000
