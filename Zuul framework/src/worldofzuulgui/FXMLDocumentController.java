@@ -211,9 +211,9 @@ public class FXMLDocumentController implements Initializable {
 
             //If the button being placed corresponds to player's position,
             //it will be disabled
-            if (planetUuid == this.game.getPlayerPosition()) {
+            /*if (planetUuid == this.game.getPlayerPosition()) {
                 planetButton.setDisable(true);
-            }
+            }*/
 
             //Sets the action for the button, so when clicked, player
             //travel to the corresponding planet
@@ -328,14 +328,16 @@ public class FXMLDocumentController implements Initializable {
                     setSolarsystem();
                 }
             });
-
-            //Uses warpfuel if warp is activated
-            if (warpRB.isSelected()) {
-                this.warpRB.setText("Warp Activated");
-                this.game.processWarp(planetUuid);
-            } else {
-                this.warpRB.setText("Warp Deactivated");
-                this.game.travelToPlanet(planetUuid);
+            
+            if (!this.game.getPlayerPosition().equals(planetUuid)) {
+                //Uses warpfuel if warp is activated
+                if (warpRB.isSelected()) {
+                    this.warpRB.setText("Warp Activated");
+                    this.game.processWarp(planetUuid);
+                } else {
+                    this.warpRB.setText("Warp Deactivated");
+                    this.game.travelToPlanet(planetUuid);
+                }
             }
             this.updateStats();
 
@@ -371,6 +373,12 @@ public class FXMLDocumentController implements Initializable {
             });
         } else {
             this.dialogueTA.appendText("You don't have enough fuel\n");
+        }
+    }
+    
+    public void goBack(UUID planetUuid) {
+        if (this.game.getPlayerPosition().equals(planetUuid)) {
+            
         }
     }
 
