@@ -26,9 +26,9 @@ Now deliver this package for me.
 Okay
 Good.
 -1
-pickupPackage
+pickupPackage,nextConvoId:90000
 
 I’d rather not
 You have no choice in this matter.
 -1
-pickupPackage
+pickupPackage,nextConvoId:90000

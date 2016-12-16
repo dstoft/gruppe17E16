@@ -652,6 +652,11 @@ public class FXMLDocumentController implements Initializable {
         hsAnchor.toFront();
         this.hs.addAll(this.game.quitGame());
         this.hsList.setItems(hs);
+        if (this.game.isDead()) {
+            this.hsTA.setText("You died.\nThank you for playing.");
+        } else {
+            this.hsTA.setText("You have ended the game.\nThank you for playing");
+        }
     }
     
     /**

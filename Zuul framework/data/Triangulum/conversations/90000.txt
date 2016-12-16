@@ -5,7 +5,7 @@ Hello!
 Hi
 Welcome to our planet
 -1
-checkPickup:1;2
+checkPackage:1;2
 ___________
 Hi, do you have a package for me?
 2
@@ -13,12 +13,25 @@ Hi, do you have a package for me?
 Yes
 Thank you
 3
-deliverPackage,checkPickup:2;-1
+deliverPackage,checkPickup:3;-1
 
 No
 Well, then go get my package!
 3
-checkPickup:2;-1
+checkPickup:3;-1
+___________
+Do you want a package?
+2
+
+Yes
+I don't know if you are worthy.
+3
+checkPickup:3;-1
+
+No
+Never mind, then.
+-1
+
 ____________
 I have a package for you...
 1
