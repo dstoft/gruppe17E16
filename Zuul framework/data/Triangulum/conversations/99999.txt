@@ -1,0 +1,34 @@
+
+Welcome Back, how is it going?
+1
+
+Fine, i guess...
+That, doesn't sound so good. Let me help you.
+1
+
+––––––––––––––––
+Let me fix the paperwork on you packages.
+2
+
+Nice, Thanks.
+You’re welcome.
+-1
+getPapers
+
+I don't need it.
+Easy there, son. You might need it.
+2
+
+––––––––––––––––
+Are you sure?
+2
+
+No
+Great
+-1
+getPapers
+
+Yes
+Okay, then i won't bother you anymore.
+-1
+
