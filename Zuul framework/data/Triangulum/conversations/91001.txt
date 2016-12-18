@@ -4,6 +4,7 @@ Welcome
 
 Hey
 Hey
+-1
 checkPackage:1;-1
 ––––––––––––––––
 So you came after all.
@@ -38,4 +39,4 @@ Now go do your job.
 I will
 Great
 -1
-pickupPackage,nextConvoId:99998
+setAllowWarp,nextConvoId:99998

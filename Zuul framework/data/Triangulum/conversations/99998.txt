@@ -22,3 +22,10 @@ Are you sure you want some warpfuel? You will worsen your good reputation.
 
 Yes, i don't care what everyone thinks.
 Thats up to you.
+-1
+buyWarpFuel
+
+No, i'm an honorable person.
+Your call.
+-1
+

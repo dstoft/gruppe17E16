@@ -26,9 +26,9 @@ Our fellow rebel camp on Meilleur's moon has an important item that will help us
 yes
 Great! Please take this package with you to Meilleur's moon and get the object, only you can save us now, Handsome ;-)
 -1
-pickupPackage,nextConvoId:90000
+pickupPackage,nextConvoId:99997
 
 no
 Well then we will just have to force you to go!
 -1
-pickupPackage,nextConvoId:90000
+pickupPackage,nextConvoId:99997
