@@ -1,6 +1,6 @@
 {
     "name": "Warp fueler",
-    "description": "An NPC where you can purchase some warp fuel",
+    "description": "an NPC where you can purchase some warp fuel",
     "rid": 10,
 	"pid" : 2,
 	"iid" : 10,
