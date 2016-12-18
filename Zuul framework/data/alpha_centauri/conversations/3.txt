@@ -33,7 +33,7 @@ Alright, come back when you want to!
 -1
 
 _____ 3:
-Sorry, I can't sell you any warp fuel as you have no warp drive or you're not respected enough to buy it from me! (You need atleast 5 reputation)
+Sorry, I can't sell you any warp fuel as you have no warp drive or you're not respected enough to buy it from me! (You need atleast 6 reputation)
 1
 
 alright

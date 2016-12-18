@@ -683,6 +683,7 @@ public class FXMLDocumentController implements Initializable {
     public void qqButtonAction(ActionEvent event) {
         Stage stage = (Stage) qqButton.getScene().getWindow();
         stage.close();
+        System.exit(0);
     }
 
     /**

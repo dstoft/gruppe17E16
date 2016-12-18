@@ -19,7 +19,7 @@ Renhrew told me you would have a package for me, but that you took off before pi
 1
 
 alright
-Iegres should be at Htrae at 120;210
+Iegres should be at Htrae
 -1
 
 _____ 3:
@@ -48,7 +48,7 @@ The USA economy kept on going downwards, and eventually some of the states got i
 1
 
 interesting
-Yes, very, and that is the story in very short. You will have to go see Nole Ksum at Sram at 250;70, the engineer behind all of this, for an explanation about how we got here.
+Yes, very, and that is the story in very short. You will have to go see Nole Ksum at Sram, the engineer behind all of this, for an explanation about how we got here.
 -1
 checkPickup:6;7
 _____ 6:
