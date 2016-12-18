@@ -6,7 +6,7 @@ package worldofzuul;
 public class MovementCalculator {
 
     /**
-     * Used for calculating the distance between two coordinates.
+     * Used for calculating the distance between two coordinates. 
      *
      * @param startX a coordinate in the first coordinate set
      * @param startY a coordinate in the first coordinate set

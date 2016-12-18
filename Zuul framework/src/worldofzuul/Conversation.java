@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * A new object of conversation gets created everytime a player meets an NPC
- * This handles all of the question and answers the question has To create the
- * conversation, you need to read the equivalent JSON file The creation of a
- * conversation is done in the method "createWholeConversation" and therefore
- * not in the constructor
+ * A new object of conversation gets created every time a player meets a NPC.
+ * This handles all of the question and answers the question has to create for
+ * the conversation. It needs to read the equivalent JSON file for the creation
+ * of a conversation. This is done in the method "createWholeConversation" and
+ * therefore not in the constructor
  */
 public class Conversation {
 
@@ -26,8 +26,8 @@ public class Conversation {
     }
 
     /**
-     * Creates the whole conversation based on a list of strings coming from a
-     * file This is soon to be changed, when JSON starts working
+     * Creates the whole conversation based on a list of strings fetched from a
+     * text file.
      *
      * @param text the list fetched from a file
      */
@@ -57,11 +57,11 @@ public class Conversation {
     }
 
     /**
-     * Gets the current question of the conversation to try and find an answer
-     * from the parameter
+     * Gets the current question of the conversation, to try and find an answer
+     * from the parameter.
      *
-     * @param userAns a string, which is the second word the use typed in along
-     * with the command "say"
+     * @param userAns a string which is given passed to findAnswer in
+     * corresponding Question object.
      */
     public void processAnswer(String userAns) {
         this.currentQuestion.findAnswer(userAns);
@@ -70,7 +70,7 @@ public class Conversation {
     /**
      * Gets all of the possible answers as a String array
      *
-     * @return a String array
+     * @return a String array from corresponding Question object.
      */
     public String[] getPossibleAnswers() {
         return this.currentQuestion.getPossibleAnswers();

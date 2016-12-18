@@ -243,7 +243,7 @@ public class FXMLDocumentController implements Initializable {
                     //Sets the information text in the textarea
                     planetTA.setText(game.getName(planetUuid) + "\n"
                             + game.getDescription(planetUuid)
-                            + "\nNpcs on this mofo: " + availableNpcs);
+                            + "\nNpcs on this planet: " + availableNpcs);
                     planetTA.setWrapText(true);
 
                     //Places the textarea
@@ -693,17 +693,18 @@ public class FXMLDocumentController implements Initializable {
     public void readyHelpText() {
         helps.put("1. Help info", "Hello, and welcome to the help screen. "
                 + "Please use the menu to the left in order to recieve help "
-                + "on a specific problem. Or use the random help generator "
-                + "(also on the left) to recieve some random "
-                + "help for those cold days.");
+                + "on a specific problem.");
         helps.put("2. How do you travel to a planet?", "Well by using your spaceship "
                 + "of course!\n" + "The spaceship in this universe is "
                 + "mouse-driven*, which means that you just click on the planet "
                 + "you want to travel to after clicking the \"Display Planets\" "
                 + "button (cannot be used while in a conversation).\n" + "An "
-                + "easy way to travel is by using warp fuel for your ITD. "
+                + "easy way to travel is by using warp fuel."
                 + "When warping, it doesn't matter if you have papers on your "
                 + "packages, even if there is a war!\n"
+                + "Some planets are important enough to also have a moon."
+                + "For these planets, there will be a \"To the Moon\" button"
+                + "right above that other \"Display\" button.\n"
                 + "*some in-game fuel may be used.");
         helps.put("3. Conversating with NPCs", "If you are playing this game, "
                 + "you might find yourself to be the kind of person who has "
@@ -720,14 +721,14 @@ public class FXMLDocumentController implements Initializable {
                 + " to care about three stats, so forget about your real life "
                 + "hunger, financial problems and (non-existing) love life.\n"
                 + "\n" + "1: Time. Time progresses as you do stuff; travel around, "
-                + "talk to people and so on. Sometimes you don't want to let to "
+                + "talk to people and so on. For the most part you don't want to let to "
                 + "much time go by before you deliver a package, or else you "
                 + "might lose some of your reputation, which is the second stat."
                 + "\n" + "\n" + "2: Reputation. This is what you need to impress "
                 + "people and the girl of your dreams. As you deliver more and "
                 + "more packages on time, your reputation (rep for short) "
                 + "increases. This is the key to get to the top of the highscore "
-                + "list. But if you ever fall down to 0 rep, you will die of "
+                + "list. But if you ever get down to 0 rep, you will die of "
                 + "discomfort and the game will end.\n" + "\n" + "3: Fuel. Fuel "
                 + "is used when traveling between planets. You shipping company "
                 + "pays for your full refueling at every planet you visit, so "

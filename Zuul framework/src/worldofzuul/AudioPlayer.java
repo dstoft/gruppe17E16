@@ -15,8 +15,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class AudioPlayer {
 
     /**
-     * This method is for playing bagground sound. The sound is free and has no
-     * copyright. It takes the sound and loops it when the file is done.
+     * This method is for playing bagground sound. It takes the sound and loops it when the file is done.
      */
     public void playMusic() {
         try {
@@ -30,8 +29,7 @@ public class AudioPlayer {
     }
 
     /**
-     * This method is for playing sound when you fly in the game. The sound is
-     * free and has no copyright.
+     * This method is for playing sound when you fly in the game.
      */
     public void playFly() {
         try {
@@ -45,8 +43,7 @@ public class AudioPlayer {
     }
 
     /**
-     * This method is for playing sound when you warp in the game. The sound is
-     * free and has no copyright.
+     * This method is for playing sound when you warp in the game.
      */
     public void playWarp() {
         try {
@@ -60,8 +57,7 @@ public class AudioPlayer {
     }
 
     /**
-     * This method is for playing sound when you end in the game. The sound is
-     * free and has no copyright.
+     * This method is for playing sound when you end in the game.
      */
     public void playThanks() {
         try {

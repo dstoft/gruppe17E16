@@ -20,7 +20,9 @@ public class Player {
     private String name;
 
     /**
-     * Constructor.
+     * The constructor sets the attributes name, maxFuel, fuel and
+     * startingReputation, according to the given parameters. In addition is
+     * the attributes warpFuel and canWarp set.
      *
      * @param name the players name that will be associated with the highscore
      * @param maxFuel the maximum amount of fuel
@@ -64,7 +66,7 @@ public class Player {
     }
 
     /**
-     * Sets the value of warpfuel. (Use addWarpfuel instead for adding fuel!)
+     * Sets the value of warpFuel. (Use addWarpfuel instead for adding fuel!)
      *
      * @param fuel int for new value og warpFuel
      */

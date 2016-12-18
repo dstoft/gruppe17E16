@@ -19,7 +19,9 @@ public abstract class NPCHolder implements PrintAble, PicturizeAble {
     private int warTimer;
 
     /**
-     * Constructor
+     * The constructor sets the attributes name, description and pid, according
+     * to the given parameters. In addition is the attributes id and
+     * warTimer set, and the ArrayList npcIds is constructed.
      *
      * @param name the name of the planet / moon
      * @param description the description of the planet / moon

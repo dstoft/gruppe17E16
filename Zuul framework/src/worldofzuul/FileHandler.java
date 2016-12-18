@@ -9,14 +9,14 @@ import java.util.List;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * This files handles all of the file, both reading from and writing to.
+ * This class takes care of file handling, both reading from and writing to.
  */
 public class FileHandler {
 
     /**
-     * Used by the conversation class to read the conversation files, this
-     * method reads a file, line by line, and puts each line into the returned
-     * list.
+     * Used by the Conversation class to read the conversation files, this
+     * method reads a file, line by line, and puts each line into a list to be 
+     * returned.
      *
      * @param path identifies the path to which file that should be read
      * @return the list of strings
@@ -32,13 +32,14 @@ public class FileHandler {
     }
 
     /**
-     * Reads a json file and returns a freshly created object of the type passed
-     * into the parameter.
+     * Reads a json file and returns a freshly created object of the type T
+     * passed into the parameter.
      *
-     * @param fileSource where to read the file
-     * @param classType which type of object that should be written to and
-     * returned
-     * @return a new object of the type that was passed in, in the parameter
+     * @param fileSource where to read the file from
+     * @param classType which type of object that should be written and
+     * returned as
+     * @return a new object of the type that was set with the parameter
+     * classType
      */
     public <T> T getJSON(String fileSource, Class<T> classType) {
         ObjectMapper mapper = new ObjectMapper();
@@ -58,8 +59,6 @@ public class FileHandler {
      */
     public boolean doesFileExist(String fileSource) {
         File file = new File(fileSource);
-        // .exists() will return true, if the fileSource is a directory (a folder), 
-        //but we want to check whether a file exists, so we have to make sure that the fileSource is not a directory
         return (file.exists() && !file.isDirectory());
     }
 

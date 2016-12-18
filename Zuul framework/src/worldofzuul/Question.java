@@ -16,7 +16,9 @@ public class Question {
     private Answer currentAnswer;
 
     /**
-     * Constructor
+     * The constructor sets the attributes qText and numOfAns, according to
+     * the given parameters. In addition is the attribute currentAnswer set,
+     * and the ArrayList answers is constructed.
      *
      * @param qText the text that should be printed when the played "gets" to
      * this question

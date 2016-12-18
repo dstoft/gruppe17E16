@@ -18,7 +18,8 @@ public class HighScore implements Comparable<HighScore> {
     }
 
     /**
-     * Constructor.
+     * The constructor sets the attributes name, rep and time, according to
+     * the given parameters.
      *
      * @param rep the reputation amount
      * @param time the time done in the game

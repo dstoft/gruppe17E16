@@ -11,7 +11,9 @@ class Scenario implements PrintAble {
     private UUID id;
 
     /**
-     * Constructor.
+     * The constructor sets the attributes name, description and path,
+     * according to the given parameters. In addition is the attribute id set
+     * as a random UUID.
      *
      * @param name the name of the scenario
      * @param description the description of the scenario

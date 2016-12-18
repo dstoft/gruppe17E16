@@ -11,7 +11,8 @@ public class Moon extends NPCHolder {
     private UUID parentPlanetUuid; //Which planet holds this moon
 
     /**
-     * Constructor
+     * The constructor sets the attributes name, description and pid, according
+     * to the given parameters.
      *
      * @param name of the moon
      * @param description of the moon

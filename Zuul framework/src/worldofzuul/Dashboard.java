@@ -25,9 +25,10 @@ public class Dashboard {
     }
 
     /**
-     * Returns the saved string and clears it.
+     * getSavedString saves the current savedString as tempString,
+     * clears savedString, and returns tempString
      *
-     * @return
+     * @return returns the attribut tempString
      */
     public String getSavedString() {
         String tempString = this.savedString;
