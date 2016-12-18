@@ -13,7 +13,8 @@ public class Answer {
     private String executionLine;
 
     /**
-     * Constructor
+     * The constructor sets the attributes referenceWord, executionsLine,
+     * nextLineNumber and reactText, according to the given parameters.
      *
      * @param nextLineNumber the next question to proceed to, if this answer is
      * answered
