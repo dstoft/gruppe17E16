@@ -773,9 +773,4 @@ public class FXMLDocumentController implements Initializable {
                 -> scenarioDescTA.setText(this.game.getDescription(this.scenariosCB.getValue().getUuid())));
     }
 
-    @FXML
-    private void titleHandle(MouseEvent event) {
-        System.out.println("Kontakt GUI guys hvis I ser det her");
-    }
-
 }
