@@ -1,0 +1,8 @@
+{
+    "rid": 14,
+    "weight": 8,
+    "description": "A random yellow Jetpack",
+	"iid" : 14,
+	"reputationWorth" : 2,
+	"imagePath" : "items/jetpack.png"
+}

@@ -1,0 +1,8 @@
+{
+    "pid" : 5,
+	"name" : "Retipuj",
+	"description" : "A big red planet",
+	"x" : 1000,
+	"y" : 500,
+	"imagePath" : "planets/planet5.png"
+}

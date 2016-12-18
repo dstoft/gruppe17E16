@@ -1,0 +1,24 @@
+*** Next conversation with Sergei Korolev ***
+Hello my friend!
+1
+
+thanks
+Alright, let's get you signed up!
+1
+
+____ 1:
+Alright, the year is 2077, 19th Rebmeced is the date, and... You're now officially a part of our shipping company!
+1
+
+great
+Now you can head to your spaceship and deliver the first package.
+2
+
+_____ 2:
+I've already loaded the package, you just have to beaware of the control interface of the spaceship, and I'm sure the dashboard will explain how your ship works if you ask it.
+1
+
+thanks
+I know the first is over at Yrucrem.
+-1
+pickupPackage,nextConvoId:11

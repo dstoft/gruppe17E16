@@ -1,0 +1,8 @@
+{
+    "rid": 13,
+    "weight": 8,
+    "description": "R2D2",
+	"iid" : 13,
+	"reputationWorth" : 2,
+	"imagePath" : "items/r2d2.png"
+}

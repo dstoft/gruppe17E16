@@ -1,0 +1,10 @@
+{
+    "name": "Etlam Repsak",
+    "description": "a fluff noob",
+    "rid": -1,
+	"pid" : -1,
+	"iid" : -1,
+	"chanceToMove" : 0,
+	"conversationId" : 1,
+	"imagePath" : "npcs/NPC5.png"
+}
