@@ -1,8 +1,0 @@
-{
-    "pid" : 4,
-	"name" : "Shabtay",
-	"description" : "A cute intire blue planet with a ring of stones around it",
-	"x" : 850,
-	"y" : 200,
-	"imagePath":"planets/planet6.png"
-}

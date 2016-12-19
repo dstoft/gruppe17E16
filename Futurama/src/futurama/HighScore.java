@@ -96,9 +96,9 @@ public class HighScore implements Comparable<HighScore> {
             return 1;
         } else { //If the reputation is equal to eachother, compare the time instead!
             if (this.time > h.getTime()) {
-                return -1;
-            } else if (this.time < h.getTime()) {
                 return 1;
+            } else if (this.time < h.getTime()) {
+                return -1;
             }
             return 0;
         }

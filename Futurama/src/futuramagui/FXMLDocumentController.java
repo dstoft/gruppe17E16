@@ -246,7 +246,7 @@ public class FXMLDocumentController implements Initializable {
 
                     //Adds information about war and and reachability                   
                     if (game.isWar(planetUuid)) {
-                        planetTA.appendText("\n War is war");
+                        planetTA.appendText("\nWarning, there is a war on this planet!");
                     }
                     if (game.getPossiblePlanets().contains(planetUuid)) {
                         planetTA.appendText("\n\n\tThis planet is reachable");

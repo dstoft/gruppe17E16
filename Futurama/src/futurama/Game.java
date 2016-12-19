@@ -133,10 +133,10 @@ public class Game implements iGame {
     /**
      * Changes the position (planet) of the character refered in the parameter
      *
-     * @param characterToTravel which character to move
-     * @param planetId which planet to move to
+     * @param nextPositionUuid the targeted position
      */
-    private void travelToPlanet(Player characterToTravel, UUID nextPositionUuid) {
+    @Override
+    public void travelToPlanet(UUID nextPositionUuid) {
         int[] currentPosition = this.getPositionCoordinates(this.player.getPositionUuid()); //Holds the position coordinates of the player
         int[] nextPosition = this.getPositionCoordinates(nextPositionUuid); //Holds the position coordinates of the planet wished to travel to
         NPCHolder nextNpcHolder = this.getNPCHolderFromUuid(nextPositionUuid); //Holds the reference to the planet or moon wished to travel to 
@@ -182,15 +182,15 @@ public class Game implements iGame {
      * the checking of whether there is war (meaning you don't need papers for
      * all of your items when entering a planet with war).
      *
-     * @param characterToTravel which character that should be moved
      * @param nextPositionUuid which planet or moon that is the intended target.
      */
-    private void processWarp(Player characterToTravel, UUID nextPositionUuid) {
+    @Override
+    public void processWarp(UUID nextPositionUuid) {
 
-        if (characterToTravel.getWarpfuel() > 9) {
-            characterToTravel.setPositionUuid(nextPositionUuid);
+        if (this.player.getWarpfuel() > 9) {
+            this.player.setPositionUuid(nextPositionUuid);
             this.audioPlayer.playWarp();
-            characterToTravel.setWarpfuel(characterToTravel.getWarpfuel() - 10);
+            this.player.setWarpfuel(this.player.getWarpfuel() - 10);
             this.incrementTime(1);
         }
     }
@@ -1340,17 +1340,6 @@ public class Game implements iGame {
     }
 
     /**
-     * Changes the player's current UUID.
-     *
-     * @param uuid the uuid of the planet or moon that is the target of the
-     * travel
-     */
-    @Override
-    public void travelToPlanet(UUID uuid) {
-        this.travelToPlanet(this.player, uuid);
-    }
-
-    /**
      * Gets an array of answers.
      *
      * @return a String array
@@ -1380,16 +1369,6 @@ public class Game implements iGame {
                 return;
             }
         }
-    }
-
-    /**
-     * Uses a the warp method to travel the player
-     *
-     * @param nextPosition the UUID of the targeted planet or moon
-     */
-    @Override
-    public void processWarp(UUID nextPosition) {
-        this.processWarp(this.player, nextPosition);
     }
 
     /**

@@ -13,13 +13,13 @@ I hear from Queen Margrethe that you have the fags.
 yes
 Thank you for the fags!
 3
-deliverPackage,nextConvoId:12
+deliverPackage
 _____ 2:
 Queen Margrethe told me you would have a package for me, but that you took off before picking it up. So, you should probably go back to him and then get back here.
 1
 
 alright
-Queen Margrethe should be at Nogah at 120;210
+Queen Margrethe should be at Nogah
 -1
 
 _____ 3:
@@ -42,7 +42,7 @@ Thats awesome! Then you are almost ready to play the game!
 no
 Try talk to me again then and i will explain it again!
 3
-nextConvoId:12
+
 _____ 5:
 I hope that you are gonna have a lot of fun playing the game! Remember this is just the tutorial!
 1

@@ -1,8 +1,0 @@
-{
-    "pid" : 4,
-	"name" : "Sunaru",
-	"description" : "A weird blue colored gas giant",
-	"x" : 650,
-	"y" : 100,
-	"imagePath" : "planets/planet2.png"
-}

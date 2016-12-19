@@ -1,8 +1,0 @@
-{
-    "rid": 10,
-    "weight": 2,
-    "description": "Medicin",
-	"iid" : 10,
-	"reputationWorth" : 2,
-	"imagePath" : "items/medicin.png"
-}
