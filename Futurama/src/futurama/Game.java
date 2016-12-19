@@ -13,7 +13,7 @@ import java.util.UUID;
  * the iGame interface, that can be used by the GUI.
  *
  * Written and commented by Emil Bøgh Harder, Kasper H. Christensen, Malte
- * Engelsted Rasmussen, Matias Marek, Daniel Anton Jørgensen & Daniel Skjold
+ * Engelsted Rasmussen, Matias Marek, Daniel Anton Jørgensen and Daniel Skjold
  * Toft. Gruppe 17, E16, Software/IT 1. semester
  */
 public class Game implements iGame {
@@ -199,7 +199,7 @@ public class Game implements iGame {
      * A method for starting a conversation with the NPC on the planet, that the
      * player is currently at
      *
-     * @param npcId
+     * @param npcId id of the NPC which conversation should be started
      */
     @Override
     public void startConversation(UUID npcId) {
