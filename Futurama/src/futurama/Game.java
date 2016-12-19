@@ -291,8 +291,10 @@ public class Game implements iGame {
         allExecutions = executionLine.split(",");
         for (String eachExecution : allExecutions) {
             String[] executionSplit = eachExecution.split(":");
-            //Depending on which string executionSplit[0] contains, the program will choose one of the following cases.
-            //If not, the default case will be used, which does nothing, thus spelling errors in the conversation files is ignored.
+            //Depending on which string executionSplit[0] contains, the program 
+            // will choose one of the following cases.
+            //If not, the default case will be used, which does nothing, 
+            // thus spelling errors in the conversation files is ignored.
             switch (executionSplit[0]) {
                 case "deliverPackage":
                     this.deliverPackage(npcId);
