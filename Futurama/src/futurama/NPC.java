@@ -31,6 +31,7 @@ public class NPC implements PrintAble, PicturizeAble {
      * start of the game
      * @param pid used to tell where the NPC should be placed (on a moon or
      * planet) at the start of the game
+     * @param iid used to place items in the correct inventories
      * @param conversationId the first conversation id (which conversation file)
      * the NPC should use at the start of the game
      * @param chanceToMove whether or not the NPC can move. 0 means completely
@@ -147,8 +148,8 @@ public class NPC implements PrintAble, PicturizeAble {
     /**
      * Creates an item using the method in inventory
      *
-     * @param uuid
-     * @param weight
+     * @param uuid UUID of the item to add
+     * @param weight weight of the item to add
      * @return the UUID of the newly created item
      */
     public boolean addItem(UUID uuid, int weight) {
@@ -159,7 +160,7 @@ public class NPC implements PrintAble, PicturizeAble {
      * Removes an item based on the UUID of that item
      *
      * @param itemId the UUID if the item
-     * @param weight
+     * @param weight weight of the item to remove
      */
     public void removeItem(UUID itemId, int weight) {
         this.inventory.remItem(itemId, weight);

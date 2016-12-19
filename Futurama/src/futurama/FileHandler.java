@@ -35,9 +35,9 @@ public class FileHandler {
      * Reads a json file and returns a freshly created object of the type T
      * passed into the parameter.
      *
+     * @param <T> returned type of the request
      * @param fileSource where to read the file from
-     * @param classType which type of object that should be written and returned
-     * as
+     * @param classType which type to return
      * @return a new object of the type that was set with the parameter
      * classType
      */

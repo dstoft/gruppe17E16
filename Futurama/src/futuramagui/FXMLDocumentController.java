@@ -382,7 +382,7 @@ public class FXMLDocumentController implements Initializable {
      * the game using the selected scenario and typed name. Also starts the
      * real-time timer and sets the player's stats and starting planet.
      *
-     * @param event
+     * @param event the event from GUI which handles initialisation of the game
      */
     @FXML
     public void handleStart(ActionEvent event) {
@@ -571,7 +571,7 @@ public class FXMLDocumentController implements Initializable {
      * Places a new anchorpane, infront of the game screen, displaying the help
      * menu and a button to remove the anchorpane again.
      *
-     * @param event
+     * @param event the event from GUI which handles the help menu
      */
     @FXML
     public void handleHelp(ActionEvent event) {
@@ -672,7 +672,7 @@ public class FXMLDocumentController implements Initializable {
     /**
      * Closes the stage and quits the game.
      *
-     * @param event
+     * @param event the event from GUI which handles the quitting method
      */
     @FXML
     public void qqButtonAction(ActionEvent event) {

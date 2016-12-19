@@ -91,12 +91,13 @@ public class Question {
      * Adds a answer with the parameters. See Answers class for description of
      * these parameters.
      *
-     * @param nextLineNumber
-     * @param referenceWord
-     * @param reactText
-     * @param exeLine
+     * @param nextLineNumber Beginning of the next question from NPC
+     * @param referenceWord The answer text from user
+     * @param reactText NPC's reaction to the answer from user
+     * @param exeLine The command to be executed in Game
      */
     public void addAnswer(int nextLineNumber, String referenceWord, String reactText, String exeLine) {
         this.answers.add(new Answer(nextLineNumber, referenceWord, reactText, exeLine));
     }
+    
 }

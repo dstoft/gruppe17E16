@@ -5,10 +5,10 @@ import java.util.UUID;
 /**
  * The class Item is based on that there is several different items that the
  * player can get. These Item must be delivered from one NPC to another through
- * a receiver id (RID). Each item has a unique id and description & the item has
- * a weight. There is a limit of how much weight and how many items the player
- * can have. The paperwork on each item can have an effect of the difficulty to
- * deliver the pakage.
+ * a receiver id (RID). Each item has a unique id and description and the item
+ * has a weight. There is a limit of how much weight and how many items the 
+ * player can have. The paperwork on each item can have an effect of the 
+ * difficulty to deliver the package.
  */
 public class Item implements PrintAble, PicturizeAble {
 
